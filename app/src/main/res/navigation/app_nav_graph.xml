@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_nav_graph"
+    app:startDestination="@id/home_nav_graph">
+
+    <include app:graph="@navigation/home_nav_graph" />
+    <include app:graph="@navigation/discover_nav_graph" />
+    <include app:graph="@navigation/library_nav_graph" />
+    <include app:graph="@navigation/community_nav_graph" />
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="architecture.ui.view.fragment.LoginFragment"
+        android:label="LoginFragment" />
+
+    <action
+        android:id="@+id/login"
+        app:destination="@id/loginFragment"
+        app:restoreState="false"/>
+
+    <action
+        android:id="@+id/logout"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="false"
+        app:restoreState="false"/>
+
+    <fragment
+        android:id="@+id/genresFragment"
+        android:name="architecture.ui.view.fragment.GenresFragment"
+        android:label="fragment_genres"
+        tools:layout="@layout/fragment_genres" />
+
+    <action
+        android:id="@+id/peek_genres"
+        app:destination="@id/genresFragment"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="false"
+        app:restoreState="false"/>
+
+</navigation>

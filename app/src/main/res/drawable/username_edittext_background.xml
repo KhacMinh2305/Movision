@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/appConnerSize"/>
+            <solid android:color="@color/content_container"/>
+        </shape>
+    </item>
+
+    <item android:drawable="@drawable/ic_user_login"
+        android:width="30dp"
+        android:gravity="center_vertical"
+        android:left="15dp"
+        android:height="30dp"/>
+</layer-list>

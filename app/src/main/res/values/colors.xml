@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="app_background">#151422</color>
+    <color name="content_container">#262C4D</color>
+    <color name="widget_container">#B3262C4D</color>
+    <color name="widget">#64B5F6</color>
+    <color name="primary_text">#FFFFFFFF</color>
+    <color name="secondary_text">#99FFFFFF</color>"
+    <color name="search_background">#CC151422</color>
+    <color name="scrimColor">#E6151422</color>
+    <color name="unChoose">#D50606</color>
+</resources>

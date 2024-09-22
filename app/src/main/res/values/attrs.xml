@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ImageSlidingIndicator">
+        <attr name="indicatorCount" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomBinding">
+        <attr name="defaultDrawable" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="Movie">
+        <attr name="imageUrl" format="string" />
+        <attr name="movieName" format="string" />
+        <attr name="movieDescription" format="string" />
+        <attr name="movieReleaseDate" format="string"/>
+        <attr name="movieRating" format="float" />
+        <attr name="genres" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="Genre">
+        <attr name="genreName" format="string"/>
+    </declare-styleable>
+</resources>

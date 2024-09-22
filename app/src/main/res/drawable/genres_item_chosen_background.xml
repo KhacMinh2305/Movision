@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="20dp"/>
+            <solid android:color="@color/content_container"/>
+            <stroke android:width="2dp"
+                android:color="@color/widget"/>
+        </shape>
+    </item>
+
+    <item android:drawable="@drawable/ic_add_genres"
+        android:width="18dp" android:height="18dp"
+        android:gravity="end|top"/>
+</layer-list>

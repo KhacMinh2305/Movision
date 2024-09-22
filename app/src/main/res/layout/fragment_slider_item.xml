@@ -1,0 +1,43 @@
+<layout>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context="architecture.ui.view.fragment.SliderItemFragment">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="20dp">
+
+            <ImageView
+                android:id="@+id/posterImageView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"/>
+
+            <ImageView
+                android:id="@+id/fadeAnimImageView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/gradient_container_background"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/movieNameTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Movie name"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="15dp"/>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
+</layout>

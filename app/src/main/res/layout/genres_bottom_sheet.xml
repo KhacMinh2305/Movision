@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="10dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+        <FrameLayout
+            android:id="@+id/genreBottomSheet"
+            style="@style/Widget.Material3.BottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/scrimColor"
+            android:elevation="10dp"
+            app:behavior_peekHeight="0dp"
+            app:behavior_hideable="true"
+            app:behavior_draggable="true"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <ImageButton
+                android:id="@+id/hideButton"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="top|end"
+                android:background="@null"
+                android:importantForAccessibility="no"
+                android:padding="18dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_down" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/peekGenresRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="90dp"
+                android:layout_marginEnd="15dp"
+                android:orientation="horizontal"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/horizontal_genre_item" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="170dp"
+                android:layout_marginEnd="15dp"
+                android:alpha="0.5"
+                android:background="@color/white" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/genresStoreRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="200dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/addButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/contentTextView" />
+
+            <Button
+                android:id="@+id/confirmAddGenresButton"
+                android:layout_width="wrap_content"
+                android:layout_height="55dp"
+                style="@style/Custom.ButtonStyle"
+                android:text="@string/add"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="15dp"/>
+        </FrameLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

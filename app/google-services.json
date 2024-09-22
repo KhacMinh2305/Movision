@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "699008899828",
+    "project_id": "movision-632ed",
+    "storage_bucket": "movision-632ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:699008899828:android:1c95a9388afbb4ab711ca1",
+        "android_client_info": {
+          "package_name": "com.example.movision"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDL0pp6_GknUMZhea2HAxIypUfQ0K-XUQo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
