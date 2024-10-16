@@ -1,5 +1,7 @@
 package architecture.di;
 import android.content.Context;
+
+import androidx.credentials.CredentialManager;
 import androidx.room.Room;
 import javax.inject.Singleton;
 import architecture.data.local.LocalDatabase;
@@ -8,16 +10,24 @@ import architecture.data.local.dao.MovieDao;
 import architecture.data.local.dao.PeopleDao;
 import architecture.data.local.dao.RemoteKeyDao;
 import architecture.data.local.dao.UserDao;
+import architecture.data.source.other.CredentialsProvider;
 import architecture.other.AppConstant;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
+import dagger.hilt.android.qualifiers.ActivityContext;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import dagger.hilt.components.SingletonComponent;
 
 @Module
 @InstallIn(SingletonComponent.class)
-public class LocalComponentsProvider {
+public abstract class LocalComponentsProvider {
+
+    @Provides
+    @Singleton
+    public static CredentialManager provideCredentialManager(@ApplicationContext Context context) {
+        return CredentialManager.create(context);
+    }
 
     @Provides
     @Singleton

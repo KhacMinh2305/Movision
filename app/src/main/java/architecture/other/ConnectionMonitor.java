@@ -4,8 +4,6 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.DefaultLifecycleObserver;
@@ -40,19 +38,18 @@ public class ConnectionMonitor implements DefaultLifecycleObserver {
                     && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
             // only trigger when the connection is available after offline, not execute each time
             // devices has more network connections option (Wifi, Ethernet, etc.)
-            Log.d("Debug", "Co them mang !");
             if(!hasConnection && available) {
                 hasConnection = true;
                 networkChange.onNext(true);
             }
         }
 
+        /** @noinspection deprecation*/
         @Override
         public void onLost(@NonNull Network network) {
             super.onLost(network);
             assert connManager != null;
             // Only trigger when theres no network anymore
-            Log.d("Debug", "Mat 1 mang !");
             if(connManager.getAllNetworks().length == 0) {
                 networkChange.onNext(false);
                 hasConnection = false;

@@ -13,4 +13,5 @@
     <color name="search_background">#CC151422</color>
     <color name="scrimColor">#E6151422</color>
     <color name="unChoose">#D50606</color>
+    <color name="back_button_color">#66262C4D</color>
 </resources>

@@ -1,16 +1,16 @@
 package com.example.movision;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import com.example.movision.databinding.ActivityMainBinding;
+import javax.inject.Inject;
+import architecture.other.ConnectionMonitor;
 import architecture.ui.viewmodel.SharedViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -20,31 +20,46 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private SharedViewModel viewModel;
     private NavController navController;
+    private boolean disableSplash = false;
+
+    @Inject
+    public ConnectionMonitor connMonitor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
-        binding.setViewmodel(viewModel);
-        binding.setLifecycleOwner(this);
-        getLifecycle().addObserver(viewModel.getConnectionMonitor());
-        initNavigation();
-        login();
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        splashScreen.setKeepOnScreenCondition(() -> !disableSplash);
     }
 
-    private void initNavigation() {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        init();
+        loadInitially();
+        observeStates();
+    }
+
+    private void init() {
+        binding.setViewmodel(viewModel);
+        binding.setLifecycleOwner(this);
         NavHostFragment host = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host);
         assert host != null;
         navController = host.getNavController();
         NavigationUI.setupWithNavController(binding.bottomNavbar, navController);
+        getLifecycle().addObserver(connMonitor);
     }
 
-    private void login() {
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            binding.splashScreen.setVisibility(View.GONE);
-        }, 1500);
-        navController.navigate(R.id.login);
+    private void loadInitially() {
+        viewModel.loadInitially();
+    }
+
+    private void observeStates() {
+        viewModel.geSplashState().observe(this, completed -> disableSplash = true);
+        viewModel.getLoginNavigationState().observe(this, navigate -> navController.navigate(R.id.login));
+        viewModel.getGenreNavigationState().observe(this, navigate -> navController.navigate(R.id.peek_genres));
     }
 }

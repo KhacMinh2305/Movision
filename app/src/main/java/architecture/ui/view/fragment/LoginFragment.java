@@ -1,17 +1,22 @@
 package architecture.ui.view.fragment;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import com.example.movision.R;
 import com.example.movision.databinding.FragmentLoginBinding;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import architecture.ui.viewmodel.LoginViewModel;
 import architecture.ui.viewmodel.SharedViewModel;
@@ -60,6 +65,7 @@ public class LoginFragment extends Fragment {
     private SharedViewModel sharedViewModel;
     private LoginViewModel viewModel;
     private NavController navController;
+    private BottomSheetBehavior<ConstraintLayout> sheetBehavior;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,78 +81,120 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentLoginBinding.inflate(inflater, container, false);
-        init();
-        observeStates();
-        setUpBehaviors();
-        return binding.getRoot();
-    }
-
-    private void init() {
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-        binding.setViewmodel(viewModel);
-        binding.setLifecycleOwner(this);
-        navController = Navigation.findNavController(requireActivity(), R.id.nav_host);
-    }
-
-    private void observeStates() {
-        sharedViewModel.setBottomNavBarVisibility(false);
-        viewModel.getError().observe(getViewLifecycleOwner(), error -> {
-            Snackbar.make(binding.noteTextView, error, Snackbar.LENGTH_LONG).show();
-        });
-        viewModel.getUserAuthenticated().observe(getViewLifecycleOwner(), authenticated -> {
-            if(authenticated) {
-                viewModel.login();
-            }
-        });
-        viewModel.getLoginSuccess().observe(getViewLifecycleOwner(), success -> {
-            if(success) {
-                viewModel.checkLoginFirstTime();
-            }
-        });
-        viewModel.isFirstTimeLogin().observe(getViewLifecycleOwner(), first -> {
-            if(first) {
-                navController.navigate(R.id.peek_genres);
-                return;
-            }
-            sharedViewModel.setLoadingHomeDataState(true);
-            navController.navigateUp();
-        });
-    }
-
-    private void setUpBehaviors() {
-        binding.loginButton.setOnClickListener(view -> {
-            String username = binding.usernameEditText.getText().toString();
-            String password = binding.passwordEditText.getText().toString();
-            if(username.isEmpty() || password.isEmpty()) {
-                Snackbar.make(binding.noteTextView, "Username or password is empty!", Snackbar.LENGTH_LONG).show();
-                return;
-            }
-            if(viewModel.authLinkAvailable()) {
-                viewModel.notifyToHideOrShowAuthView(true);
-                return;
-            }
-            viewModel.checkUserActiveSession(username, password);
-        });
-        binding.allowButton.setOnClickListener(view -> {
-            viewModel.notifyUserClickButton();
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(viewModel.getAuthLink()));
-            startActivity(intent);
-        });
-        binding.denyButton.setOnClickListener(view -> {
-            viewModel.notifyToHideOrShowAuthView(false);
-        });
+        return binding.getRoot();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        viewModel.checkUserGoForGrantingPermission();
+        init();
+        observeStates();
+        setUpBehaviors();
     }
 
+    private void init() {
+        viewModel.init();
+        binding.setViewmodel(viewModel);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+        binding.setViewmodel(viewModel);
+        binding.bottomSheet.setState(viewModel.getSheetUiState());
+        navController = Navigation.findNavController(requireActivity(), R.id.nav_host);
+        sheetBehavior = BottomSheetBehavior.from(binding.bottomSheet.emailVerificationSheet);
+        setUpVerificationEditTextFocus();
+        //binding.loginButton.setRenderEffect(RenderEffect.createBlurEffect(30f, 30f, Shader.TileMode.MIRROR));
+    }
+
+    private void setUpFocusListener(EditText currentEditText, EditText nextEditText) {
+        currentEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(currentEditText.getText().toString().isEmpty()) {
+                    return;
+                }
+                currentEditText.clearFocus();
+                nextEditText.requestFocus();
+            }
+        });
+    }
+
+    private void setUpVerificationEditTextFocus() {
+        binding.bottomSheet.firstCodeEditText.setFocusedByDefault(true);
+        setUpFocusListener(binding.bottomSheet.firstCodeEditText, binding.bottomSheet.secondCodeEditText);
+        setUpFocusListener(binding.bottomSheet.secondCodeEditText, binding.bottomSheet.thirdCodeEditText);
+        setUpFocusListener(binding.bottomSheet.thirdCodeEditText, binding.bottomSheet.fourthCodeEditText);
+        setUpFocusListener(binding.bottomSheet.fourthCodeEditText, binding.bottomSheet.fifthCodeEditText);
+        setUpFocusListener(binding.bottomSheet.fifthCodeEditText, binding.bottomSheet.sixthCodeEditText);
+    }
+
+    //--------------------------------------------------------STATES OBSERVING--------------------------------------------------------
+    private void observeStates() {
+        sharedViewModel.setBottomNavBarVisibility(false);
+        viewModel.getMessageState().observe(getViewLifecycleOwner(),
+                message -> Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show());
+        viewModel.getSheetUiState().getSheetState().observe(getViewLifecycleOwner(),
+                expand -> sheetBehavior.setState(expand ? BottomSheetBehavior.STATE_EXPANDED
+                        : BottomSheetBehavior.STATE_COLLAPSED));
+        viewModel.getFocusCodeEditTextState().observe(getViewLifecycleOwner(),
+                cleared -> binding.bottomSheet.firstCodeEditText.requestFocus());
+        viewModel.getGenreNavigationState().observe(getViewLifecycleOwner(), navigate ->
+                navController.navigate(R.id.action_loginFragment_to_genresFragment2));
+        viewModel.getHomeNavigatingState().observe(getViewLifecycleOwner(), navigate -> {
+            sharedViewModel.setLoadingHomeDataState(true);
+            navController.navigateUp();
+        });
+        
+        /* Notify Home to load data
+        sharedViewModel.setLoadingHomeDataState(true);
+        navController.navigateUp();
+        * */
+    }
+
+    //--------------------------------------------------------BEHAVIORS--------------------------------------------------------
+    private void setUpBehaviors() {
+        binding.loginButton.setOnClickListener(
+                view -> viewModel.signInWithEmailAndPassword(binding.emailLoginEditText.getText().toString(),
+                binding.passwordLoginEditText.getText().toString()));
+        binding.googleImageButton.setOnClickListener(view -> viewModel.signInWithGoogle(requireActivity()));
+        binding.facebookImageButton.setOnClickListener(view -> viewModel.signInWithFacebook(this));
+        binding.signUpImageView.setOnClickListener(view -> navController.navigate(R.id.action_loginFragment_to_signUpFragment));
+        binding.forgotPasswordTextView.setOnClickListener(view -> {
+            viewModel.sendCodeForUpdatingPassword(binding.emailLoginEditText.getText().toString());
+        });
+        binding.bottomSheet.backImageButton.setOnClickListener(view -> {
+            viewModel.setSendingState(false);
+            viewModel.getSheetUiState().setSheetState(false);
+        });
+        binding.bottomSheet.verifySignUpButton.setOnClickListener(view -> {
+            viewModel.verifyCode(getUserInputCode());
+        });
+        binding.bottomSheet.sendCodeTextView.setOnClickListener(view -> {
+            viewModel.sendCodeAgain();
+        });
+    }
+
+    //--------------------------------------------------------BUSINESSES--------------------------------------------------------
+    private String getUserInputCode() {
+        return binding.bottomSheet.firstCodeEditText.getText().toString()
+                + binding.bottomSheet.secondCodeEditText.getText().toString()
+                + binding.bottomSheet.thirdCodeEditText.getText().toString()
+                + binding.bottomSheet.fourthCodeEditText.getText().toString()
+                + binding.bottomSheet.fifthCodeEditText.getText().toString()
+                + binding.bottomSheet.sixthCodeEditText.getText().toString();
+    }
+
+    //--------------------------------------------------------OTHERS--------------------------------------------------------
     @Override
-    public void onStop() {
-        super.onStop();
-        viewModel.notifyScreenStop();
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        viewModel.getResultFromFacebookTokenRequest(requestCode, resultCode, data);
     }
 }

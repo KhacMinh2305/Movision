@@ -7,22 +7,19 @@
             type="java.lang.String" />
     </data>
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/genreNameTextView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        xmlns:tools="http://schemas.android.com/tools">
-
-        <TextView
-            android:id="@+id/genreNameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="26dp"
-            tools:text="Action"
-            app:genreName="@{name}"
-            android:gravity="center"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
-            android:background="@drawable/genre_item_background"/>
-    </FrameLayout>
+        android:layout_height="22dp"
+        tools:text="Action"
+        android:layout_marginEnd="10dp"
+        app:genreName="@{name}"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:paddingStart="13dp"
+        android:paddingEnd="13dp"
+        android:background="@drawable/genre_item_background"/>
 </layout>

@@ -9,20 +9,16 @@
     <include app:graph="@navigation/discover_nav_graph" />
     <include app:graph="@navigation/library_nav_graph" />
     <include app:graph="@navigation/community_nav_graph" />
-
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="architecture.ui.view.fragment.LoginFragment"
-        android:label="LoginFragment" />
+    <include app:graph="@navigation/auth_nav_graph" />
 
     <action
         android:id="@+id/login"
-        app:destination="@id/loginFragment"
+        app:destination="@id/auth_nav_graph"
         app:restoreState="false"/>
 
     <action
         android:id="@+id/logout"
-        app:destination="@id/loginFragment"
+        app:destination="@id/auth_nav_graph"
         app:popUpTo="@id/homeFragment"
         app:popUpToInclusive="false"
         app:restoreState="false"/>

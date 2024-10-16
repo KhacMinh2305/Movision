@@ -12,7 +12,20 @@
           "package_name": "com.example.movision"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "699008899828-s1t7opmca35c934f54screr1ceeap7f7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.movision",
+            "certificate_hash": "061e7bdced136e7478e1b496316161c9ff4239c7"
+          }
+        },
+        {
+          "client_id": "699008899828-nmeo8086k0rm7svnq77edqjogvbfdkti.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDL0pp6_GknUMZhea2HAxIypUfQ0K-XUQo"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "699008899828-nmeo8086k0rm7svnq77edqjogvbfdkti.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

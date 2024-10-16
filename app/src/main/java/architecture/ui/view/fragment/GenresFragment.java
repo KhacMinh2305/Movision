@@ -12,13 +12,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import com.example.movision.R;
 import com.google.android.material.snackbar.Snackbar;
-
 import java.util.Objects;
-
 import architecture.data.model.genre.Genre;
 import architecture.ui.view.adapter.GenreAdapter;
 import architecture.ui.view.other.ChoseGenresCallback;
 import architecture.ui.viewmodel.GenresViewModel;
+import architecture.ui.viewmodel.SharedViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
 
 /**
@@ -61,6 +60,7 @@ public class GenresFragment extends Fragment {
     }
 
     private GenresViewModel viewModel;
+    private SharedViewModel sharedViewModel;
     private RecyclerView recyclerView;
     private Button addButton;
     private NavController navController;
@@ -79,17 +79,25 @@ public class GenresFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_genres, container, false);
-        init(view);
-        bindData();
-        setUpBehaviors();
+        recyclerView = view.findViewById(R.id.genresRecyclerView);
+        addButton = view.findViewById(R.id.addButton);
+        init();
         return view;
     }
 
-    private void init(View view) {
-        recyclerView = view.findViewById(R.id.genresRecyclerView);
-        addButton = view.findViewById(R.id.addButton);
+    @Override
+    public void onStart() {
+        super.onStart();
+        viewModel.loadInitially();
+        bindData();
+        setUpBehaviors();
+    }
+
+    private void init() {
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         viewModel = new ViewModelProvider(this).get(GenresViewModel.class);
         navController = Navigation.findNavController(requireActivity(), R.id.nav_host);
+        sharedViewModel.setBottomNavBarVisibility(false);
     }
 
     private void bindData() {
@@ -112,13 +120,13 @@ public class GenresFragment extends Fragment {
     }
 
     private void setUpBehaviors() {
-        viewModel.getError().observe(getViewLifecycleOwner(), error -> {
-            Snackbar.make(addButton, error, Snackbar.LENGTH_SHORT).show();
-        });
+        viewModel.getError().observe(getViewLifecycleOwner(), error ->
+                Snackbar.make(addButton, error, Snackbar.LENGTH_SHORT).show());
 
         viewModel.isFinished().observe(getViewLifecycleOwner(), finished -> {
             if(finished) {
-                navController.navigateUp();
+                sharedViewModel.setLoadingHomeDataState(true);
+                navController.popBackStack(R.id.homeFragment, false, false);
             }
         });
 

@@ -45,39 +45,5 @@
             app:backgroundTint="@color/widget"
             app:itemIconTint="@color/bottom_nav_item_color"
             app:menu="@menu/bottom_nav_menu"/>
-
-        <LinearLayout
-            android:id="@+id/splashScreen"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@color/widget"
-            android:elevation="10dp"
-            android:gravity="center"
-            tools:ignore="UseCompoundDrawables">
-
-            <ImageView
-                android:id="@+id/appLogoImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:importantForAccessibility="no"
-                android:src="@drawable/splash_logo"/>
-
-            <TextView
-                android:id="@+id/sloganTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/aldrich_regular"
-                android:text="@string/splash_slogan"
-                android:textColor="@color/app_background"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

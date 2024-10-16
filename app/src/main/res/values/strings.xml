@@ -5,8 +5,8 @@
     <string name="splash_slogan">Movision</string>
     <string name="tmdb_name">The Movie Database</string>
     <string name="login_guide_text">Grant app the permission to access your account ?</string>
-    <string name="username_hint">username</string>
-    <string name="password_hint">password</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
     <string name="login_text">Sign in</string>
     <string name="login_note">If you have not an account yet. Visit TmDB website for sign up. This app only uses data that i provided by TmDB.</string>
     <string name="allow">Allow</string>
@@ -15,4 +15,33 @@
     <string name="add">Confirm</string>
     <string name="remember_me">Remember me</string>
     <string name="see_more">See  more</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="undefined">Undefined</string>
+    <string name="login_title">Login to your account</string>
+    <string name="login">Login</string>
+    <string name="or">or login with other methods</string>
+    <string name="create_account">Do not have an account ?</string>
+    <string name="forgot_password">Forgot your password ?</string>
+    <string name="create_a_new_account">Create a new account right now !</string>
+    <string name="sign_up_title">Create a new account</string>
+    <string name="confirm_password">"Confirm password  "</string>
+    <string name="proceed">Proceed</string>
+    <string name="verify">Verify</string>
+    <string name="send_email_again">Send email again</string>
+
+
+    <!--facebook-->
+    <string name="facebook_app_id">1176965566708628</string>
+    <string name="fb_login_protocol_scheme">fb1176965566708628</string>
+    <string name="facebook_client_token">41d35ff735adb178b1d712d23599ddb5</string>
+    <string name="verify_email">Verify your email</string>
+    <string name="verify_code_1">We have sent a code to the email</string>
+    <string name="verify_code_2">Please check your email type the code</string>
+    <string name="send_code">Send again</string>
+    <string name="request_code_again">"Try again after : "</string>
+    <string name="email_verification">We sent a code to below email. Please check and enter the code.</string>
+    <string name="sending">Sending...</string>
+    <string name="reset_password">Reset password</string>
+    <string name="confirm">Confirm</string>
 </resources>

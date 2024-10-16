@@ -1,4 +1,6 @@
 package architecture.ui.view.fragment;
+import static architecture.other.AppConstant.POPULAR_PEOPLE_TITLE;
+
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -20,6 +22,7 @@ import java.util.Objects;
 import architecture.other.AppConstant;
 import architecture.ui.view.adapter.HomeGenreAdapter;
 import architecture.ui.view.adapter.MovieAdapter;
+import architecture.ui.view.adapter.PeopleAdapter;
 import architecture.ui.view.other.RecyclerViewItemDecoration;
 import architecture.ui.viewmodel.HomeViewModel;
 import architecture.ui.viewmodel.SharedViewModel;
@@ -84,30 +87,36 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false);
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         init();
         loadData();
         bindData();
         setUpBehavior();
-        return binding.getRoot();
+        test();
     }
 
     //--------------------------------------------------------INITIALIZATION--------------------------------------------------------
-
     private void init() {
-        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         binding.setSharedViewModel(sharedViewModel);
         binding.setViewmodel(viewModel);
-        binding.setLifecycleOwner(this);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
         getLifecycle().addObserver(binding.bannerImageSlider);
         navController = Navigation.findNavController(requireActivity(), R.id.nav_host);
         initViews();
-        sharedViewModel.setBottomNavBarVisibility(true);
     }
 
     private void initViews() {
         initGenresRecyclerViews();
         initPreviewMovieViews();
+        initPeople();
+        sharedViewModel.setBottomNavBarVisibility(true);
     }
 
     private void initGenresRecyclerViews() {
@@ -144,18 +153,33 @@ public class HomeFragment extends Fragment {
         binding.playingPreview.seeMoreTextView.setText(R.string.see_more);
         binding.playingPreview.titleTextView.setText(AppConstant.CATEGORY_PLAYING_TITLE);
         initPreviewRecyclerViews(binding.playingPreview.recyclerView);
+
+        binding.randomGenres.seeMoreTextView.setText(R.string.see_more);
+        initPreviewRecyclerViews(binding.randomGenres.recyclerView);
     }
 
     private void initPreviewRecyclerViews(RecyclerView rv) {
         rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        rv.addItemDecoration(new RecyclerViewItemDecoration(20));
+        rv.addItemDecoration(new RecyclerViewItemDecoration(45));
         rv.setAdapter(new MovieAdapter(getContext(), R.layout.preview_movie_item, (id, movieId) -> {
             Log.d("Debug", "Go to details");
         }));
     }
+
+    private void initPeople() {
+        binding.popularPeople.seeMoreTextView.setText(R.string.see_more);
+        binding.popularPeople.titleTextView.setText(POPULAR_PEOPLE_TITLE);
+        binding.popularPeople.recyclerView.
+                setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.popularPeople.recyclerView.addItemDecoration(new RecyclerViewItemDecoration(45));
+        binding.popularPeople.recyclerView.setAdapter(new PeopleAdapter(getContext(), R.layout.home_people_item, id -> {
+            Log.d("Debug", "Vao thang nguoi chi tiet !");
+        }));
+    }
+
     //--------------------------------------------------------LOAD DATA--------------------------------------------------------
     private void loadData() {
-        sharedViewModel.getLoadingHomeDataSignal().observe(getViewLifecycleOwner(), signal -> {
+        sharedViewModel.getLoadingHomeScreenDataState().observe(getViewLifecycleOwner(), signal -> {
             if(signal) {
                 viewModel.resetLoading();
                 viewModel.loadInit();
@@ -172,10 +196,13 @@ public class HomeFragment extends Fragment {
         });
         bindGenres();
         bindPreviewRecyclerMovie();
+        bindPeople();
+        bindPersonalMovie();
     }
 
     private void bindPreviewRecyclerMovie() {
         viewModel.getPreviewTrendingMovies().observe(getViewLifecycleOwner(), movies -> {
+            Log.d("Debug", "Da nhan duoc du lieu : " + movies.size());
             ((MovieAdapter) Objects.requireNonNull(binding.trendingPreview.recyclerView.getAdapter())).submitList(movies);
         });
         viewModel.getPreviewTopRatedMovies().observe(getViewLifecycleOwner(), movies -> {
@@ -201,6 +228,20 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    private void bindPeople() {
+        viewModel.getPreviewPopularPeople().observe(getViewLifecycleOwner(), people -> {
+            ((PeopleAdapter) Objects.requireNonNull(binding.popularPeople.recyclerView.getAdapter())).submitList(people);
+        });
+    }
+
+    private void bindPersonalMovie() {
+        viewModel.getPersonalGenre().observe(getViewLifecycleOwner(), genre -> {
+            binding.randomGenres.titleTextView.setText(genre.getName());
+        });
+        viewModel.getPersonalMovies().observe(getViewLifecycleOwner(), movies -> {
+            ((MovieAdapter) Objects.requireNonNull(binding.randomGenres.recyclerView.getAdapter())).submitList(movies);
+        });
+    }
 
     //--------------------------------------------------------BEHAVIOR--------------------------------------------------------
 
@@ -232,21 +273,31 @@ public class HomeFragment extends Fragment {
     }
 
     private void seeMore() {
-        binding.trendingPreview.seeMoreTextView.setOnClickListener(view -> {
-            navController.navigate(R.id.action_homeFragment_to_movieListFragment,
-                    createBundle(AppConstant.CATEGORY_TRENDING_TITLE, AppConstant.CATEGORY_TRENDING_TAG));
-        });
-        binding.topRatedPreview.seeMoreTextView.setOnClickListener(view -> {
-            navController.navigate(R.id.action_homeFragment_to_movieListFragment,
-                    createBundle(AppConstant.CATEGORY_TOP_RATED_TITLE, AppConstant.CATEGORY_TOP_RATED_TAG));
-        });
-        binding.popularPreview.seeMoreTextView.setOnClickListener(view -> {
-            navController.navigate(R.id.action_homeFragment_to_movieListFragment,
-                    createBundle(AppConstant.CATEGORY_POPULAR_TITLE, AppConstant.CATEGORY_POPULAR_TAG));
-        });
-        binding.playingPreview.seeMoreTextView.setOnClickListener(view -> {
-            navController.navigate(R.id.action_homeFragment_to_movieListFragment,
-                    createBundle(AppConstant.CATEGORY_PLAYING_TITLE, AppConstant.CATEGORY_PLAYING_TAG));
-        });
+        // movies
+        binding.trendingPreview.seeMoreTextView.setOnClickListener(view ->
+                navController.navigate(R.id.action_homeFragment_to_movieListFragment,
+                createBundle(AppConstant.CATEGORY_TRENDING_TITLE, AppConstant.CATEGORY_TRENDING_TAG)));
+
+        binding.topRatedPreview.seeMoreTextView.setOnClickListener(view ->
+                navController.navigate(R.id.action_homeFragment_to_movieListFragment,
+                createBundle(AppConstant.CATEGORY_TOP_RATED_TITLE, AppConstant.CATEGORY_TOP_RATED_TAG)));
+
+        binding.popularPreview.seeMoreTextView.setOnClickListener(view ->
+                navController.navigate(R.id.action_homeFragment_to_movieListFragment,
+                createBundle(AppConstant.CATEGORY_POPULAR_TITLE, AppConstant.CATEGORY_POPULAR_TAG)));
+
+        binding.playingPreview.seeMoreTextView.setOnClickListener(view ->
+                navController.navigate(R.id.action_homeFragment_to_movieListFragment,
+                createBundle(AppConstant.CATEGORY_PLAYING_TITLE, AppConstant.CATEGORY_PLAYING_TAG)));
+
+        // people
+        binding.popularPeople.seeMoreTextView.setOnClickListener(view -> navController.navigate(R.id.action_homeFragment_to_peopleListFragment, createBundle(POPULAR_PEOPLE_TITLE,
+                AppConstant.POPULAR_PEOPLE_TAG)));
+    }
+
+    //--------------------------------------------------------TEST--------------------------------------------------------
+    private void test() {
+        binding.userImageButton.setOnClickListener(view ->
+                navController.navigate(R.id.action_homeFragment_to_profileFragment));
     }
 }

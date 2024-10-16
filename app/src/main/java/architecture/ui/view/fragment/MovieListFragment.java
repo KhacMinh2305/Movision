@@ -84,13 +84,19 @@ public class MovieListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentMovieListBinding.inflate(inflater, container, false);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
         viewModel = new ViewModelProvider(this).get(MovieListViewModel.class);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         navController = Navigation.findNavController(requireActivity(), R.id.nav_host);
         viewModel.init(tag);
         setupViews();
         bindData();
         setUpBehaviors();
-        return binding.getRoot();
     }
 
     private void setupViews() {

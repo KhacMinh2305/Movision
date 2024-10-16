@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+    
+    <data>
+        <variable
+            name="people"
+            type="architecture.data.local.entity.People" />
+    </data>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
@@ -12,6 +18,7 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:scaleType="centerCrop"
+            app:imageUrl="@{people.profilePath}"
             android:layout_marginBottom="25dp"
             app:shapeAppearance="@style/CorneredImage"
             android:src="@drawable/user_image"/>
@@ -22,6 +29,7 @@
             android:layout_height="20dp"
             android:layout_gravity="bottom"
             android:ellipsize="end"
+            app:peopleName="@{people.name}"
             tools:text="Movie name"
             android:gravity="center"
             android:textSize="14sp"

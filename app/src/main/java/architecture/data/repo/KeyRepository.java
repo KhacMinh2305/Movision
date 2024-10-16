@@ -13,28 +13,4 @@ public class KeyRepository {
     public KeyRepository(KeyDataSource dataSource) {
         this.dataSource = dataSource;
     }
-
-    public Single<String> requestToken() {
-        return dataSource.requestToken();
-    }
-
-    public Single<String> requestSessionId(String username, String password) {
-        return dataSource.requestSessionId(username, password);
-    }
-
-    public void saveAccountInfo(String username) {
-        dataSource.saveAccountInfo(username);
-    }
-
-    public void saveSessionId(String sessionId) {
-        dataSource.saveSessionId(sessionId);
-    }
-
-    public Single<String> getSessionId() {
-        return dataSource.getSessionId();
-    }
-
-    public void clearLoginInfoOnFailure() {
-        dataSource.clearLoginInfoOnFailure();
-    }
 }

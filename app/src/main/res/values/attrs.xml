@@ -21,4 +21,12 @@
     <declare-styleable name="Genre">
         <attr name="genreName" format="string"/>
     </declare-styleable>
+
+    <declare-styleable name="People">
+        <attr name="peopleName" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="Authentication">
+        <attr name="time" format="integer" />
+    </declare-styleable>
 </resources>

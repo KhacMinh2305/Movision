@@ -11,9 +11,9 @@ import com.example.movision.R;
 public class ImageSliderIndicator extends TableRow {
 
     private static final int MAX_COUNT = 10;
-    private static final int DEFAULT_INDICATOR_SIZE = 27;
-    private static final int DEFAULT_INDICATOR_MARGIN = 15;
-    private static final int INDICATOR_CHOSEN_SIZE = 60;
+    private static final int DEFAULT_INDICATOR_SIZE = 18;
+    private static final int DEFAULT_INDICATOR_MARGIN = 10;
+    private static final int INDICATOR_CHOSEN_SIZE = 36;
     private int count;
     private ImageView currentIndicator;
     public final TableRow.LayoutParams indicatorParams =
@@ -58,6 +58,9 @@ public class ImageSliderIndicator extends TableRow {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     public void onSlide(int newPosition) {
+        if(currentIndicator == null) {
+            return;
+        }
         // decrease params
         currentIndicator.setLayoutParams(indicatorParams);
         currentIndicator.setBackground(getResources().getDrawable(R.drawable.image_slider_indicator, null));

@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.dagger.hilt.android")
@@ -12,10 +14,12 @@ android {
 
     defaultConfig {
         applicationId = "com.example.movision"
-        minSdk = 28
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -36,6 +40,11 @@ android {
 
     buildFeatures {
         dataBinding = true
+    }
+
+    packagingOptions {
+        exclude("META-INF/NOTICE.md")
+        exclude("META-INF/LICENSE.md")
     }
 }
 
@@ -80,12 +89,28 @@ dependencies {
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-rxjava3:$room_version") // RxJava3 support
-    implementation("androidx.room:room-paging:$room_version") // Paging 3 support
+    implementation("androidx.room:room-rxjava3:$room_version")
+    implementation("androidx.room:room-paging:$room_version")
     // AutoDispose
     implementation ("com.uber.autodispose2:autodispose:2.2.1")
     implementation("com.uber.autodispose2:autodispose-lifecycle:2.2.1")
     implementation("com.uber.autodispose2:autodispose-androidx-lifecycle:2.2.1")
+
+    // ---------------------------Firebase---------------------------
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("androidx.credentials:credentials:1.2.2")
+    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    implementation("com.facebook.android:facebook-android-sdk:latest.release")
+
+    // Java mail
+    implementation("com.sun.mail:android-mail:1.6.6")
+    implementation("com.sun.mail:android-activation:1.6.7")
+
+    // Splash
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }
 
 kapt {

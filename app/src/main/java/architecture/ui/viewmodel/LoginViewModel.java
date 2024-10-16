@@ -1,240 +1,229 @@
 package architecture.ui.viewmodel;
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
-import com.google.firebase.firestore.DocumentSnapshot;
-import java.security.NoSuchAlgorithmException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
+import com.google.android.gms.tasks.Tasks;
+import java.util.Objects;
 import javax.inject.Inject;
-import architecture.data.local.entity.User;
-import architecture.data.model.genre.Genre;
+import architecture.data.repo.AuthenticationRepository;
 import architecture.data.repo.GenreRepository;
-import architecture.data.repo.KeyRepository;
-import architecture.data.repo.ProfileRepository;
-import architecture.domain.HashingHelper;
-import architecture.domain.ListProcessingHelper;
-import architecture.other.AppConstant;
-import architecture.other.TaskManager;
+import architecture.domain.AuthenticationHelper;
+import architecture.other.AppMessage;
+import architecture.other.ConnectionMonitor;
+import architecture.ui.state.VerificationCodeUiState;
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 @HiltViewModel
 public class LoginViewModel extends ViewModel {
-    private static final String USER_CLICK_BUTTON_ALLOW = "click_allow";
-    private static final String LOGIN_SCREEN_STOP = "screen_stop";
-    private static final String USERNAME = "username";
-    private static final String PASSWORD = "password";
+
     private final SavedStateHandle stateHandle;
-    private final KeyRepository keyRepo;
-    private final ProfileRepository profileRepo;
     private final GenreRepository genreRepo;
-    private final TaskManager taskManager;
+    private final AuthenticationRepository authRepo;
+    private VerificationCodeUiState sheetUiState;
+    private CompositeDisposable compositeDisposable;
+    private String gmail;
+    private final ConnectionMonitor connMonitor;
+    private boolean initialization = false;
 
-    String authLink = "";
-    private final MutableLiveData<Boolean> shouldHideAuthButton = new MutableLiveData<>(false);
-    private final MutableLiveData<Boolean> shouldShowAuthView = new MutableLiveData<>(false);
-    private final MutableLiveData<Boolean> userAuthenticated = new MutableLiveData<>(false);
-    private final MutableLiveData<Boolean> loginSuccess = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> firstTimeLogin = new MutableLiveData<>();
-    private final MutableLiveData<String> error = new MutableLiveData<>();
+    // state fields
+    private final MutableLiveData<Boolean> sendingState = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> focusCodeEditTextState = new MutableLiveData<>();
+    private final MutableLiveData<String> messageState = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> genreNavigationState = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> homeNavigatingState = new MutableLiveData<>();
+    public MutableLiveData<Boolean> getSendingState() { return sendingState; }
 
-    public MutableLiveData<Boolean> getShouldHideAuthButton() {
-        return shouldHideAuthButton;
-    }
+    /*********************************************************************GETTERS AND SETTERS*********************************************************************/
+    // getters
+    public MutableLiveData<Boolean> getFocusCodeEditTextState() { return focusCodeEditTextState; }
+    public MutableLiveData<String> getMessageState() { return messageState; }
+    public VerificationCodeUiState getSheetUiState() { return sheetUiState; }
+    public MutableLiveData<Boolean> getGenreNavigationState() { return genreNavigationState; }
+    public MutableLiveData<Boolean> getHomeNavigatingState() { return homeNavigatingState; }
 
-    public MutableLiveData<Boolean> getShouldShowAuthView() {
-        return shouldShowAuthView;
-    }
+    // setters
+    public void setSendingState(boolean state) { sendingState.setValue(state); }
 
-    public MutableLiveData<Boolean> getUserAuthenticated() {
-        return userAuthenticated;
-    }
-
-    public MutableLiveData<Boolean> getLoginSuccess() { return loginSuccess; }
-
-    public MutableLiveData<Boolean> isFirstTimeLogin() {
-        return firstTimeLogin;
-    }
-
-    public MutableLiveData<String> getError() {
-        return error;
-    }
-
-    public void notifyToHideOrShowAuthView(boolean visibility) {
-        shouldShowAuthView.setValue(visibility);
-        shouldHideAuthButton.setValue(visibility);
-    }
-
-    public String getAuthLink() {
-        return authLink;
-    }
-
-    public boolean authLinkAvailable() {
-        return !authLink.isEmpty();
-    }
-
+    /*********************************************************************CONSTRUCTOR*********************************************************************/
     @Inject
-    public LoginViewModel(SavedStateHandle stateHandle,
-                          KeyRepository keyRepo,
-                          ProfileRepository profileRepo,
-                          GenreRepository genreRepo,
-                          TaskManager taskManager) {
+    public LoginViewModel(SavedStateHandle stateHandle, GenreRepository genreRepo, AuthenticationRepository authRepo, ConnectionMonitor connMonitor) {
         this.stateHandle = stateHandle;
-        this.profileRepo = profileRepo;
-        this.keyRepo = keyRepo;
         this.genreRepo = genreRepo;
-        this.taskManager = taskManager;
+        this.authRepo = authRepo;
+        this.connMonitor = connMonitor;
     }
 
-    /** @noinspection ResultOfMethodCallIgnored*/
-    @SuppressLint("CheckResult")
-    public void checkUserActiveSession(String username, String password) {
-        String hashedPassword;
-        try {
-            hashedPassword = (new HashingHelper()).hash(password);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+    public void init() {
+        if(initialization) {
+           return;
         }
-        Log.d("Debug", "username : " + username + " password : " + hashedPassword);
-        profileRepo.getUser(username, hashedPassword).subscribe(user -> {
-            if(!user.username.isEmpty()) {
-                Log.d("Debug", "exits !");
-                long now = System.currentTimeMillis();
-                Log.d("Debug", "now : " + now + " expired : " + convertTime(user.expiredTime));
-                if(now <= 0) { // now >= convertTime(user.expiredTime)
-                    Log.d("Debug", "expired !");
-                    keyRepo.clearLoginInfoOnFailure();
-                    requestToken(username, password);
-                    return;
-                }
-                // thong bao cho user dung session cu vi chua het han
-                Log.d("Debug", "satisfied !");
-                keyRepo.saveAccountInfo(username);
-                profileRepo.cacheUsername(username);
-                loginSuccess.setValue(true);
-                return;
-            }
-            // request token de dang nhap
-            Log.d("Debug", "Login !");
-            requestToken(username, password);
-        }, throwable -> {Log.d("Debug", "loi : " + throwable.toString());});
+        sheetUiState = new VerificationCodeUiState();
+        compositeDisposable = new CompositeDisposable();
+        initialization = true;
     }
 
-    private long convertTime(String time) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.US);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date date = null;
-        try {
-            date = dateFormat.parse(time);
-            if (date != null) {
-                return date.getTime();
-            }
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        return -1;
-    }
-
-    /** @noinspection ResultOfMethodCallIgnored*/
-    @SuppressLint("CheckResult")
-    public void requestToken(String username, String password) {
-        if(!taskManager.getConnectionMonitor().hasInternetConnection()) {
-            error.setValue("No internet connection!");
+    /*********************************************************************BUSINESSES*********************************************************************/
+    public void signInWithEmailAndPassword(String gmail, String password) {
+        if(!AuthenticationHelper.checkEmailFormat(gmail)) {
+            messageState.setValue(AppMessage.EMAIL_FORMAT_INVALID);
             return;
         }
-        shouldHideAuthButton.setValue(true);
-        saveUsername(username);
-        savePassword(password);
-        keyRepo.requestToken().subscribe(token -> {
-            authLink = AppConstant.TMDB_AUTHENTICATE_URL + token;
-            shouldShowAuthView.setValue(true);
-        }, throwable -> {
-            Log.d("Debug", throwable.fillInStackTrace().toString());
+        if(!AuthenticationHelper.checkPasswordFormat(password)) {
+            messageState.setValue(AppMessage.PASSWORD_FORMAT_INVALID);
+            return;
+        }
+        if(!connMonitor.hasInternetConnection()) {
+            messageState.setValue(AppMessage.NOT_CONNECTION);
+            return;
+        }
+        authRepo.signInUserWithGmailAndPassword(gmail, password).addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                authRepo.updateUser();
+                checkUserPeekGenres();
+                return;
+            }
+            messageState.setValue(Objects.requireNonNull(task.getException()).getMessage());
         });
     }
 
-    public void notifyUserClickButton() {
-        stateHandle.set(USER_CLICK_BUTTON_ALLOW, true);
-    }
-
-    public void notifyScreenStop() {
-        stateHandle.set(LOGIN_SCREEN_STOP, true);
-    }
-
-    public void saveUsername(String username) {
-        stateHandle.set(USERNAME, username);
-    }
-
-    public void savePassword(String password) {
-        stateHandle.set(PASSWORD, password);
-    }
-
-    public void checkUserGoForGrantingPermission() {
-        boolean existed = stateHandle.contains(USER_CLICK_BUTTON_ALLOW) && stateHandle.contains(LOGIN_SCREEN_STOP);
-        boolean finished = Boolean.TRUE.equals(stateHandle.get(USER_CLICK_BUTTON_ALLOW))
-                && Boolean.TRUE.equals(stateHandle.get(LOGIN_SCREEN_STOP));
-        if(existed && finished) {
-            userAuthenticated.setValue(true);
-        }
-    }
-
-    /** @noinspection ResultOfMethodCallIgnored */
+    /** @noinspection ResultOfMethodCallIgnored*/
     @SuppressLint("CheckResult")
-    public void checkLoginFirstTime() {
-        genreRepo.requestUserGenres(profileRepo.getUsername())
-                .subscribe(documentSnapshotTask -> {
-                    documentSnapshotTask.addOnCompleteListener(task -> {
-                        if(task.isSuccessful()) {
-                            DocumentSnapshot documentSnapshot = task.getResult();
-                            if(documentSnapshot.exists()) {
-                                ListProcessingHelper helper = new ListProcessingHelper();
-                                List<Genre> userGenres = helper.transformRawListToGenresList(documentSnapshot, genreRepo.getAppGenres());
-                                genreRepo.cacheUserGenres(userGenres);
-                                firstTimeLogin.setValue(userGenres.isEmpty());
-                                return;
-                            }
-                            firstTimeLogin.setValue(true);
-                        }
-                        // handle loi.
-                    });
+    public void signInWithGoogle(Context activityContext) {
+        if(!connMonitor.hasInternetConnection()) {
+            messageState.setValue(AppMessage.NOT_CONNECTION);
+            return;
+        }
+        authRepo.loginWithGoogle(activityContext).doOnSubscribe(compositeDisposable::add)
+        .subscribe(success -> {
+            if(success) {
+                checkUserPeekGenres();
+            }
+            compositeDisposable.dispose();
+        }, throwable -> {
+            messageState.setValue(throwable.getMessage());
+            compositeDisposable.dispose();
+        });
+    }
+
+    public void getResultFromFacebookTokenRequest(int requestCode, int resultCode, @Nullable Intent data) {
+        authRepo.getResultFromFacebookTokenRequest(requestCode, resultCode, data);
+    }
+
+    /** @noinspection ResultOfMethodCallIgnored*/
+    @SuppressLint("CheckResult")
+    public void signInWithFacebook(Fragment fragment) {
+        if(!connMonitor.hasInternetConnection()) {
+            messageState.setValue(AppMessage.NOT_CONNECTION);
+            return;
+        }
+        authRepo.getFacebookLoginState(fragment).doOnSubscribe(compositeDisposable::add)
+                .subscribe(result -> {
+                    compositeDisposable.dispose();
+                    if(result.equals(AppMessage.SIGN_IN_FB_RESULT_SUCCESS)) {
+                        checkUserPeekGenres();
+                        return;
+                    }
+                    messageState.setValue(result);
+                }, throwable -> {
+                    messageState.setValue(throwable.getMessage());
+                    compositeDisposable.dispose();
                 });
     }
 
-    private void saveAccountInfoIfSuccess(String username, String password, String expiredTime) {
-        try {
-            String hashedPassword = (new HashingHelper()).hash(password);
-            profileRepo.insertUser(new User(username, hashedPassword, expiredTime));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+    /** @noinspection ResultOfMethodCallIgnored*/
+    @SuppressLint("CheckResult")
+    public void sendCodeForUpdatingPassword(String gmail) {
+        if(!connMonitor.hasInternetConnection()) {
+            messageState.setValue(AppMessage.NOT_CONNECTION);
+            return;
         }
+        if(!AuthenticationHelper.checkEmailFormat(gmail)) {
+            messageState.setValue(AppMessage.EMAIL_FORMAT_INVALID);
+            return;
+        }
+        if(sheetUiState.isCountingDown) {
+            messageState.setValue(AppMessage.REQUEST_CODE_TIME_NOT_OVER);
+            sheetUiState.setSheetState(true);
+            sheetUiState.setLoadingState(false);
+            return;
+        }
+        sendingState.setValue(true);
+        this.gmail = gmail;
+        authRepo.sendVerificationCodeToEmail(gmail)
+                .doOnSubscribe(disposable -> compositeDisposable.add(disposable))
+                .subscribe(sent -> {
+                    sheetUiState.setLoadingState(false);
+                    sheetUiState.setSheetState(true);
+                    sheetUiState.setEmailState(gmail);
+                    sheetUiState.countDown();
+                }, throwable -> messageState.setValue(throwable.getMessage()));
+    }
+
+    public void sendUserResetPassGmail() {
+        if(!connMonitor.hasInternetConnection()) {
+            messageState.setValue(AppMessage.NOT_CONNECTION);
+            return;
+        }
+        sheetUiState.setLoadingState(true);
+        authRepo.sendUserResetPasswordEmail(gmail).addOnCompleteListener(task -> {
+            sheetUiState.setLoadingState(false);
+            if(task.isSuccessful()) {
+                messageState.setValue(AppMessage.RESET_PASS_EMAIL);
+                return;
+            }
+            Exception exception = task.getException();
+            if(exception != null) {
+                messageState.setValue(exception.getMessage());
+            }
+        });
+    }
+
+    public void verifyCode(String code) {
+        if(authRepo.checkCode(code)) {
+            sheetUiState.isCountingDown = false;
+            sendUserResetPassGmail();
+            return;
+        }
+        sheetUiState.clearCode();
+        messageState.setValue(AppMessage.CODE_IS_NOT_VALID);
+        focusCodeEditTextState.setValue(true);
+    }
+
+    public void sendCodeAgain() {
+        if(!connMonitor.hasInternetConnection()) {
+            messageState.setValue(AppMessage.NOT_CONNECTION);
+            return;
+        }
+        sheetUiState.setLoadingState(true);
+        sendCodeForUpdatingPassword(this.gmail);
     }
 
     /** @noinspection ResultOfMethodCallIgnored*/
     @SuppressLint("CheckResult")
-    public void login() {
-        String username = stateHandle.get(USERNAME);
-        String password = stateHandle.get(PASSWORD);
-        keyRepo.requestSessionId(username, password).subscribe(expiredTime -> {
-            if(!expiredTime.isEmpty()) {
-                shouldShowAuthView.setValue(false);
-                keyRepo.saveAccountInfo(username);
-                profileRepo.cacheUsername(username);
-                saveAccountInfoIfSuccess(username, password, expiredTime);
-                loginSuccess.setValue(true);
-                return;
-            }
-            keyRepo.clearLoginInfoOnFailure();
-            authLink = "";
-            notifyToHideOrShowAuthView(false);
-            error.setValue("Username or password is incorrect! Or Time is out");
-            loginSuccess.setValue(false);
-        }, throwable -> {
-        });
+    private void checkUserPeekGenres() {
+        genreRepo.requestUserGenres(authRepo.getUserUid()).subscribe(documentSnapshotTask -> {
+            documentSnapshotTask.onSuccessTask(documentSnapshot -> {
+                if(documentSnapshot.exists()) {
+                    homeNavigatingState.setValue(true);
+                } else {
+                    genreNavigationState.setValue(true);
+                }
+                return Tasks.forResult(null);
+            });
+        }, throwable -> messageState.setValue(throwable.getMessage()));
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        compositeDisposable.dispose();
     }
 }

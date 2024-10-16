@@ -24,14 +24,6 @@ public class KeyDataSource {
         converter = new JsonConverterHelper();
     }
 
-    public Single<String> requestToken() {
-        return tmdbServices.requestAccessToken()
-                .subscribeOn(Schedulers.single())
-                .flatMap(jsonObject -> Single.just(jsonObject.get("request_token").getAsString())
-                        .doOnSuccess(token -> dataStore.saveKey(AppConstant.ACCESS_TOKEN, token))
-                ).observeOn(AndroidSchedulers.mainThread());
-    }
-
     public void saveAccountInfo(String username) {
         dataStore.saveKey(AppConstant.USERNAME, username);
     }

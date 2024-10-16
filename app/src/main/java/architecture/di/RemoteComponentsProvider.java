@@ -1,9 +1,13 @@
 package architecture.di;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import javax.inject.Singleton;
 import architecture.data.network.api.TmdbServices;
 import architecture.data.network.api.HeaderInterceptor;
+import architecture.data.source.other.FacebookAuthCallback;
+import architecture.data.source.other.FacebookAuthCallbackImpl;
 import architecture.other.AppConstant;
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
@@ -15,7 +19,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
 @InstallIn(SingletonComponent.class)
-public class RemoteComponentsProvider {
+public abstract class RemoteComponentsProvider {
+
+    @Binds
+    public abstract FacebookAuthCallback bindFacebookAuthCallback(FacebookAuthCallbackImpl impl);
 
     @Provides
     @Singleton
@@ -32,5 +39,11 @@ public class RemoteComponentsProvider {
     @Singleton
     public static FirebaseFirestore provideCloudFirestore() {
         return FirebaseFirestore.getInstance();
+    }
+
+    @Provides
+    @Singleton
+    public static FirebaseAuth provideFirebaseAuthInstance() {
+        return FirebaseAuth.getInstance();
     }
 }

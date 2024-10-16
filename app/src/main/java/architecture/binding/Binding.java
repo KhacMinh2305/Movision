@@ -1,26 +1,21 @@
 package architecture.binding;
-
+import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.databinding.BindingAdapter;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.movision.R;
 import com.google.android.material.imageview.ShapeableImageView;
-
-import java.util.Arrays;
-import java.util.List;
-
-import architecture.data.model.genre.Genre;
 import architecture.other.AppConstant;
-import architecture.ui.view.adapter.GenreInsideMovieAdapter;
-import architecture.ui.view.other.RecyclerViewItemDecoration;
 
 public class Binding {
+
+    @SuppressLint("SetTextI18n")
+    @BindingAdapter("time")
+    public static void bindExpiredTime(TextView textView, Integer time) {
+        textView.setText("Retry requesting code after " + time + " seconds");
+    }
 
     @BindingAdapter("defaultDrawable")
     public static void bindImage(ImageView view, Drawable drawable) {
@@ -73,13 +68,11 @@ public class Binding {
         }
     }
 
-    @BindingAdapter("genres")
-    public static void bindMovieGenres(RecyclerView recyclerView, String genres) {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(recyclerView.getContext(),
-                LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.addItemDecoration(new RecyclerViewItemDecoration(8));
-        recyclerView.setLayoutManager(layoutManager);
-        String[] genreNames = genres.split(",");
-        recyclerView.setAdapter(new GenreInsideMovieAdapter(recyclerView.getContext(), Arrays.asList(genreNames)));
+    //peopleName
+    @BindingAdapter("peopleName")
+    public static void bindPeopleName(TextView textView, String peopleName) {
+        if(!peopleName.isEmpty()) {
+            textView.setText(peopleName);
+        }
     }
 }

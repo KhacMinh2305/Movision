@@ -6,32 +6,39 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import architecture.data.model.genre.Genre;
+import architecture.data.repo.AuthenticationRepository;
 import architecture.data.repo.GenreRepository;
-import architecture.data.repo.ProfileRepository;
+import architecture.other.AppMessage;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
 public class GenresViewModel extends ViewModel {
-    private final ProfileRepository profileRepo;
+    private final AuthenticationRepository authRepo;
     private final GenreRepository genreRepo;
     private final List<Genre> userMovieGenres = new ArrayList<>();
     private final MutableLiveData<List<Genre>> appGenres = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<Boolean> finished = new MutableLiveData<>();
+    private boolean loadedInitially = false;
 
     public MutableLiveData<List<Genre>> getAppGenres() { return appGenres; }
     public MutableLiveData<String> getError() {
         return error;
     }
-    public MutableLiveData<Boolean> isFinished() {
-        return finished;
-    }
+    public MutableLiveData<Boolean> isFinished() { return finished; }
 
     @Inject
-    public GenresViewModel(ProfileRepository profileRepo, GenreRepository genreRepo) {
-        this.profileRepo = profileRepo;
+    public GenresViewModel(AuthenticationRepository authRepo, GenreRepository genreRepo) {
+        this.authRepo = authRepo;
         this.genreRepo = genreRepo;
+    }
+
+    public void loadInitially() {
+        if(loadedInitially) {
+            return;
+        }
         requestMovieGenres();
+        loadedInitially = true;
     }
 
     /** @noinspection ResultOfMethodCallIgnored*/
@@ -52,15 +59,15 @@ public class GenresViewModel extends ViewModel {
     @SuppressLint("CheckResult")
     public void saveUserGenres() {
         if(userMovieGenres.size() < 3) {
-            error.setValue("You must chose at least 3 genres to continue !");
+            error.setValue(AppMessage.GENRES_NOT_ENOUGH);
             return;
         }
-        genreRepo.pushUserGenresToDB(profileRepo.getUsername(), userMovieGenres).subscribe(task -> {
+        genreRepo.pushUserGenresToDB(authRepo.getUserUid(), userMovieGenres).subscribe(task -> {
             task.addOnSuccessListener(runnable -> {
                 finished.setValue(true);
                 genreRepo.cacheUserGenres(userMovieGenres);
-            }).addOnFailureListener(runnable -> {
-                error.setValue("Something went wrong !");
+            }).addOnFailureListener(e -> {
+                error.setValue(e.getMessage());
             });
         });
     }

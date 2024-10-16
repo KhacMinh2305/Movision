@@ -1,13 +1,10 @@
 package architecture.data.repo;
-import androidx.lifecycle.ViewModelKt;
 import androidx.paging.Pager;
-import androidx.paging.rxjava3.PagingRx;
-
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import architecture.data.local.entity.Movie;
 import architecture.data.source.MovieDataSource;
 import io.reactivex.rxjava3.core.Single;
@@ -27,5 +24,9 @@ public class MovieRepository {
 
     public Pager<Integer, Movie> getMoviePager(String tag, int pageSize) {
         return dataSource.getMoviePager(tag, pageSize);
+    }
+
+    public Single<List<Movie>> discoverMovie(Map<String, Object> filters) {
+        return dataSource.discoverMovie(filters);
     }
 }

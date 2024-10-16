@@ -11,18 +11,16 @@ import java.util.List;
 
 public class GenreInsideMovieAdapter extends RecyclerView.Adapter<GenreInsideMovieAdapter.InsideGenreViewHolder> {
 
-    private final Context context;
     private final List<String> genres;
 
-    public GenreInsideMovieAdapter(Context context, List<String> genres) {
-        this.context = context;
+    public GenreInsideMovieAdapter(List<String> genres) {
         this.genres = genres;
     }
 
     @NonNull
     @Override
     public InsideGenreViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        GenreInsideMovieItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(context),
+        GenreInsideMovieItemBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()),
                 R.layout.genre_inside_movie_item, parent, false);
         return new InsideGenreViewHolder(binding);
     }

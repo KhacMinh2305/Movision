@@ -113,7 +113,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/peopleShapeableImageView"
             app:layout_constraintTop_toBottomOf="@+id/ratingTextView"
-            app:genres="@{movie.genres}"
             android:orientation="horizontal"
             tools:listitem="@layout/genre_inside_movie_item"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>

@@ -52,6 +52,7 @@ public class SliderItemFragment extends Fragment {
     }
 
     private FragmentSliderItemBinding binding;
+    private String imageUrl;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,8 @@ public class SliderItemFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        assert getArguments() != null;
+        imageUrl = getArguments().getString("image_url");
     }
 
     @Override
@@ -67,8 +70,7 @@ public class SliderItemFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentSliderItemBinding.inflate(inflater, container, false);
-        assert getArguments() != null;
-        String imageUrl = getArguments().getString("image_url");
+        binding.setLifecycleOwner(getViewLifecycleOwner());
         loadImage(imageUrl);
         return binding.getRoot();
     }

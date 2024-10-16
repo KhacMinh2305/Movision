@@ -17,8 +17,8 @@ public class GenreRepository {
         this.dataSource = dataSource;
     }
 
-    public Single<Task<DocumentSnapshot>> requestUserGenres(String username) {
-        return dataSource.requestUserGenres(username);
+    public Single<Task<DocumentSnapshot>> requestUserGenres(String userId) {
+        return dataSource.requestUserGenres(userId);
     }
 
     public Single<List<Genre>> requestMovieGenres() {
@@ -29,16 +29,14 @@ public class GenreRepository {
         dataSource.cacheUserGenres(userGenres);
     }
 
-    public List<Genre> getAppGenres() {
-        return dataSource.getAppGenres();
-    }
+    public List<Genre> getAppGenres() { return dataSource.getAppGenres(); }
     public List<Genre> getUserGenres() { return dataSource.getUserGenres(); }
 
-    public Single<Task<Void>> pushUserGenresToDB(String username, List<Genre> userGenres) {
-        return dataSource.pushUserGenresToDB(username, userGenres);
+    public Single<Task<Void>> pushUserGenresToDB(String userId, List<Genre> userGenres) {
+        return dataSource.pushUserGenresToDB(userId, userGenres);
     }
 
-    public Task<Void> updateUserGenres(String username, List<Genre> genres) {
-        return dataSource.updateUserGenres(username, genres);
+    public Task<Void> updateUserGenres(String userId, List<Genre> genres) {
+        return dataSource.updateUserGenres(userId, genres);
     }
 }

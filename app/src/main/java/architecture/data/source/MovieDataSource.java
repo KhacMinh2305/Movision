@@ -1,4 +1,6 @@
 package architecture.data.source;
+import android.util.Log;
+
 import androidx.paging.Pager;
 import androidx.paging.PagingConfig;
 
@@ -128,11 +130,12 @@ public class MovieDataSource {
     }
 
     // --------------------------------------load movie with genre--------------------------------------
-    public Single<List<Movie>> loadMoviesByGenre(Map<String, Object> filters) {
+    public Single<List<Movie>> discoverMovie(Map<String, Object> filters) {
         return movieService.loadMovieByGenre(filters)
                 .subscribeOn(Schedulers.single())
                 .map(apiMovie -> handleData(apiMovie.getResults(),
-                        apiMovie.getTotalPages(), AppConstant.CATEGORY_UNDEFINED_TAG));
+                        apiMovie.getTotalPages(), AppConstant.CATEGORY_UNDEFINED_TAG))
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     // --------------------------------------load movie with genre--------------------------------------

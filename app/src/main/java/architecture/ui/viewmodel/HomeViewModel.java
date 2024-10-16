@@ -1,16 +1,21 @@
 package architecture.ui.viewmodel;
 import android.annotation.SuppressLint;
+import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import architecture.data.local.entity.Movie;
+import architecture.data.local.entity.People;
 import architecture.data.model.genre.Genre;
+import architecture.data.repo.AuthenticationRepository;
 import architecture.data.repo.GenreRepository;
 import architecture.data.repo.MovieRepository;
-import architecture.data.repo.ProfileRepository;
+import architecture.data.repo.PeopleRepository;
 import architecture.other.AppConstant;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -24,9 +29,10 @@ public class HomeViewModel extends ViewModel {
     //-------------------------------------------------------FIELDS-------------------------------------------------------
     // Repo, Injected Items and so on..
     private final SavedStateHandle stateHandle;
-    private final ProfileRepository profileRepo;
+    private final AuthenticationRepository authRepo;
     private final MovieRepository movieRepo;
     private final GenreRepository genreRepo;
+    private final PeopleRepository peopleRepo;
     private boolean loadingSignal = false;
 
     // genres
@@ -43,6 +49,13 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<List<Movie>> previewPopularMovies = new MutableLiveData<>();
     private final MutableLiveData<List<Movie>> previewPlayingMovies = new MutableLiveData<>();
 
+    // People
+    private final MutableLiveData<List<People>> previewPopularPeople = new MutableLiveData<>();
+    private final MutableLiveData<List<People>> previewTrendingPeople = new MutableLiveData<>();
+
+    // Personal fields
+    private final MutableLiveData<Genre> personalGenre = new MutableLiveData<>();
+    private final MutableLiveData<List<Movie>> personalMovies = new MutableLiveData<>();
 
     //-------------------------------------------------------GETTERS-------------------------------------------------------
     // Genres
@@ -63,7 +76,12 @@ public class HomeViewModel extends ViewModel {
     public MutableLiveData<List<Movie>> getPreviewTopRatedMovies() { return previewTopRatedMovies; }
     public MutableLiveData<List<Movie>> getPreviewTrendingMovies() { return previewTrendingMovies; }
 
+    // People
+    public MutableLiveData<List<People>> getPreviewPopularPeople() { return previewPopularPeople; }
 
+    // Personal
+    public MutableLiveData<Genre> getPersonalGenre() { return personalGenre; }
+    public MutableLiveData<List<Movie>> getPersonalMovies() { return personalMovies; }
 
     //-------------------------------------------------------SETTERS-------------------------------------------------------
     public void resetLoading() {
@@ -73,22 +91,25 @@ public class HomeViewModel extends ViewModel {
 
     //-------------------------------------------------------CONSTRUCTORS + INITIALIZATION-------------------------------------------------------
     @Inject
-    public HomeViewModel(SavedStateHandle stateHandle, ProfileRepository profileRepo,
-                         MovieRepository movieRepo, GenreRepository genreRepo) {
+    public HomeViewModel(SavedStateHandle stateHandle, AuthenticationRepository authRepo,
+                         MovieRepository movieRepo, GenreRepository genreRepo, PeopleRepository peopleRepo) {
         this.stateHandle = stateHandle;
-        this.profileRepo = profileRepo;
+        this.authRepo = authRepo;
         this.movieRepo = movieRepo;
         this.genreRepo = genreRepo;
+        this.peopleRepo = peopleRepo;
     }
 
     public void loadInit() {
         if(!loadingSignal) {
-            loadUpComingMovie();
+            loadUpComingMovie(); // test
             loadUserGenres();
             loadTrendingMovies();
             loadTopRatedMovies();
             loadPopularMovies();
             loadPlayingMovies();
+            loadTrendingPeople();
+            //getRandomUserGenres(); (test)
             loadingSignal = true;
         }
     }
@@ -109,7 +130,7 @@ public class HomeViewModel extends ViewModel {
                         }
                     }
                     return userGenres;
-                }).subscribeOn(Schedulers.single())
+                }).subscribeOn(Schedulers.computation())
                 .map(genres -> (List<Genre>) new ArrayList<>(genres))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(genres -> {
@@ -127,7 +148,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void updateUserGenres() {
-        genreRepo.updateUserGenres(profileRepo.getUsername(), userPeekGenres).addOnSuccessListener(runnable -> {
+        genreRepo.updateUserGenres(authRepo.getUserUid(), userPeekGenres).addOnSuccessListener(runnable -> {
             genreRepo.cacheUserGenres(userPeekGenres);
             listUserGenres.setValue(genreRepo.getUserGenres());
         }).addOnFailureListener(runnable -> {
@@ -147,7 +168,7 @@ public class HomeViewModel extends ViewModel {
         updateTempGenresLists();
     }
 
-    // ------------------Preview Data For RecyclerViews------------------
+    // ------------------Preview Movies For RecyclerViews------------------
     @SuppressLint("CheckResult")
     private void loadUpComingMovie() {
         List<String> imageUrls = new ArrayList<>();
@@ -162,32 +183,58 @@ public class HomeViewModel extends ViewModel {
     /** @noinspection ResultOfMethodCallIgnored*/
     @SuppressLint("CheckResult")
     private void loadTrendingMovies() {
-        movieRepo.getPreviewMoviesByCategory(AppConstant.CATEGORY_TRENDING_TITLE).subscribe((movies, throwable) -> {
-            previewTrendingMovies.setValue(movies);
-        });
+        movieRepo.getPreviewMoviesByCategory(AppConstant.CATEGORY_TRENDING_TITLE)
+                .subscribe((movies, throwable) -> previewTrendingMovies.setValue(movies));
     }
 
     /** @noinspection ResultOfMethodCallIgnored*/
     @SuppressLint("CheckResult")
     private void loadTopRatedMovies() {
-        movieRepo.getPreviewMoviesByCategory(AppConstant.CATEGORY_TOP_RATED_TITLE).subscribe((movies, throwable) -> {
-            previewTopRatedMovies.setValue(movies);
-        });
+        movieRepo.getPreviewMoviesByCategory(AppConstant.CATEGORY_TOP_RATED_TITLE)
+                .subscribe((movies, throwable) -> previewTopRatedMovies.setValue(movies));
     }
 
     /** @noinspection ResultOfMethodCallIgnored*/
     @SuppressLint("CheckResult")
     private void loadPopularMovies() {
-        movieRepo.getPreviewMoviesByCategory(AppConstant.CATEGORY_POPULAR_TITLE).subscribe((movies, throwable) -> {
-            previewPopularMovies.setValue(movies);
-        });
+        movieRepo.getPreviewMoviesByCategory(AppConstant.CATEGORY_POPULAR_TITLE).subscribe((movies, throwable)
+                -> previewPopularMovies.setValue(movies));
     }
 
     /** @noinspection ResultOfMethodCallIgnored*/
     @SuppressLint("CheckResult")
     private void loadPlayingMovies() {
-        movieRepo.getPreviewMoviesByCategory(AppConstant.CATEGORY_PLAYING_TITLE).subscribe((movies, throwable) -> {
-            previewPlayingMovies.setValue(movies);
+        movieRepo.getPreviewMoviesByCategory(AppConstant.CATEGORY_PLAYING_TITLE).subscribe((movies, throwable)
+                -> previewPlayingMovies.setValue(movies));
+    }
+
+    // ------------------Preview People For RecyclerViews------------------
+    /** @noinspection ResultOfMethodCallIgnored*/
+    @SuppressLint("CheckResult")
+    private void loadTrendingPeople() {
+        peopleRepo.loadListPopularPeople()
+                .subscribe((people, throwable) -> previewPopularPeople.setValue(people));
+    }
+
+    /** @noinspection ResultOfMethodCallIgnored*/
+    @SuppressLint("CheckResult")
+    private void getRandomUserGenres() {
+        Single.fromCallable(() -> {
+            int randomGenre = (int) (Math.random() * genreRepo.getUserGenres().size());
+            return genreRepo.getUserGenres().get(randomGenre);
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(genre -> {
+            personalGenre.setValue(genre);
+            loadListMovieForRandomGenre(String.valueOf(genre.getId()));
         });
+    }
+
+    /** @noinspection ResultOfMethodCallIgnored*/
+    @SuppressLint("CheckResult")
+    private void loadListMovieForRandomGenre(String id) {
+        Map<String, Object> filters = new HashMap<>();
+        filters.put("with_genres", id);
+        filters.put("page", 1);
+        movieRepo.discoverMovie(filters).subscribe(personalMovies::setValue,
+                throwable -> {Log.d("ERROR", throwable.toString());});
     }
 }

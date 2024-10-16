@@ -86,8 +86,11 @@ public class ImageSlider extends FrameLayout implements DefaultLifecycleObserver
     /** @noinspection ResultOfMethodCallIgnored*/
     @SuppressLint("CheckResult")
     public void startSliding() {
+        if(count == 0) { // test
+            return;
+        }
         binding.viewPager.registerOnPageChangeCallback(pageChangedCallback);
-        binding.indicator.onSlide(0);
+        binding.indicator.onSlide(currentIndex);
         timer.subscribeOn(Schedulers.single())
                 .doOnSubscribe(subscription -> this.subscription = subscription)
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(aLong -> {
