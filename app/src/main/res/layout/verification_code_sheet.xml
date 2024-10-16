@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="state"
+            type="architecture.ui.state.VerificationCodeUiState" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/emailVerificationSheet"
+            style="@style/Widget.Material3.BottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/app_background"
+            android:elevation="10dp"
+            app:behavior_peekHeight="0dp"
+            app:behavior_hideable="true"
+            app:behavior_draggable="false"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <ImageButton
+                android:id="@+id/backImageButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@null"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_down"
+                android:scaleType="centerCrop"
+                android:padding="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/timeTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:text="@{String.valueOf(state.waitingTimeState)}"
+                android:gravity="center"
+                android:fontFamily="@font/albert_sans_black"
+                android:textColor="@color/widget"
+                android:textSize="50sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/backImageButton" />
+
+            <TextView
+                android:id="@+id/subContentTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:textSize="15sp"
+                android:alpha="0.7"
+                android:textColor="@color/white"
+                android:text="@string/email_verification"
+                android:gravity="center"
+                android:fontFamily="@font/albert_sans_regular"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/timeTextView" />
+
+            <TextView
+                android:id="@+id/sendCodeTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:fontFamily="@font/albert_sans_bold"
+                android:gravity="center"
+                android:text="@string/send_code"
+                android:textColor="@color/widget"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/subContentTextView" />
+
+
+            <EditText
+                android:id="@+id/firstCodeEditText"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/sign_up_edittext_background"
+                android:fontFamily="@font/albert_sans_bold"
+                android:gravity="center"
+                android:text="@{state.clearCodeState}"
+                android:importantForAutofill="no"
+                android:layout_marginTop="30dp"
+                android:inputType="number"
+                android:textColor="@color/widget"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@id/secondCodeEditText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sendCodeTextView" />
+
+            <EditText
+                android:id="@+id/secondCodeEditText"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:background="@drawable/sign_up_edittext_background"
+                android:fontFamily="@font/albert_sans_bold"
+                android:gravity="center"
+                android:importantForAutofill="no"
+                android:layout_marginTop="30dp"
+                android:inputType="number"
+                android:text="@{state.clearCodeState}"
+                android:textColor="@color/widget"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@id/thirdCodeEditText"
+                app:layout_constraintStart_toEndOf="@id/firstCodeEditText"
+                app:layout_constraintTop_toBottomOf="@+id/sendCodeTextView" />
+
+            <EditText
+                android:id="@+id/thirdCodeEditText"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:background="@drawable/sign_up_edittext_background"
+                android:fontFamily="@font/albert_sans_bold"
+                android:gravity="center"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:textColor="@color/widget"
+                android:layout_marginTop="30dp"
+                android:text="@{state.clearCodeState}"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@id/fourthCodeEditText"
+                app:layout_constraintStart_toEndOf="@id/secondCodeEditText"
+                app:layout_constraintTop_toBottomOf="@+id/sendCodeTextView" />
+
+            <EditText
+                android:id="@+id/fourthCodeEditText"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:background="@drawable/sign_up_edittext_background"
+                android:fontFamily="@font/albert_sans_bold"
+                android:gravity="center"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:text="@{state.clearCodeState}"
+                android:textColor="@color/widget"
+                android:layout_marginTop="30dp"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@id/fifthCodeEditText"
+                app:layout_constraintStart_toEndOf="@id/thirdCodeEditText"
+                app:layout_constraintTop_toBottomOf="@+id/sendCodeTextView" />
+
+            <EditText
+                android:id="@+id/fifthCodeEditText"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:background="@drawable/sign_up_edittext_background"
+                android:fontFamily="@font/albert_sans_bold"
+                android:gravity="center"
+                android:text="@{state.clearCodeState}"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:textColor="@color/widget"
+                android:layout_marginTop="30dp"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@id/sixthCodeEditText"
+                app:layout_constraintStart_toEndOf="@id/fourthCodeEditText"
+                app:layout_constraintTop_toBottomOf="@+id/sendCodeTextView" />
+
+            <EditText
+                android:id="@+id/sixthCodeEditText"
+                android:layout_width="58dp"
+                android:layout_height="58dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/sign_up_edittext_background"
+                android:fontFamily="@font/albert_sans_bold"
+                android:gravity="center"
+                android:importantForAutofill="no"
+                android:text="@{state.clearCodeState}"
+                android:inputType="number"
+                android:textColor="@color/widget"
+                android:layout_marginTop="30dp"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/fifthCodeEditText"
+                app:layout_constraintTop_toBottomOf="@+id/sendCodeTextView" />
+
+            <LinearLayout
+                android:id="@+id/mailContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fourthCodeEditText"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/mailImageView"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_mail"/>
+
+                <TextView
+                    android:id="@+id/mailTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:fontFamily="@font/albert_sans_bold"
+                    android:gravity="start|center_vertical"
+                    android:text="@{state.emailState}"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/loadingImageView"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:importantForAccessibility="no"
+                android:visibility="@{state.loadingState ? View.VISIBLE : View.GONE}"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                android:padding="10dp"
+                app:defaultDrawable="@{@drawable/ic_splash_loading}"
+                app:layout_constraintBottom_toTopOf="@+id/verifySignUpButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/mailContainer" />
+
+            <Button
+                android:id="@+id/verifySignUpButton"
+                style="@style/Custom.ButtonStyle"
+                android:backgroundTint="@color/widget"
+                android:layout_width="0dp"
+                android:layout_height="75dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:fontFamily="@font/albert_sans_black"
+                android:text="@string/verify"
+                android:textColor="@color/app_background"
+                android:layout_marginBottom="15dp"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
