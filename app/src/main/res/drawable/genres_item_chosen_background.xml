@@ -12,5 +12,7 @@
 
     <item android:drawable="@drawable/ic_add_genres"
         android:width="18dp" android:height="18dp"
+        android:top="5dp"
+        android:right="5dp"
         android:gravity="end|top"/>
 </layer-list>

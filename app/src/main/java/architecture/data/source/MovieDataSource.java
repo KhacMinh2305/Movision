@@ -1,13 +1,9 @@
 package architecture.data.source;
-import android.util.Log;
-
 import androidx.paging.Pager;
 import androidx.paging.PagingConfig;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import architecture.data.local.LocalDatabase;
@@ -138,7 +134,7 @@ public class MovieDataSource {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    // --------------------------------------load movie with genre--------------------------------------
+    // --------------------------------------Create Pager for PagingAdapter--------------------------------------
     public Pager<Integer, Movie> getMoviePager(String tag, int pageSize) {
         CategoryMovieRemoteMediator movieMediator =
                 new CategoryMovieRemoteMediator(db, movieService, movieDao, keyDao, genreSource.getAppGenres());

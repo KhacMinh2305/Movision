@@ -1,6 +1,4 @@
 package architecture.domain;
-import android.util.Log;
-
 import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +50,7 @@ public class ListProcessingHelper {
         return genreIdList;
     }
 
-    public Genre getGenreById(long id, List<Genre> appGenres) {
+    public static Genre getGenreById(long id, List<Genre> appGenres) {
         int left = 0, right = appGenres.size() - 1;
         Genre genre = null;
         while(left <= right) {

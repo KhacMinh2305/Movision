@@ -29,7 +29,6 @@ public class AppDataStore {
     @Inject
     public AppDataStore(@ApplicationContext Context context) {
         init(context);
-        initData();
     }
 
     private void init(Context context) {
@@ -94,10 +93,10 @@ public class AppDataStore {
         saveKey(AppConstant.PASSWORD, "");
     }
 
-    private void initData() {
-        saveKey(AppConstant.API_KEY, "7a054b91d8c6eed6c8692c2ecadd9fb9");
-        saveKey(AppConstant.READ_ACCESS_TOKEN, "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YTA1NGI5MWQ4YzZlZWQ2Yzg2OTJjMmVjYWRkOWZiOSIsIm5iZiI6MTcyODg0OTk1Ni4yNjIyNTQsInN1YiI6IjY2YjU4YjA0ZjEzZjA5M2FmNzkzYmMxYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Wic2zOf9zvtPPxoxLTuyVc25SORBFbz5FLkIbHgpQhM");
-    }
+    /*private void initData() {
+        saveKey(AppConstant.API_KEY, "");
+        saveKey(AppConstant.READ_ACCESS_TOKEN, "c25SORBFbz5FLkIbHgpQhM");
+    }*/
 }
 
 // xu ly bang cach luu lai thoi gian expired ma session cua user het han. Sau do

@@ -44,4 +44,10 @@
     <string name="sending">Sending...</string>
     <string name="reset_password">Reset password</string>
     <string name="confirm">Confirm</string>
+    <string name="change_password">Change password</string>
+    <string name="contact">Contact</string>
+    <string name="sign_out">Sign out</string>
+    <string name="delete_account">Delete this account</string>
+    <string name="pick_image">Pick an image in gallery</string>
+    <string name="take_photo">Take an photo</string>
 </resources>

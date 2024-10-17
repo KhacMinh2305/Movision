@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="25dp"/>
+            <solid android:color="@color/app_background"/>
+        </shape>
+    </item>
+
+    <item android:drawable="@drawable/ic_email"
+        android:width="23dp"
+        android:height="23dp"
+        android:gravity="start|center_vertical"
+        android:start="15dp"/>
+
+    <item android:drawable="@drawable/ic_edit"
+        android:width="20dp"
+        android:height="20dp"
+        android:gravity="end|center_vertical"
+        android:end="15dp"/>
+</layer-list>

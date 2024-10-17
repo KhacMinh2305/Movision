@@ -86,7 +86,7 @@ public class ImageSlider extends FrameLayout implements DefaultLifecycleObserver
     /** @noinspection ResultOfMethodCallIgnored*/
     @SuppressLint("CheckResult")
     public void startSliding() {
-        if(count == 0) { // test
+        if(count == 0) { // TODO: This work not correctly - Fix later !
             return;
         }
         binding.viewPager.registerOnPageChangeCallback(pageChangedCallback);

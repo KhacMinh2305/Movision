@@ -1,11 +1,7 @@
 package architecture.data.source;
-import androidx.lifecycle.ViewModelKt;
 import androidx.paging.Pager;
 import androidx.paging.PagingConfig;
-
 import java.util.List;
-import java.util.concurrent.Flow;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import architecture.data.local.LocalDatabase;
@@ -15,7 +11,6 @@ import architecture.data.network.api.TmdbServices;
 import architecture.data.source.other.PeoplePagingSource;
 import architecture.domain.PeopleConversionHelper;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 

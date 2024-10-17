@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private SharedViewModel viewModel;
     private NavController navController;
-    private boolean disableSplash = false;
+    private boolean disableSplash = false; // TODO: call this when either login fragment or home fragment is display.
 
     @Inject
     public ConnectionMonitor connMonitor;

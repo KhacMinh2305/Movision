@@ -206,19 +206,15 @@ public class LoginViewModel extends ViewModel {
         sendCodeForUpdatingPassword(this.gmail);
     }
 
-    /** @noinspection ResultOfMethodCallIgnored*/
     @SuppressLint("CheckResult")
     private void checkUserPeekGenres() {
-        genreRepo.requestUserGenres(authRepo.getUserUid()).subscribe(documentSnapshotTask -> {
-            documentSnapshotTask.onSuccessTask(documentSnapshot -> {
-                if(documentSnapshot.exists()) {
-                    homeNavigatingState.setValue(true);
-                } else {
-                    genreNavigationState.setValue(true);
-                }
-                return Tasks.forResult(null);
-            });
-        }, throwable -> messageState.setValue(throwable.getMessage()));
+        genreRepo.requestUserGenres(authRepo.getUserUid()).addOnSuccessListener(genres -> {
+            if(!genres.isEmpty()) {
+                homeNavigatingState.setValue(true);
+                return;
+            }
+            genreNavigationState.setValue(true);
+        }).addOnFailureListener(e -> messageState.setValue(e.getMessage()));
     }
 
     @Override

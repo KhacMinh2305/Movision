@@ -27,7 +27,6 @@ public class HeaderInterceptor implements Interceptor {
         Request request = chain.request();
         Request newRequest;
         String readAccessToken = dataStore.getKey(AppConstant.READ_ACCESS_TOKEN);
-        Log.d("READ_ACCESS_TOKEN", readAccessToken);
         String methodType = request.method();
         if(methodType.equals("GET")) {
             newRequest = request.newBuilder()

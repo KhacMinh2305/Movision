@@ -15,9 +15,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import com.bumptech.glide.Glide;
 import com.example.movision.R;
 import com.example.movision.databinding.FragmentHomeBinding;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.Objects;
 import architecture.other.AppConstant;
 import architecture.ui.view.adapter.HomeGenreAdapter;
@@ -198,49 +202,44 @@ public class HomeFragment extends Fragment {
         bindPreviewRecyclerMovie();
         bindPeople();
         bindPersonalMovie();
+        observeAvatarChange();
     }
 
     private void bindPreviewRecyclerMovie() {
-        viewModel.getPreviewTrendingMovies().observe(getViewLifecycleOwner(), movies -> {
-            Log.d("Debug", "Da nhan duoc du lieu : " + movies.size());
-            ((MovieAdapter) Objects.requireNonNull(binding.trendingPreview.recyclerView.getAdapter())).submitList(movies);
-        });
-        viewModel.getPreviewTopRatedMovies().observe(getViewLifecycleOwner(), movies -> {
-            ((MovieAdapter) Objects.requireNonNull(binding.topRatedPreview.recyclerView.getAdapter())).submitList(movies);
-        });
-        viewModel.getPreviewPopularMovies().observe(getViewLifecycleOwner(), movies -> {
-            ((MovieAdapter) Objects.requireNonNull(binding.popularPreview.recyclerView.getAdapter())).submitList(movies);
-        });
-        viewModel.getPreviewPlayingMovies().observe(getViewLifecycleOwner(), movies -> {
-            ((MovieAdapter) Objects.requireNonNull(binding.playingPreview.recyclerView.getAdapter())).submitList(movies);
-        });
+        viewModel.getPreviewTrendingMovies().observe(getViewLifecycleOwner(), movies ->
+                ((MovieAdapter) Objects.requireNonNull(binding.trendingPreview.recyclerView.getAdapter())).submitList(movies));
+        viewModel.getPreviewTopRatedMovies().observe(getViewLifecycleOwner(), movies ->
+                ((MovieAdapter) Objects.requireNonNull(binding.topRatedPreview.recyclerView.getAdapter())).submitList(movies));
+        viewModel.getPreviewPopularMovies().observe(getViewLifecycleOwner(), movies ->
+                ((MovieAdapter) Objects.requireNonNull(binding.popularPreview.recyclerView.getAdapter())).submitList(movies));
+        viewModel.getPreviewPlayingMovies().observe(getViewLifecycleOwner(), movies ->
+                ((MovieAdapter) Objects.requireNonNull(binding.playingPreview.recyclerView.getAdapter())).submitList(movies));
     }
 
     private void bindGenres() {
-        viewModel.getListUserGenres().observe(getViewLifecycleOwner(), genres -> {
-            ((HomeGenreAdapter) Objects.requireNonNull(binding.userGenresRecyclerView.getAdapter())).submitList(genres);
-        });
-        viewModel.getUserGenresTemp().observe(getViewLifecycleOwner(), genres -> {
-            ((HomeGenreAdapter) Objects.requireNonNull(binding.genresBottomSheet.peekGenresRecyclerView.getAdapter())).submitList(genres);
-        });
-        viewModel.getListGenresToPeek().observe(getViewLifecycleOwner(), genres -> {
-            ((HomeGenreAdapter) Objects.requireNonNull(binding.genresBottomSheet.genresStoreRecyclerView.getAdapter())).submitList(genres);
-        });
+        viewModel.getListUserGenres().observe(getViewLifecycleOwner(), genres ->
+                ((HomeGenreAdapter) Objects.requireNonNull(binding.userGenresRecyclerView.getAdapter())).submitList(genres));
+        viewModel.getUserGenresTemp().observe(getViewLifecycleOwner(), genres ->
+                ((HomeGenreAdapter) Objects.requireNonNull(binding.genresBottomSheet.peekGenresRecyclerView.getAdapter())).submitList(genres));
+        viewModel.getListGenresToPeek().observe(getViewLifecycleOwner(), genres ->
+                ((HomeGenreAdapter) Objects.requireNonNull(binding.genresBottomSheet.genresStoreRecyclerView.getAdapter())).submitList(genres));
     }
 
     private void bindPeople() {
-        viewModel.getPreviewPopularPeople().observe(getViewLifecycleOwner(), people -> {
-            ((PeopleAdapter) Objects.requireNonNull(binding.popularPeople.recyclerView.getAdapter())).submitList(people);
-        });
+        viewModel.getPreviewPopularPeople().observe(getViewLifecycleOwner(), people ->
+                ((PeopleAdapter) Objects.requireNonNull(binding.popularPeople.recyclerView.getAdapter())).submitList(people));
     }
 
     private void bindPersonalMovie() {
-        viewModel.getPersonalGenre().observe(getViewLifecycleOwner(), genre -> {
-            binding.randomGenres.titleTextView.setText(genre.getName());
-        });
-        viewModel.getPersonalMovies().observe(getViewLifecycleOwner(), movies -> {
-            ((MovieAdapter) Objects.requireNonNull(binding.randomGenres.recyclerView.getAdapter())).submitList(movies);
-        });
+        viewModel.getPersonalGenre().observe(getViewLifecycleOwner(), genre ->
+                binding.randomGenres.titleTextView.setText(genre.getName()));
+        viewModel.getPersonalMovies().observe(getViewLifecycleOwner(), movies ->
+                ((MovieAdapter) Objects.requireNonNull(binding.randomGenres.recyclerView.getAdapter())).submitList(movies));
+    }
+
+    private void observeAvatarChange() {
+        sharedViewModel.getImageDataState().observe(getViewLifecycleOwner(), bitmap ->
+                Glide.with(this).load(bitmap).into(binding.userShapeableImageView));
     }
 
     //--------------------------------------------------------BEHAVIOR--------------------------------------------------------
@@ -260,9 +259,7 @@ public class HomeFragment extends Fragment {
             genresSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             sharedViewModel.setBottomNavBarVisibility(true);
         });
-        binding.genresBottomSheet.confirmAddGenresButton.setOnClickListener(view -> {
-            viewModel.updateUserGenres();
-        });
+        binding.genresBottomSheet.confirmAddGenresButton.setOnClickListener(view -> viewModel.updateUserGenres());
     }
 
     private Bundle createBundle(String title, String tag) {
@@ -297,7 +294,7 @@ public class HomeFragment extends Fragment {
 
     //--------------------------------------------------------TEST--------------------------------------------------------
     private void test() {
-        binding.userImageButton.setOnClickListener(view ->
+        binding.userShapeableImageView.setOnClickListener(view ->
                 navController.navigate(R.id.action_homeFragment_to_profileFragment));
     }
 }

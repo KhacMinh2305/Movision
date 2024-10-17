@@ -17,7 +17,7 @@ public class GenreRepository {
         this.dataSource = dataSource;
     }
 
-    public Single<Task<DocumentSnapshot>> requestUserGenres(String userId) {
+    public Task<List<Genre>> requestUserGenres(String userId) {
         return dataSource.requestUserGenres(userId);
     }
 

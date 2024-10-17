@@ -2,6 +2,7 @@ package architecture.data.source;
 import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -16,6 +17,7 @@ import architecture.data.model.genre.Genre;
 import architecture.data.network.api.TmdbServices;
 import architecture.domain.ListProcessingHelper;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -25,7 +27,7 @@ public class MovieGenreSource {
     private final FirebaseFirestore cloud;
     private final TmdbServices tmdbService;
     private List<Genre> appGenres = new ArrayList<>();
-    private final List<Genre> userGenres = new ArrayList<>();
+    private List<Genre> userGenres = new ArrayList<>();
 
     public List<Genre> getAppGenres() { return appGenres; }
     public List<Genre> getUserGenres() {return userGenres;}
@@ -42,9 +44,13 @@ public class MovieGenreSource {
         this.tmdbService = tmdbService;
     }
 
-    public Single<Task<DocumentSnapshot>> requestUserGenres(String userId) {
-        return Single.just(cloud.collection("user_genres").document(userId).get())
-                .subscribeOn(Schedulers.single()).observeOn(AndroidSchedulers.mainThread());
+    /** @noinspection unchecked*/
+    public Task<List<Genre>> requestUserGenres(String userId) {
+        return cloud.collection("user_genres").document(userId)
+                .get().onSuccessTask(documentSnapshot -> {
+                    userGenres = (new ListProcessingHelper()).transformRawListToGenresList(documentSnapshot, appGenres);
+                    return Tasks.forResult(userGenres);
+                });
     }
 
     public Single<List<Genre>> requestMovieGenres() {
@@ -87,4 +93,3 @@ public class MovieGenreSource {
     }
 }
 
-// bugs :

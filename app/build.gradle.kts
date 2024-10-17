@@ -59,7 +59,6 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-
     // Hilt
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
@@ -95,8 +94,7 @@ dependencies {
     implementation ("com.uber.autodispose2:autodispose:2.2.1")
     implementation("com.uber.autodispose2:autodispose-lifecycle:2.2.1")
     implementation("com.uber.autodispose2:autodispose-androidx-lifecycle:2.2.1")
-
-    // ---------------------------Firebase---------------------------
+    // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
@@ -104,13 +102,14 @@ dependencies {
     implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     implementation("com.facebook.android:facebook-android-sdk:latest.release")
-
+    implementation("com.google.firebase:firebase-storage")
     // Java mail
     implementation("com.sun.mail:android-mail:1.6.6")
     implementation("com.sun.mail:android-activation:1.6.7")
-
     // Splash
     implementation("androidx.core:core-splashscreen:1.0.1")
+    // Crop Image
+    implementation("com.vanniktech:android-image-cropper:4.6.0")
 }
 
 kapt {

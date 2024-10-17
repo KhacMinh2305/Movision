@@ -2,9 +2,8 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <corners android:radius="@dimen/appConnerSize"/>
-            <stroke android:color="@color/widget"
-                android:width="2dp"/>
+            <corners android:topLeftRadius="30dp"
+                android:topRightRadius="30dp"/>
             <solid android:color="@color/content_container"/>
         </shape>
     </item>

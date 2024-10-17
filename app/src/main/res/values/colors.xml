@@ -12,6 +12,6 @@
     <color name="secondary_text">#99FFFFFF</color>"
     <color name="search_background">#CC151422</color>
     <color name="scrimColor">#E6151422</color>
-    <color name="unChoose">#D50606</color>
     <color name="back_button_color">#66262C4D</color>
+    <color name="delete_button_background_color">#D50606</color>
 </resources>

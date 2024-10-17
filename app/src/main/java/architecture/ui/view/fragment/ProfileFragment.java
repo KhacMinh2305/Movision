@@ -1,21 +1,27 @@
 package architecture.ui.view.fragment;
-
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
 import com.example.movision.R;
 import com.example.movision.databinding.FragmentProfileBinding;
-
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import architecture.ui.viewmodel.ProfileViewModel;
+import architecture.ui.viewmodel.SharedViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
 
 /**
@@ -59,8 +65,18 @@ public class ProfileFragment extends Fragment {
     }
 
     private FragmentProfileBinding binding;
+    private SharedViewModel sharedViewModel;
     private ProfileViewModel viewModel;
     private NavController navController;
+
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickImageLauncher =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                if(uri != null) {
+                    Log.d("Debug", "Da lay duoc hinh anh : " + uri);
+                    return;
+                }
+                Log.d("Debug", "Pick image failed !");
+            });
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,21 +100,30 @@ public class ProfileFragment extends Fragment {
         super.onStart();
         init();
         observeStates();
-        listenEvents();
+        setupEvents();
     }
 
     private void init() {
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         navController = Navigation.findNavController(requireActivity(), R.id.nav_host);
     }
 
     private void observeStates() {
+        sharedViewModel.setBottomNavBarVisibility(false);
         viewModel.getSignOutNavigationState().observe(getViewLifecycleOwner(),
                 navigate -> navController.navigate(R.id.logout));
+        sharedViewModel.getImageDataState().observe(getViewLifecycleOwner(),
+                bitmap -> Glide.with(this).load(bitmap).into(binding.userShapeableImageView));
     }
 
-    private void listenEvents() {
-        binding.backImageButton.setOnClickListener(v -> navController.navigateUp());
-        binding.signOutImageButton.setOnClickListener(v -> viewModel.signOut());
+    private void setupEvents() {
+        binding.backImageButton.setOnClickListener(v -> {
+            sharedViewModel.setBottomNavBarVisibility(true);
+            navController.navigateUp();
+        });
+        binding.signOutButton.setOnClickListener(v -> viewModel.signOut());
+        binding.peekAvatarImageButton.setOnClickListener(view ->
+                navController.navigate(R.id.action_profileFragment_to_changeAvatarFragment));
     }
 }
