@@ -49,6 +49,10 @@ public class AuthenticationDataSource {
     private final FacebookAuthCallback facebookAuthCallback;
     private String verificationCode = "";
 
+    public FirebaseUser getCurrentUser() {
+        return currentUser;
+    }
+
     public String getUserUid() {
         return (currentUser != null) ? currentUser.getUid() : null;
     }
@@ -163,9 +167,9 @@ public class AuthenticationDataSource {
         MimeMessage message = new MimeMessage(session);
         try {
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(userGmail));
-            message.setSubject(AppConstant.GMAIL_VERIFICATION_TITLE);
+            message.setSubject(AppMessage.GMAIL_VERIFICATION_TITLE);
             generateVerificationCode();
-            message.setText(AppConstant.GMAIL_VERIFICATION_CONTENT + verificationCode);
+            message.setText(AppMessage.GMAIL_VERIFICATION_CONTENT + verificationCode);
         } catch (MessagingException e) {
             return null;
         }

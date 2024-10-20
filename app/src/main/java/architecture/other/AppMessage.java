@@ -14,4 +14,6 @@ public class AppMessage {
     public static final String RESET_PASS_EMAIL = "An email was sent to your Gmail. Open and reset your password there.";
     public static final String GENRES_NOT_ENOUGH = "You must chose at least 3 genres to continue !";
     public static final String NOT_CONNECTION = "Connection is unavailable.";
+    public static final String GMAIL_VERIFICATION_TITLE = "Verify account for signing up";
+    public static final String GMAIL_VERIFICATION_CONTENT = "Here is your verification code : ";
 }

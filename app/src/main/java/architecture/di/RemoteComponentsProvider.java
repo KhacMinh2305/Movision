@@ -1,6 +1,8 @@
 package architecture.di;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+
 import javax.inject.Singleton;
 import architecture.data.network.api.TmdbServices;
 import architecture.data.network.api.HeaderInterceptor;
@@ -45,5 +47,11 @@ public abstract class RemoteComponentsProvider {
     @Singleton
     public static FirebaseAuth provideFirebaseAuthInstance() {
         return FirebaseAuth.getInstance();
+    }
+
+    @Provides
+    @Singleton
+    public static FirebaseStorage provideFirebaseStorageInstance() {
+        return FirebaseStorage.getInstance();
     }
 }

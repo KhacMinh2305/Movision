@@ -20,7 +20,10 @@ import android.view.ViewGroup;
 import com.example.movision.R;
 import com.example.movision.databinding.FragmentChangeAvatarBinding;
 import java.util.Objects;
+import javax.inject.Inject;
+import architecture.data.repo.MediaRepository;
 import architecture.domain.BitmapProcessor;
+import architecture.ui.viewmodel.ChangeAvatarViewModel;
 import architecture.ui.viewmodel.SharedViewModel;
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -69,15 +72,13 @@ public class ChangeAvatarFragment extends Fragment {
 
     private FragmentChangeAvatarBinding binding;
     private SharedViewModel sharedViewModel;
+    private ChangeAvatarViewModel viewModel;
     private NavController navController;
 
     private final ActivityResultLauncher<PickVisualMediaRequest> openGalleryLauncher =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
                 if(uri != null) {
                     binding.cropImageView.setImageUriAsync(uri);
-                    // TODO: compress the original bitmap into byte array format to push to Cloud Storage
-                    // TODO: ... (Write code here)
-                    Log.d("Debug", "Luu lai bitmap nay va nen no de push len cloud storage !");
                 }
             });
 
@@ -87,9 +88,6 @@ public class ChangeAvatarFragment extends Fragment {
                     assert result.getData() != null;
                     Bitmap bitmap = (Bitmap) Objects.requireNonNull(result.getData().getExtras()).get("data");
                     binding.cropImageView.setImageBitmap(bitmap);
-                    // TODO: compress the original bitmap into byte array format to push to Cloud Storage
-                    // TODO: ... (Write code here)
-                    Log.d("Debug", "Luu lai bitmap nay va nen no de push len cloud storage !");
                 }
             });
 
@@ -114,13 +112,23 @@ public class ChangeAvatarFragment extends Fragment {
     public void onStart() {
         super.onStart();
         init();
+        observeStates();
         setupEvents();
     }
 
     private void init() {
         sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        viewModel = new ViewModelProvider(this).get(ChangeAvatarViewModel.class);
         navController = Navigation.findNavController(requireActivity(), R.id.nav_host);
         binding.setLifecycleOwner(getViewLifecycleOwner());
+        binding.setViewmodel(viewModel);
+    }
+
+    private void observeStates() {
+        viewModel.getNavigateState().observe(getViewLifecycleOwner(), imageData -> {
+            sharedViewModel.setImageDataState(imageData);
+            navController.navigateUp();
+        });
     }
 
     private void setupEvents() {
@@ -135,14 +143,15 @@ public class ChangeAvatarFragment extends Fragment {
                 openCameraLauncher.launch(new Intent(MediaStore.ACTION_IMAGE_CAPTURE)));
 
         binding.confirmImageButton.setOnClickListener(view -> Single.fromCallable(() ->
-                binding.cropImageView.getCroppedImage(100, 150))
+                binding.cropImageView.getCroppedImage(100, 100))
                 .map(bitmap -> (new BitmapProcessor()).compressBitmap(bitmap)
                 ).to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(bytes -> {
-                    // TODO: notify SharedViewModel to provide new data to other fragments
-                    // TODO: ... (Write code here)
-                    sharedViewModel.setImageDataState(bytes);
-                    navController.navigateUp();
-                }, throwable -> Log.d("Debug", throwable.toString())));
+                .subscribe(bytes -> viewModel.changeUserAvatar(bytes),
+                        throwable -> Log.d("Debug", throwable.toString())));
     }
 }
+
+/*
+Image picking process has an bug : It does not work match with the navigation component
+It will navigate user to home screen (the dedault activity). Because of this , using
+BottomSheetLayout instead of an fragmen may solve the problem*/

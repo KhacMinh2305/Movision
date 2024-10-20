@@ -67,6 +67,6 @@ public class AppConstant {
     public static final String GMAIL_APP_SENDER = "doankhacminh2301@gmail.com";
     public static final String GMAIL_PASSWORD = "uldffaenyjtdjrji"; // add to DataStore
 
-    public static final String GMAIL_VERIFICATION_TITLE = "Verify account for signing up";
-    public static final String GMAIL_VERIFICATION_CONTENT = "Here is your verification code : ";
+    public static final int SUCCESS_CODE = 1;
+    public static final int FAILURE_CODE = 0;
 }

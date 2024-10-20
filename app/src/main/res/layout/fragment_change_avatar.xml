@@ -1,6 +1,13 @@
 <layout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewmodel"
+            type="architecture.ui.viewmodel.ChangeAvatarViewModel" />
+    </data>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -8,6 +15,17 @@
         android:padding="15dp"
         android:background="@color/app_background"
         tools:context="architecture.ui.view.fragment.ChangeAvatarFragment">
+
+        <ImageView
+            android:id="@+id/loadingImageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="50dp"
+            android:importantForAccessibility="no"
+            android:visibility="@{viewmodel.loadingState ? View.VISIBLE : View.GONE}"
+            app:defaultDrawable="@{@drawable/ic_splash_loading}"
+            android:scaleType="centerCrop" />
 
         <ImageButton
             android:id="@+id/backImageButton"
@@ -62,6 +80,7 @@
             android:importantForAccessibility="no"
             android:padding="11dp"
             android:layout_marginBottom="40dp"
+            android:visibility="@{viewmodel.loadingState ? View.GONE : View.VISIBLE}"
             android:layout_gravity="bottom|center_horizontal"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_confirm" />
