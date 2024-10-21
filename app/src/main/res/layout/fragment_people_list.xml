@@ -13,7 +13,7 @@
             android:id="@+id/backImageButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/genre_item_background"
+            android:background="@null"
             android:importantForAccessibility="no"
             android:src="@drawable/ic_back"
             android:scaleType="centerCrop"
@@ -47,7 +47,7 @@
             <CheckBox
                 android:id="@+id/maleCheckBox"
                 android:layout_width="45dp"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:button="@null"
                 android:padding="10dp"
                 android:drawableEnd="@drawable/people_male_check_box_button"/>
@@ -61,7 +61,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:text="@string/male"
                 android:gravity="center"
                 android:paddingStart="12dp"
@@ -82,7 +82,7 @@
             <CheckBox
                 android:id="@+id/femaleCheckBox"
                 android:layout_width="45dp"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:button="@null"
                 android:padding="10dp"
                 android:drawableEnd="@drawable/people_female_checkbox_button"/>
@@ -96,7 +96,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:text="@string/female"
                 android:gravity="center"
                 android:paddingStart="12dp"

@@ -1,10 +1,8 @@
 package architecture.data.network.api;
 import com.google.gson.JsonObject;
 
-import java.util.List;
 import java.util.Map;
 
-import architecture.data.local.entity.People;
 import architecture.data.model.genre.Genres;
 import architecture.data.model.movie.type.FavoriteMovie;
 import architecture.data.model.movie.type.MovieByGenre;
@@ -13,7 +11,7 @@ import architecture.data.model.movie.type.PopularApiMovie;
 import architecture.data.model.movie.type.TopRatedApiMovie;
 import architecture.data.model.movie.type.TrendingApiMovie;
 import architecture.data.model.movie.type.UpcomingApiMovie;
-import architecture.data.model.people.ApiPopularPeople;
+import architecture.data.model.people.ApiPeople;
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -76,5 +74,8 @@ public interface TmdbServices {
 
     // ------------------------------Preview people-------------------------------
     @GET("3/person/popular")
-    Single<ApiPopularPeople> loadPopularPeople(@Query("page") int page);
+    Single<ApiPeople> loadPopularPeople(@Query("page") int page);
+
+    @GET("3/trending/person/day")
+    Single<ApiPeople> loadTrendingPeople(@Query("page") int page);
 }

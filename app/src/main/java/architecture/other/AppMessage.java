@@ -16,4 +16,7 @@ public class AppMessage {
     public static final String NOT_CONNECTION = "Connection is unavailable.";
     public static final String GMAIL_VERIFICATION_TITLE = "Verify account for signing up";
     public static final String GMAIL_VERIFICATION_CONTENT = "Here is your verification code : ";
+    public static final String PASSWORD_CHANGE_SUCCESS = "Your password has been changed successfully.";
+    public static final String PASSWORD_CHANGE_FAILED = "Something went wrong. Please retry later.";
+    public static final String PASSWORD_EMPTY = "Password is empty !";
 }

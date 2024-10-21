@@ -5,6 +5,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import architecture.data.source.AuthenticationDataSource;
@@ -62,6 +65,10 @@ public class AuthenticationRepository {
 
     public Task<Void> sendUserResetPasswordEmail(String gmail) {
         return authSource.sendUserResetPasswordEmail(gmail);
+    }
+
+    public PublishSubject<Boolean> changePassword(String oldPassword, String newPassword) {
+        return authSource.changePassword(oldPassword, newPassword);
     }
 
     public void logout() {

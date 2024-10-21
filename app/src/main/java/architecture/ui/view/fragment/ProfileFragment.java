@@ -1,16 +1,10 @@
 package architecture.ui.view.fragment;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.PickVisualMediaRequest;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +14,8 @@ import com.bumptech.glide.Glide;
 import com.example.movision.R;
 import com.example.movision.databinding.FragmentProfileBinding;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.snackbar.Snackbar;
+
 import architecture.ui.viewmodel.ProfileViewModel;
 import architecture.ui.viewmodel.SharedViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -68,15 +64,7 @@ public class ProfileFragment extends Fragment {
     private SharedViewModel sharedViewModel;
     private ProfileViewModel viewModel;
     private NavController navController;
-
-    private final ActivityResultLauncher<PickVisualMediaRequest> pickImageLauncher =
-            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                if(uri != null) {
-                    Log.d("Debug", "Da lay duoc hinh anh : " + uri);
-                    return;
-                }
-                Log.d("Debug", "Pick image failed !");
-            });
+    private BottomSheetBehavior<LinearLayout> sheetBehavior;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,6 +80,8 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false);
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         return binding.getRoot();
     }
 
@@ -104,9 +94,11 @@ public class ProfileFragment extends Fragment {
     }
 
     private void init() {
-        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-        viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         navController = Navigation.findNavController(requireActivity(), R.id.nav_host);
+        viewModel.init();
+        binding.setViewmodel(viewModel);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+        sheetBehavior = BottomSheetBehavior.from(binding.bottomSheet.changePasswordSheet);
     }
 
     private void observeStates() {
@@ -115,6 +107,10 @@ public class ProfileFragment extends Fragment {
                 navigate -> navController.navigate(R.id.logout));
         sharedViewModel.getImageDataState().observe(getViewLifecycleOwner(),
                 bitmap -> Glide.with(this).load(bitmap).into(binding.userShapeableImageView));
+        viewModel.getSheetState().observe(getViewLifecycleOwner(), state ->
+                sheetBehavior.setState((state) ? BottomSheetBehavior.STATE_EXPANDED : BottomSheetBehavior.STATE_COLLAPSED));
+        viewModel.getMessageState().observe(getViewLifecycleOwner(), message ->
+                Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show());
     }
 
     private void setupEvents() {
@@ -125,5 +121,11 @@ public class ProfileFragment extends Fragment {
         binding.signOutButton.setOnClickListener(v -> viewModel.signOut());
         binding.peekAvatarImageButton.setOnClickListener(view ->
                 navController.navigate(R.id.action_profileFragment_to_changeAvatarFragment));
+        binding.changePasswordTextView.setOnClickListener(view -> viewModel.setSheetState(true));
+        binding.bottomSheet.confirmButton.setOnClickListener(view -> {
+            String oldPass = binding.bottomSheet.oldPasswordEditText.getText().toString();
+            String newPass = binding.bottomSheet.newPasswordEditText.getText().toString();
+            viewModel.changePassword(oldPass, newPass);
+        });
     }
 }

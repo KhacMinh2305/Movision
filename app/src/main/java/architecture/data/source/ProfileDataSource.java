@@ -1,10 +1,10 @@
 package architecture.data.source;
 import android.net.Uri;
-import android.util.Log;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
+import architecture.other.AppConstant;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 
 @Singleton
@@ -19,6 +19,26 @@ public class ProfileDataSource {
 
     public String getUserUid() {
         return authSource.getUserUid();
+    }
+
+    public String getUserAvatarUrl() {
+        Uri uri = authSource.getCurrentUser().getPhotoUrl();
+        return (uri != null) ? uri.toString() : null;
+    }
+
+    public Map<String, String> getUserData() {
+        if(authSource.getCurrentUser() == null) return null;
+        String name = authSource.getCurrentUser().getDisplayName();
+        String gmail = authSource.getCurrentUser().getEmail();
+        String phoneNumber = authSource.getCurrentUser().getPhoneNumber();
+        name = (name == null || name.isEmpty()) ? AppConstant.DEFAULT_USERNAME : name;
+        gmail = (gmail == null || gmail.isEmpty()) ? AppConstant.DEFAULT_GMAIL : gmail;
+        phoneNumber = (phoneNumber == null || phoneNumber.isEmpty()) ? AppConstant.DEFAULT_PHONE_NUMBER : phoneNumber;
+        return Map.of(
+                "name", name,
+                "gmail", gmail,
+                "phoneNumber", phoneNumber
+        );
     }
 
     public PublishSubject<Boolean> updateUserProfile(String name, String imageUrl) {
@@ -37,5 +57,4 @@ public class ProfileDataSource {
         });
         return resultPublisher;
     }
-
 }

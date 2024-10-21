@@ -11,11 +11,11 @@ import architecture.other.AppConstant;
 
 public class Binding {
 
-    @SuppressLint("SetTextI18n")
+    /*@SuppressLint("SetTextI18n")
     @BindingAdapter("time")
     public static void bindExpiredTime(TextView textView, Integer time) {
         textView.setText("Retry requesting code after " + time + " seconds");
-    }
+    }*/
 
     @BindingAdapter("defaultDrawable")
     public static void bindImage(ImageView view, Drawable drawable) {
@@ -24,9 +24,18 @@ public class Binding {
         }
     }
 
+    @BindingAdapter({"userAvatar", "defaultAvatar"})
+    public static void bindUserAvatar(ShapeableImageView imageView, String userAvatar, Drawable defaultAvatar) {
+        if (userAvatar!= null && !userAvatar.isEmpty()) {
+            Glide.with(imageView.getContext()).load(userAvatar).into(imageView);
+            return;
+        }
+        Glide.with(imageView.getContext()).load(defaultAvatar).into(imageView);
+    }
+
     @BindingAdapter("imageUrl")
     public static void bindMovieImageToItem(ShapeableImageView imageView, String imageUrl) {
-        if (!imageUrl.isEmpty()) {
+        if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(imageView.getContext()).load(AppConstant.TMDB_IMAGE_HOST + imageUrl).into(imageView);
             return;
         }

@@ -151,11 +151,6 @@ public class LoginFragment extends Fragment {
             sharedViewModel.setLoadingHomeDataState(true);
             navController.navigateUp();
         });
-        
-        /* Notify Home to load data
-        sharedViewModel.setLoadingHomeDataState(true);
-        navController.navigateUp();
-        * */
     }
 
     //--------------------------------------------------------BEHAVIORS--------------------------------------------------------
@@ -164,7 +159,11 @@ public class LoginFragment extends Fragment {
                 view -> viewModel.signInWithEmailAndPassword(binding.emailLoginEditText.getText().toString(),
                 binding.passwordLoginEditText.getText().toString()));
         binding.googleImageButton.setOnClickListener(view -> viewModel.signInWithGoogle(requireActivity()));
-        binding.facebookImageButton.setOnClickListener(view -> viewModel.signInWithFacebook(this));
+        //binding.facebookImageButton.setOnClickListener(view -> viewModel.signInWithFacebook(this)); (Do not remove this !!!)
+        binding.facebookImageButton.setOnClickListener(view ->
+                Snackbar.make(binding.getRoot(),
+                        "This feature has is not stable on this version. It will be brought back in the next updates.",
+                        Snackbar.LENGTH_SHORT).show());
         binding.signUpImageView.setOnClickListener(view -> navController.navigate(R.id.action_loginFragment_to_signUpFragment));
         binding.forgotPasswordTextView.setOnClickListener(view -> {
             viewModel.sendCodeForUpdatingPassword(binding.emailLoginEditText.getText().toString());

@@ -3,7 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-
+        <variable
+            name="viewmodel"
+            type="architecture.ui.viewmodel.ProfileViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,8 +33,9 @@
             android:layout_width="130dp"
             android:layout_height="130dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/user_image"
             android:layout_marginTop="80dp"
+            app:userAvatar="@{viewmodel.userAvatarState}"
+            app:defaultAvatar="@{@drawable/default_user}"
             app:layout_constraintBottom_toTopOf="@+id/infoContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +54,7 @@
             android:src="@drawable/ic_camera"
             app:layout_constraintBottom_toTopOf="@+id/infoContainer"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.9" />
@@ -85,6 +88,7 @@
                     android:paddingEnd="20dp"
                     android:textSize="16sp"
                     android:textColor="@color/widget"
+                    android:text="@{viewmodel.userGmailState}"
                     tools:text="doankhacminh2301@gmail.com"
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
@@ -105,6 +109,7 @@
                     android:paddingEnd="20dp"
                     android:textSize="16sp"
                     android:textColor="@color/widget"
+                    android:text="@{viewmodel.numberPhoneState}"
                     tools:text="0866889***"
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
@@ -161,36 +166,21 @@
                     android:layout_height="75dp"
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="5dp"
                     android:backgroundTint="@color/widget"
                     android:text="@string/sign_out"
                     android:textSize="16sp"
                     app:layout_constraintVertical_bias="1.0"
-                    app:layout_constraintBottom_toTopOf="@id/deleteAccountButton"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/chatTextView" />
-
-                <Button
-                    android:id="@+id/deleteAccountButton"
-                    style="@style/Custom.ButtonStyle"
-                    android:backgroundTint="@color/delete_button_background_color"
-                    android:layout_width="0dp"
-                    android:layout_height="75dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:text="@string/delete_account"
-                    android:textSize="16sp"
-                    android:layout_marginBottom="15dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"  />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/usernameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
+                android:text="@{viewmodel.usernameState}"
                 android:fontFamily="@font/albert_sans_black"
                 android:gravity="center"
                 android:background="@drawable/profile_name_background"
@@ -201,7 +191,7 @@
                 android:textSize="25sp" />
         </FrameLayout>
 
-        <!--<View
+        <View
             android:id="@+id/bottomSheetAnchorView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -213,11 +203,10 @@
 
         <include
             android:id="@+id/bottomSheet"
-            layout="@layout/change_avatar_sheet"
+            layout="@layout/change_password_sheet"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_anchor="@id/bottomSheetAnchorView"
-            app:layout_anchorGravity="top" />-->
-
+            app:layout_anchorGravity="top" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

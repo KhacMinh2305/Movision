@@ -2,6 +2,9 @@ package architecture.data.source;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.credentials.Credential;
@@ -15,10 +18,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import javax.inject.Inject;
@@ -121,6 +128,7 @@ public class AuthenticationDataSource {
         facebookAuthCallback.init(fragment, new FacebookAuthCallbackImpl.OnResultCallback() {
             @Override
             public void onSuccess(AccessToken accessToken) {
+                Log.d("DEBUG", "FACEBOOK ACCESS_TOKEN : " + accessToken.getToken()); // test
                 AuthCredential facebookCredential = FacebookAuthProvider.getCredential(accessToken.getToken());
                 authenticator.signInWithCredential(facebookCredential).addOnSuccessListener(authResult -> {
                     currentUser = authResult.getUser();
@@ -199,6 +207,27 @@ public class AuthenticationDataSource {
 
     public Task<Void> sendUserResetPasswordEmail(String gmail) {
         return authenticator.sendPasswordResetEmail(gmail);
+    }
+
+    private void setOneShotResult(PublishSubject<Boolean> result, Boolean value) {
+        result.onNext(value);
+        result.onComplete();
+    }
+
+    public PublishSubject<Boolean> changePassword(String oldPassword, String newPassword) {
+        PublishSubject<Boolean> resultPublisher = PublishSubject.create();
+        AuthCredential authCredential = EmailAuthProvider
+                .getCredential(Objects.requireNonNull(currentUser.getEmail()), oldPassword);
+        currentUser.reauthenticate(authCredential).addOnSuccessListener(unused ->
+                changePasswordIfValid(newPassword, resultPublisher))
+                .addOnFailureListener(e -> setOneShotResult(resultPublisher, false));
+        return resultPublisher;
+    }
+
+    private void changePasswordIfValid(String newPassword, PublishSubject<Boolean> resultPublisher) {
+        currentUser.updatePassword(newPassword).addOnSuccessListener(task ->
+                setOneShotResult(resultPublisher, true))
+                .addOnFailureListener(e -> setOneShotResult(resultPublisher, false));
     }
 
     public void logout() {

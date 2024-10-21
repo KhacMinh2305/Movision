@@ -45,6 +45,6 @@ public class ChangeAvatarViewModel extends ViewModel {
                             compositeDisposable.clear();
                         });
                     }
-                }, throwable -> Log.d("ERROR", "Co loi xay ra : " + throwable.toString()));
+                }, throwable -> Log.d("ERROR", throwable.toString()));
     }
 }

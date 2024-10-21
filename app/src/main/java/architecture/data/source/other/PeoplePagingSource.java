@@ -1,4 +1,6 @@
 package architecture.data.source.other;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.paging.PagingState;
@@ -7,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import architecture.data.local.entity.People;
 import architecture.data.model.people.ApiPeopleResult;
-import architecture.data.model.people.ApiPopularPeople;
+import architecture.data.model.people.ApiPeople;
 import architecture.data.network.api.TmdbServices;
 import architecture.other.AppConstant;
 import io.reactivex.rxjava3.core.Single;
@@ -22,10 +24,18 @@ public class PeoplePagingSource extends RxPagingSource<Integer, People> {
     private static final int OFFSET = 20; // the amount of people each page
     private final TmdbServices apiService;
     private int gender = -1;
+    private String tag;
 
-    public PeoplePagingSource(TmdbServices apiService, int genderFilter) {
+    public PeoplePagingSource(TmdbServices apiService, int genderFilter, String tag) {
         this.apiService = apiService;
         gender = genderFilter;
+        this.tag = tag;
+    }
+
+    private Single<ApiPeople> getApiCallWithTag(Integer nextKey) {
+        return (tag.equals(AppConstant.POPULAR_PEOPLE_TAG))
+                ? apiService.loadPopularPeople(nextKey)
+                : apiService.loadTrendingPeople(nextKey);
     }
 
     @NonNull
@@ -44,9 +54,13 @@ public class PeoplePagingSource extends RxPagingSource<Integer, People> {
             return Single.just(loadCachedResult(nextKey)).subscribeOn(Schedulers.io());
         }
         // otherwise , request from api
-        return apiService.loadPopularPeople(nextKey)
+        return getApiCallWithTag(nextKey)
                 .subscribeOn(Schedulers.single())
                 .map(this::toRemoteResult);
+
+        /*return apiService.loadPopularPeople(nextKey)
+                .subscribeOn(Schedulers.single())
+                .map(this::toRemoteResult);*/
     }
 
     private LoadResult<Integer, People> toEmptyResult() {
@@ -71,7 +85,7 @@ public class PeoplePagingSource extends RxPagingSource<Integer, People> {
                 null, currentKey + 1, LoadResult.Page.COUNT_UNDEFINED, LoadResult.Page.COUNT_UNDEFINED);
     }
 
-    private LoadResult<Integer, People> toRemoteResult(ApiPopularPeople apiPopularPeople) {
+    private LoadResult<Integer, People> toRemoteResult(ApiPeople apiPopularPeople) {
         totalPages = apiPopularPeople.getTotalPages();
         currentApiKey = apiPopularPeople.getPage() + 1;
         List<ApiPeopleResult> listResult = apiPopularPeople.getResults();

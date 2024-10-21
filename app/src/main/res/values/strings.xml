@@ -50,4 +50,6 @@
     <string name="delete_account">Delete this account</string>
     <string name="pick_image">Pick an image in gallery</string>
     <string name="take_photo">Take an photo</string>
+    <string name="new_password">New password</string>
+    <string name="old_password">Old password</string>
 </resources>

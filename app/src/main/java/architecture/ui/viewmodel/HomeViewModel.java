@@ -16,6 +16,7 @@ import architecture.data.repo.AuthenticationRepository;
 import architecture.data.repo.GenreRepository;
 import architecture.data.repo.MovieRepository;
 import architecture.data.repo.PeopleRepository;
+import architecture.data.repo.ProfileRepository;
 import architecture.other.AppConstant;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -30,10 +31,13 @@ public class HomeViewModel extends ViewModel {
     // Repo, Injected Items and so on..
     private final SavedStateHandle stateHandle;
     private final AuthenticationRepository authRepo;
+    private final ProfileRepository profileRepo;
     private final MovieRepository movieRepo;
     private final GenreRepository genreRepo;
     private final PeopleRepository peopleRepo;
     private boolean loadingSignal = false;
+
+    private final MutableLiveData<String> userAvatarState = new MutableLiveData<>();
 
     // genres
     private final MutableLiveData<List<String>> listUpcomingMoviePosterUrls = new MutableLiveData<>();
@@ -58,6 +62,8 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<List<Movie>> personalMovies = new MutableLiveData<>();
 
     //-------------------------------------------------------GETTERS-------------------------------------------------------
+    public MutableLiveData<String> getUserAvatarState() { return userAvatarState; }
+
     // Genres
     public MutableLiveData<List<Genre>> getListUserGenres() {
         return listUserGenres;
@@ -78,23 +84,24 @@ public class HomeViewModel extends ViewModel {
 
     // People
     public MutableLiveData<List<People>> getPreviewPopularPeople() { return previewPopularPeople; }
+    public MutableLiveData<List<People>> getPreviewTrendingPeople() { return previewTrendingPeople; }
 
     // Personal
     public MutableLiveData<Genre> getPersonalGenre() { return personalGenre; }
     public MutableLiveData<List<Movie>> getPersonalMovies() { return personalMovies; }
 
     //-------------------------------------------------------SETTERS-------------------------------------------------------
-    public void resetLoading() {
-        loadingSignal = false;
-    }
+    public void resetLoading() { loadingSignal = false; }
 
 
     //-------------------------------------------------------CONSTRUCTORS + INITIALIZATION-------------------------------------------------------
     @Inject
     public HomeViewModel(SavedStateHandle stateHandle, AuthenticationRepository authRepo,
-                         MovieRepository movieRepo, GenreRepository genreRepo, PeopleRepository peopleRepo) {
+                         ProfileRepository profileRepo, MovieRepository movieRepo,
+                         GenreRepository genreRepo, PeopleRepository peopleRepo) {
         this.stateHandle = stateHandle;
         this.authRepo = authRepo;
+        this.profileRepo = profileRepo;
         this.movieRepo = movieRepo;
         this.genreRepo = genreRepo;
         this.peopleRepo = peopleRepo;
@@ -102,19 +109,26 @@ public class HomeViewModel extends ViewModel {
 
     public void loadInit() {
         if(!loadingSignal) {
+            loadUserAvatar();
             loadUpComingMovie(); // test
             loadUserGenres();
             loadTrendingMovies();
             loadTopRatedMovies();
             loadPopularMovies();
             loadPlayingMovies();
+            loadPopularPeople();
+            loadRandomGenreMovie();
             loadTrendingPeople();
-            //getRandomUserGenres(); (test)
             loadingSignal = true;
         }
     }
 
     //-------------------------------------------------------Businesses-------------------------------------------------------
+    // --------------------------User--------------------------
+    private void loadUserAvatar() {
+        String url = profileRepo.getUserAvatarUrl();
+        userAvatarState.setValue(url);
+    }
 
     // --------------------------Genres--------------------------
     /** @noinspection ResultOfMethodCallIgnored*/
@@ -208,17 +222,9 @@ public class HomeViewModel extends ViewModel {
                 -> previewPlayingMovies.setValue(movies));
     }
 
-    // ------------------Preview People For RecyclerViews------------------
     /** @noinspection ResultOfMethodCallIgnored*/
     @SuppressLint("CheckResult")
-    private void loadTrendingPeople() {
-        peopleRepo.loadListPopularPeople()
-                .subscribe((people, throwable) -> previewPopularPeople.setValue(people));
-    }
-
-    /** @noinspection ResultOfMethodCallIgnored*/
-    @SuppressLint("CheckResult")
-    private void getRandomUserGenres() {
+    private void loadRandomGenreMovie() {
         Single.fromCallable(() -> {
             int randomGenre = (int) (Math.random() * genreRepo.getUserGenres().size());
             return genreRepo.getUserGenres().get(randomGenre);
@@ -236,5 +242,20 @@ public class HomeViewModel extends ViewModel {
         filters.put("page", 1);
         movieRepo.discoverMovie(filters).subscribe(personalMovies::setValue,
                 throwable -> {Log.d("ERROR", throwable.toString());});
+    }
+
+    // ------------------Preview People For RecyclerViews------------------
+    /** @noinspection ResultOfMethodCallIgnored*/
+    @SuppressLint("CheckResult")
+    private void loadPopularPeople() {
+        peopleRepo.loadListPopularPeople()
+                .subscribe((people, throwable) -> previewPopularPeople.setValue(people));
+    }
+
+    /** @noinspection ResultOfMethodCallIgnored*/
+    @SuppressLint("CheckResult")
+    private void loadTrendingPeople() {
+        peopleRepo.loadListTrendingPeople()
+                .subscribe((people, throwable) -> previewTrendingPeople.setValue(people));
     }
 }

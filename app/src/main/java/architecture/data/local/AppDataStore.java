@@ -94,8 +94,8 @@ public class AppDataStore {
     }
 
     /*private void initData() {
-        saveKey(AppConstant.API_KEY, "");
-        saveKey(AppConstant.READ_ACCESS_TOKEN, "c25SORBFbz5FLkIbHgpQhM");
+        saveKey(AppConstant.API_KEY, "7a054b91d8c6eed6c8692c2ecadd9fb9");
+        saveKey(AppConstant.READ_ACCESS_TOKEN, "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YTA1NGI5MWQ4YzZlZWQ2Yzg2OTJjMmVjYWRkOWZiOSIsIm5iZiI6MTcyOTQzMTI4Mi43ODc5NjEsInN1YiI6IjY2YjU4YjA0ZjEzZjA5M2FmNzkzYmMxYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.nWFptnGfoPiI6VgnjGWRTffhY8Rr-WdVv2jMr4ODow4");
     }*/
 }
 

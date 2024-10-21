@@ -27,12 +27,24 @@ public class PeopleDataSource {
         this.peopleDao = peopleDao;
     }
 
+    public Single<List<People>> loadListTrendingPeople() {
+        return apiService.loadTrendingPeople(1)
+                .subscribeOn(Schedulers.single())
+                .map(apiPeople -> {
+                    List<People> people = (new PeopleConversionHelper())
+                            .convertApiDataToLocalData(apiPeople.getResults());
+                    cacheToDb(people);
+                    return people;
+                })
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public Single<List<People>> loadListPopularPeople() {
         return apiService.loadPopularPeople(1)
                 .subscribeOn(Schedulers.single())
-                .map(apiPopularPeople -> {
+                .map(apiPeople -> {
                     List<People> people = (new PeopleConversionHelper())
-                            .convertApiDataToLocalData(apiPopularPeople.getResults());
+                            .convertApiDataToLocalData(apiPeople.getResults());
                     cacheToDb(people);
                     return people;
                 })
@@ -45,10 +57,10 @@ public class PeopleDataSource {
         });
     }
 
-    public Pager<Integer, People> getPeoplePager(int gender) {
+    public Pager<Integer, People> getPeoplePager(int gender, String tag) {
         Pager<Integer, People> pager = new Pager<>(
                 new PagingConfig(20),
-                () -> new PeoplePagingSource(apiService, gender));
+                () -> new PeoplePagingSource(apiService, gender, tag));
         return pager;
     }
 }

@@ -1,6 +1,6 @@
 package architecture.ui.view.fragment;
 import static architecture.other.AppConstant.POPULAR_PEOPLE_TITLE;
-
+import static architecture.other.AppConstant.TRENDING_PEOPLE_TITLE;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,13 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
 import com.bumptech.glide.Glide;
 import com.example.movision.R;
 import com.example.movision.databinding.FragmentHomeBinding;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.firebase.auth.FirebaseUser;
-
 import java.util.Objects;
 import architecture.other.AppConstant;
 import architecture.ui.view.adapter.HomeGenreAdapter;
@@ -177,7 +174,16 @@ public class HomeFragment extends Fragment {
                 setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.popularPeople.recyclerView.addItemDecoration(new RecyclerViewItemDecoration(45));
         binding.popularPeople.recyclerView.setAdapter(new PeopleAdapter(getContext(), R.layout.home_people_item, id -> {
-            Log.d("Debug", "Vao thang nguoi chi tiet !");
+            Log.d("Debug", "Item popular people");
+        }));
+
+        binding.trendingPeople.seeMoreTextView.setText(R.string.see_more);
+        binding.trendingPeople.titleTextView.setText(TRENDING_PEOPLE_TITLE);
+        binding.trendingPeople.recyclerView.
+                setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.trendingPeople.recyclerView.addItemDecoration(new RecyclerViewItemDecoration(45));
+        binding.trendingPeople.recyclerView.setAdapter(new PeopleAdapter(getContext(), R.layout.home_people_item, id -> {
+            Log.d("Debug", "Item trending people");
         }));
     }
 
@@ -228,6 +234,8 @@ public class HomeFragment extends Fragment {
     private void bindPeople() {
         viewModel.getPreviewPopularPeople().observe(getViewLifecycleOwner(), people ->
                 ((PeopleAdapter) Objects.requireNonNull(binding.popularPeople.recyclerView.getAdapter())).submitList(people));
+        viewModel.getPreviewTrendingPeople().observe(getViewLifecycleOwner(), people ->
+                ((PeopleAdapter) Objects.requireNonNull(binding.trendingPeople.recyclerView.getAdapter())).submitList(people));
     }
 
     private void bindPersonalMovie() {
@@ -288,8 +296,13 @@ public class HomeFragment extends Fragment {
                 createBundle(AppConstant.CATEGORY_PLAYING_TITLE, AppConstant.CATEGORY_PLAYING_TAG)));
 
         // people
-        binding.popularPeople.seeMoreTextView.setOnClickListener(view -> navController.navigate(R.id.action_homeFragment_to_peopleListFragment, createBundle(POPULAR_PEOPLE_TITLE,
+        binding.popularPeople.seeMoreTextView.setOnClickListener(view ->
+                navController.navigate(R.id.action_homeFragment_to_peopleListFragment, createBundle(POPULAR_PEOPLE_TITLE,
                 AppConstant.POPULAR_PEOPLE_TAG)));
+
+        binding.trendingPeople.seeMoreTextView.setOnClickListener(view ->
+                navController.navigate(R.id.action_homeFragment_to_peopleListFragment, createBundle(TRENDING_PEOPLE_TITLE,
+                AppConstant.TRENDING_PEOPLE_TAG)));
     }
 
     //--------------------------------------------------------TEST--------------------------------------------------------
@@ -298,3 +311,8 @@ public class HomeFragment extends Fragment {
                 navController.navigate(R.id.action_homeFragment_to_profileFragment));
     }
 }
+
+/*
+Bug: There's a bug in PeoplePagingSource. The static list is apply for two different type of tag.
+TODO: So we have to init for each type of tag an unique list to store data
+* */

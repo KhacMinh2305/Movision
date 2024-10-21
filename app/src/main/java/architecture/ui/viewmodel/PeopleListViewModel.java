@@ -1,5 +1,6 @@
 package architecture.ui.viewmodel;
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -23,11 +24,8 @@ public class PeopleListViewModel extends ViewModel {
     private Flowable<PagingData<People>> peopleFlowable;
     private MutableLiveData<Flowable<PagingData<People>>> peopleLiveData = new MutableLiveData<>();
     private final CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
+    private String tag;
     private boolean initialized = false;
-
-    /*public Flowable<PagingData<People>> getPeopleFlowable() {
-        return peopleFlowable;
-    }*/
 
     public MutableLiveData<Flowable<PagingData<People>>> getPeopleLiveData() {
         return peopleLiveData;
@@ -40,10 +38,11 @@ public class PeopleListViewModel extends ViewModel {
 
     /** @noinspection ResultOfMethodCallIgnored*/
     @SuppressLint("CheckResult")
-    public void init() {
+    public void init(String tag) {
         if(!initialized) {
+            this.tag = tag;
             filterSubject.subscribe(gender -> {
-                Pager<Integer, People> pager = peopleRepo.getPeoplePager(gender);
+                Pager<Integer, People> pager = peopleRepo.getPeoplePager(gender, tag);
                 peopleFlowable = PagingRx.getFlowable(pager);
                 PagingRx.cachedIn(peopleFlowable, viewModelScope);
                 peopleLiveData.setValue(peopleFlowable);

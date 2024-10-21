@@ -22,11 +22,12 @@
         <attr name="genreName" format="string"/>
     </declare-styleable>
 
-    <declare-styleable name="People">
-        <attr name="peopleName" format="string" />
-    </declare-styleable>
-
     <declare-styleable name="Authentication">
         <attr name="time" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="Profile">
+        <attr name="username" format="string" />
+        <attr name="defaultAvatar" format="reference"/>
     </declare-styleable>
 </resources>

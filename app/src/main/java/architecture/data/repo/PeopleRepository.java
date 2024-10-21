@@ -18,11 +18,15 @@ public class PeopleRepository {
         this.dataSource = dataSource;
     }
 
+    public Single<List<People>> loadListTrendingPeople() {
+        return dataSource.loadListTrendingPeople();
+    }
+
     public Single<List<People>> loadListPopularPeople() {
         return dataSource.loadListPopularPeople();
     }
 
-    public Pager<Integer, People> getPeoplePager(int gender) {
-        return dataSource.getPeoplePager(gender);
+    public Pager<Integer, People> getPeoplePager(int gender, String tag) {
+        return dataSource.getPeoplePager(gender, tag);
     }
 }

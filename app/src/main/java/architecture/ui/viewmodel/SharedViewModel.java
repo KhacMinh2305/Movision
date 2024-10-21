@@ -61,7 +61,8 @@ public class SharedViewModel extends ViewModel {
     /** @noinspection ResultOfMethodCallIgnored*/
     @SuppressLint("CheckResult")
     private void loadGenresAndCheckUserGenres() {
-        genreRepo.requestMovieGenres().subscribe(genres -> checkUserGenres(),
+        genreRepo.requestMovieGenres().subscribe(genres -> {
+                checkUserGenres(); },
                 throwable -> Log.d("Debug", throwable.toString()));
     }
 

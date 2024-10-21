@@ -21,6 +21,8 @@ android {
 
         vectorDrawables.useSupportLibrary = true
 
+        multiDexEnabled = true
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -60,20 +62,20 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     // Hilt
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation("com.google.dagger:hilt-android:2.52")
+    kapt("com.google.dagger:hilt-android-compiler:2.52")
     // Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
     // Retrofit + OkHttp
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.google.code.gson:gson:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     // RxJava3
     implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
-    implementation("io.reactivex.rxjava3:rxjava:3.1.8")
+    implementation("io.reactivex.rxjava3:rxjava:3.1.9")
     implementation("com.squareup.retrofit2:adapter-rxjava3:2.11.0")
     // Navigation
-    val nav_version = "2.7.7"
+    val nav_version = "2.8.3"
     implementation("androidx.navigation:navigation-fragment:$nav_version")
     implementation("androidx.navigation:navigation-ui:$nav_version")
     // DataStore
@@ -95,16 +97,16 @@ dependencies {
     implementation("com.uber.autodispose2:autodispose-lifecycle:2.2.1")
     implementation("com.uber.autodispose2:autodispose-androidx-lifecycle:2.2.1")
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
-    implementation("androidx.credentials:credentials:1.2.2")
-    implementation("androidx.credentials:credentials-play-services-auth:1.2.2")
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
-    implementation("com.facebook.android:facebook-android-sdk:latest.release")
+    implementation("com.facebook.android:facebook-android-sdk:17.0.2")
     implementation("com.google.firebase:firebase-storage")
     // Java mail
-    implementation("com.sun.mail:android-mail:1.6.6")
+    implementation("com.sun.mail:android-mail:1.6.7")
     implementation("com.sun.mail:android-activation:1.6.7")
     // Splash
     implementation("androidx.core:core-splashscreen:1.0.1")

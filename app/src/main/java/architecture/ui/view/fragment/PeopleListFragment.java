@@ -104,7 +104,7 @@ public class PeopleListFragment extends Fragment {
         binding.setLifecycleOwner(this);
         viewModel = new ViewModelProvider(this).get(PeopleListViewModel.class);
         navController = Navigation.findNavController(requireActivity(), R.id.nav_host);
-        viewModel.init();
+        viewModel.init(tag);
     }
 
     private void initViews() {

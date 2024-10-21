@@ -1,7 +1,6 @@
 package architecture.data.repo;
-
+import java.util.Map;
 import javax.inject.Inject;
-
 import architecture.data.source.ProfileDataSource;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 
@@ -16,6 +15,14 @@ public class ProfileRepository {
 
     public String getUserUid() {
         return profileSource.getUserUid();
+    }
+
+    public Map<String, String> getUserData() {
+        return profileSource.getUserData();
+    }
+
+    public String getUserAvatarUrl() {
+        return profileSource.getUserAvatarUrl();
     }
 
     public PublishSubject<Boolean> updateUserProfile(String name, String imageUrl) {
