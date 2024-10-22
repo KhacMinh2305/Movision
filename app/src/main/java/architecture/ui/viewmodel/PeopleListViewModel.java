@@ -14,6 +14,7 @@ import architecture.data.repo.PeopleRepository;
 import architecture.other.AppConstant;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import kotlinx.coroutines.CoroutineScope;
 
@@ -25,6 +26,7 @@ public class PeopleListViewModel extends ViewModel {
     private MutableLiveData<Flowable<PagingData<People>>> peopleLiveData = new MutableLiveData<>();
     private final CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
     private String tag;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private boolean initialized = false;
 
     public MutableLiveData<Flowable<PagingData<People>>> getPeopleLiveData() {
@@ -41,7 +43,7 @@ public class PeopleListViewModel extends ViewModel {
     public void init(String tag) {
         if(!initialized) {
             this.tag = tag;
-            filterSubject.subscribe(gender -> {
+            filterSubject.doOnSubscribe(compositeDisposable::add).subscribe(gender -> {
                 Pager<Integer, People> pager = peopleRepo.getPeoplePager(gender, tag);
                 peopleFlowable = PagingRx.getFlowable(pager);
                 PagingRx.cachedIn(peopleFlowable, viewModelScope);
@@ -53,5 +55,12 @@ public class PeopleListViewModel extends ViewModel {
 
     public void applyFilter(int gender) {
         filterSubject.onNext(gender);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        compositeDisposable.dispose();
+        filterSubject.onComplete();
     }
 }
