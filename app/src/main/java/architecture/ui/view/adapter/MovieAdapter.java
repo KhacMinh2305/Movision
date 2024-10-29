@@ -1,6 +1,7 @@
 package architecture.ui.view.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
@@ -20,10 +21,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieListIte
     private final AsyncListDiffer<Movie> mAsyncListDiffer;
     private final MovieOnClickCallback callback;
 
-    public MovieAdapter(Context context, int layout, MovieOnClickCallback genreOnClickCallback) {
+    public MovieAdapter(Context context, int layout, MovieOnClickCallback callback) {
         this.context = context;
         this.layout = layout;
-        this.callback = genreOnClickCallback;
+        this.callback = callback;
         DiffUtil.ItemCallback<Movie> diffUtilCallback = new DiffUtil.ItemCallback<Movie>() {
             @Override
             public boolean areItemsTheSame(@NonNull Movie oldItem, @NonNull Movie newItem) {
@@ -54,9 +55,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieListIte
         }
         Movie movie = mAsyncListDiffer.getCurrentList().get(position);
         holder.binding.setMovie(movie);
-        holder.binding.getRoot().setOnClickListener(view -> {
-            callback.onClick(movie.id, movie.movieId);
-        });
+        holder.binding.getRoot().setOnClickListener(view -> callback.onClick(movie.id, movie.movieId));
     }
 
     @Override

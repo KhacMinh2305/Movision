@@ -70,9 +70,7 @@ public class AppConstant {
     public static final int SUCCESS_CODE = 1;
     public static final int FAILURE_CODE = 0;
 
-    public static final String DEFAULT_USERNAME = "Undefined";
-    public static final String DEFAULT_GMAIL = "Undefined";
-    public static final String DEFAULT_PHONE_NUMBER = "Undefined";
+    public static final String UNDEFINED_FIELD = "Undefined";
 
     public static final String EMAIL_PROVIDER = "password";
 }

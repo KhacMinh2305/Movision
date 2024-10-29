@@ -1,6 +1,8 @@
 package architecture.ui.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -103,7 +105,6 @@ public class LoginFragment extends Fragment {
         navController = Navigation.findNavController(requireActivity(), R.id.nav_host);
         sheetBehavior = BottomSheetBehavior.from(binding.bottomSheet.emailVerificationSheet);
         setUpVerificationEditTextFocus();
-        //binding.loginButton.setRenderEffect(RenderEffect.createBlurEffect(30f, 30f, Shader.TileMode.MIRROR));
     }
 
     private void setUpFocusListener(EditText currentEditText, EditText nextEditText) {

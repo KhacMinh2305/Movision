@@ -3,6 +3,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import java.io.IOException;
+import java.util.Objects;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import architecture.data.local.AppDataStore;
@@ -28,7 +30,7 @@ public class HeaderInterceptor implements Interceptor {
         Request newRequest;
         String readAccessToken = dataStore.getKey(AppConstant.READ_ACCESS_TOKEN);
         String methodType = request.method();
-        if(methodType.equals("GET")) {
+        if(methodType.equals("GET") || Objects.equals(request.header("Content-Type"), "application/json;charset=utf-8")) {
             newRequest = request.newBuilder()
                     .addHeader("accept", "application/json")
                     .addHeader("Authorization", "Bearer " + readAccessToken)

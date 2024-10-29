@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="similarMovie"
+            type="architecture.data.model.movie.in_app.SimilarMovie" />
+    </data>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/movieImageView"
+            android:layout_width="180dp"
+            android:layout_height="240dp"
+            android:layout_marginBottom="25dp"
+            android:scaleType="centerCrop"
+            app:imageUrl="@{similarMovie.posterPath}"
+            app:shapeAppearance="@style/CorneredImage"
+            android:src="@drawable/user_image"/>
+
+        <TextView
+            android:id="@+id/movieNameTextView"
+            android:layout_width="180dp"
+            android:layout_height="20dp"
+            android:layout_gravity="bottom"
+            android:ellipsize="end"
+            tools:text="Movie name"
+            app:movieName="@{similarMovie.name}"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:alpha="0.7"/>
+    </FrameLayout>
+</layout>

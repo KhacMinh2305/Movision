@@ -9,13 +9,10 @@ import architecture.data.local.dao.ListDao;
 import architecture.data.local.dao.MovieDao;
 import architecture.data.local.dao.PeopleDao;
 import architecture.data.local.dao.RemoteKeyDao;
-import architecture.data.local.dao.UserDao;
-import architecture.data.source.other.CredentialsProvider;
 import architecture.other.AppConstant;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
-import dagger.hilt.android.qualifiers.ActivityContext;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import dagger.hilt.components.SingletonComponent;
 
@@ -34,12 +31,6 @@ public abstract class LocalComponentsProvider {
     public static LocalDatabase provideLocalDatabase(@ApplicationContext Context context) {
         return Room.databaseBuilder(context, LocalDatabase.class, AppConstant.LOCAL_DATABASE_NAME)
                 .build();
-    }
-
-    @Provides
-    @Singleton
-    public static UserDao provideUserDao(LocalDatabase localDatabase) {
-        return localDatabase.userDao();
     }
 
     @Provides

@@ -7,6 +7,8 @@ import androidx.datastore.preferences.rxjava3.RxPreferenceDataStoreBuilder;
 import androidx.datastore.rxjava3.RxDataStore;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import architecture.data.network.api.TmdbServices;
 import architecture.other.AppConstant;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -18,13 +20,9 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 @Singleton
 public class AppDataStore {
     private RxDataStore<Preferences> dataStore;
-
     private static Preferences.Key<String> apiKey;
     private static Preferences.Key<String> readAccessTokenKey;
-    private static Preferences.Key<String> accessTokenKey;
     private static Preferences.Key<String> sessionKey;
-    private static Preferences.Key<String> usernameKey;
-    private static Preferences.Key<String> passwordKey;
 
     @Inject
     public AppDataStore(@ApplicationContext Context context) {
@@ -35,10 +33,7 @@ public class AppDataStore {
         dataStore = new RxPreferenceDataStoreBuilder(context, AppConstant.FILE_NAME).build();
         apiKey = PreferencesKeys.stringKey(AppConstant.API_KEY_NAME);
         readAccessTokenKey = PreferencesKeys.stringKey(AppConstant.READ_ACCESS_TOKEN_NAME);
-        accessTokenKey = PreferencesKeys.stringKey(AppConstant.ACCESS_TOKEN_NAME);
         sessionKey = PreferencesKeys.stringKey(AppConstant.SESSION_ID_NAME);
-        usernameKey = PreferencesKeys.stringKey(AppConstant.USERNAME_NAME);
-        passwordKey = PreferencesKeys.stringKey(AppConstant.PASSWORD_NAME);
     }
 
     private Preferences.Key<String> findKey(int key) {
@@ -46,14 +41,8 @@ public class AppDataStore {
             return apiKey;
         } else if(key == 1) {
             return readAccessTokenKey;
-        } else if(key == 2) {
-            return accessTokenKey;
         } else if(key == 3) {
             return sessionKey;
-        } else if(key == 4) {
-            return usernameKey;
-        } else if(key == 5) {
-            return passwordKey;
         }
         return null;
     }
@@ -82,21 +71,15 @@ public class AppDataStore {
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public void saveKey(int key, String value) {
+    public void saveKeyAsync(int key, String value) {
         subscribeForSavingKey(key, value).subscribe();
     }
 
     private void clearData() {
-        saveKey(AppConstant.ACCESS_TOKEN, "");
-        saveKey(AppConstant.SESSION_ID, "");
-        saveKey(AppConstant.USERNAME, "");
-        saveKey(AppConstant.PASSWORD, "");
+        saveKeyAsync(AppConstant.API_KEY, "");
+        saveKeyAsync(AppConstant.READ_ACCESS_TOKEN, "");
+        saveKeyAsync(AppConstant.SESSION_ID, "");
     }
-
-    /*private void initData() {
-        saveKey(AppConstant.API_KEY, "7a054b91d8c6eed6c8692c2ecadd9fb9");
-        saveKey(AppConstant.READ_ACCESS_TOKEN, "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3YTA1NGI5MWQ4YzZlZWQ2Yzg2OTJjMmVjYWRkOWZiOSIsIm5iZiI6MTcyOTQzMTI4Mi43ODc5NjEsInN1YiI6IjY2YjU4YjA0ZjEzZjA5M2FmNzkzYmMxYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.nWFptnGfoPiI6VgnjGWRTffhY8Rr-WdVv2jMr4ODow4");
-    }*/
 }
 
 // xu ly bang cach luu lai thoi gian expired ma session cua user het han. Sau do

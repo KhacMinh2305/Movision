@@ -1,4 +1,4 @@
-package architecture.data.model.movie.type;
+package architecture.data.model.movie.category;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -7,7 +7,7 @@ import java.util.List;
 
 import architecture.data.model.movie.result.ApiMovieResult;
 
-public class FavoriteMovie {
+public class TrendingApiMovie {
 
     @SerializedName("page")
     @Expose
@@ -53,5 +53,4 @@ public class FavoriteMovie {
     public void setTotalResults(Integer totalResults) {
         this.totalResults = totalResults;
     }
-
 }

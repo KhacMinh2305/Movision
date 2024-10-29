@@ -1,4 +1,4 @@
-package architecture.data.model.movie.type;
+package architecture.data.model.movie.category;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

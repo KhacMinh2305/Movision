@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import architecture.data.local.entity.Movie;
+import architecture.data.model.movie.in_app.SimilarMovie;
 
 public class ApiMovieResult {
 
@@ -181,5 +182,9 @@ public class ApiMovieResult {
         Movie movie = new Movie(id, title, "", overview, releaseDate, voteAverage, voteCount, backdropPath, posterPath, tag);
         movie.genresIds.addAll(this.genreIds);
         return movie;
+    }
+
+    public SimilarMovie toSimilarMovie() {
+        return new SimilarMovie(id, title, posterPath);
     }
 }

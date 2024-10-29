@@ -128,7 +128,6 @@ public class AuthenticationDataSource {
         facebookAuthCallback.init(fragment, new FacebookAuthCallbackImpl.OnResultCallback() {
             @Override
             public void onSuccess(AccessToken accessToken) {
-                Log.d("DEBUG", "FACEBOOK ACCESS_TOKEN : " + accessToken.getToken()); // test
                 AuthCredential facebookCredential = FacebookAuthProvider.getCredential(accessToken.getToken());
                 authenticator.signInWithCredential(facebookCredential).addOnSuccessListener(authResult -> {
                     currentUser = authResult.getUser();

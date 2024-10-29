@@ -19,7 +19,6 @@ import com.example.movision.databinding.ImageSliderBinding;
 import org.reactivestreams.Subscription;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import architecture.ui.view.adapter.ImageSliderAdapter;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;

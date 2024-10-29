@@ -44,7 +44,6 @@ public class MovieGenreSource {
         this.tmdbService = tmdbService;
     }
 
-    /** @noinspection unchecked*/
     public Task<List<Genre>> requestUserGenres(String userId) {
         return cloud.collection("user_genres").document(userId)
                 .get().onSuccessTask(documentSnapshot -> {

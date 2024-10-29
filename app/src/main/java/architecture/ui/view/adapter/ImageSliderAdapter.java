@@ -1,13 +1,10 @@
 package architecture.ui.view.adapter;
 
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-
 import java.util.List;
-
 import architecture.ui.view.fragment.SliderItemFragment;
 
 public class ImageSliderAdapter extends FragmentStateAdapter {

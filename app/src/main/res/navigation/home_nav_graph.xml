@@ -20,6 +20,10 @@
             android:id="@+id/action_homeFragment_to_profileFragment"
             app:destination="@id/profileFragment"
             app:restoreState="true"/>
+        <action
+            android:id="@+id/action_homeFragment_to_movieDetailFragment"
+            app:destination="@id/movieDetailFragment"
+            app:restoreState="true"/>
     </fragment>
 
     <fragment
@@ -46,4 +50,13 @@
         android:id="@+id/changeAvatarFragment"
         android:name="architecture.ui.view.fragment.ChangeAvatarFragment"
         android:label="ChangeAvatarFragment" />
+    <fragment
+        android:id="@+id/movieDetailFragment"
+        android:name="architecture.ui.view.fragment.MovieDetailFragment"
+        android:label="MovieDetailFragment" >
+        <action
+            android:id="@+id/action_movieDetailFragment_self"
+            app:destination="@id/movieDetailFragment"
+            app:restoreState="true"/>
+    </fragment>
 </navigation>

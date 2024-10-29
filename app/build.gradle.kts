@@ -97,7 +97,7 @@ dependencies {
     implementation("com.uber.autodispose2:autodispose-lifecycle:2.2.1")
     implementation("com.uber.autodispose2:autodispose-androidx-lifecycle:2.2.1")
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("androidx.credentials:credentials:1.3.0")

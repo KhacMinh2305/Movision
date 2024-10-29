@@ -7,6 +7,7 @@ import androidx.room.Query;
 import java.util.List;
 import architecture.data.local.entity.Movie;
 import architecture.data.local.entity.MovieDetails;
+import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface MovieDao {
@@ -20,12 +21,15 @@ public interface MovieDao {
     @Query("SELECT * FROM movie WHERE tag LIKE :tag")
     PagingSource<Integer, Movie> moviePagingSource(String tag);
 
-    @Query("SELECT * FROM movie WHERE movie_id = :id")
-    Movie findMovieById(String id);
+    @Query("SELECT * FROM movie WHERE movie_id = :movieId LIMIT 1")
+    Single<Movie> findMovieById(int movieId);
 
     @Query("SELECT * FROM movie WHERE tag LIKE :category LIMIT 10")
     List<Movie> getMoviesByCategory(String category);
 
     @Insert(entity = MovieDetails.class, onConflict = OnConflictStrategy.REPLACE)
     void insertMovieDetails(MovieDetails movieDetail);
+
+    @Query("SELECT * FROM movie_details WHERE id = :movieId")
+    Single<MovieDetails> getMovieDetails(int movieId);
 }

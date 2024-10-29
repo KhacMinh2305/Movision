@@ -31,9 +31,9 @@ public class ProfileDataSource {
         String name = authSource.getCurrentUser().getDisplayName();
         String gmail = authSource.getCurrentUser().getEmail();
         String phoneNumber = authSource.getCurrentUser().getPhoneNumber();
-        name = (name == null || name.isEmpty()) ? AppConstant.DEFAULT_USERNAME : name;
-        gmail = (gmail == null || gmail.isEmpty()) ? AppConstant.DEFAULT_GMAIL : gmail;
-        phoneNumber = (phoneNumber == null || phoneNumber.isEmpty()) ? AppConstant.DEFAULT_PHONE_NUMBER : phoneNumber;
+        name = (name == null || name.isEmpty()) ? AppConstant.UNDEFINED_FIELD : name;
+        gmail = (gmail == null || gmail.isEmpty()) ? AppConstant.UNDEFINED_FIELD : gmail;
+        phoneNumber = (phoneNumber == null || phoneNumber.isEmpty()) ? AppConstant.UNDEFINED_FIELD : phoneNumber;
         return Map.of(
                 "name", name,
                 "gmail", gmail,

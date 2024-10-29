@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="caster"
+            type="architecture.data.model.people.Caster" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/casterShapeableImageView"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/user_image"
+            app:imageUrl="@{caster.profilePath}"
+            android:scaleType="centerCrop"
+            app:shapeAppearance="@style/CorneredImage"/>
+
+        <TextView
+            android:id="@+id/nameTextView"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            tools:text="Doan Khac Minh"
+            android:text="@{caster.name}"
+            android:textSize="16sp"
+            android:ellipsize="end"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:fontFamily="@font/albert_sans_bold"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/characterTextView"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            tools:text="Super man"
+            android:text="@{caster.character}"
+            android:textSize="16sp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:alpha="0.6"
+            android:fontFamily="@font/albert_sans_regular"
+            android:layout_marginTop="5dp"/>
+    </LinearLayout>
+</layout>

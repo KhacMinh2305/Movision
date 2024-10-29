@@ -1,18 +1,14 @@
-package architecture.data.model.movie.type;
+package architecture.data.model.movie.category;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import architecture.data.model.movie.date.Dates;
 import architecture.data.model.movie.result.ApiMovieResult;
 
-public class PlayingApiMovie {
+public class FavoriteMovie {
 
-    @SerializedName("dates")
-    @Expose
-    private Dates dates;
     @SerializedName("page")
     @Expose
     private Integer page;
@@ -25,14 +21,6 @@ public class PlayingApiMovie {
     @SerializedName("total_results")
     @Expose
     private Integer totalResults;
-
-    public Dates getDates() {
-        return dates;
-    }
-
-    public void setDates(Dates dates) {
-        this.dates = dates;
-    }
 
     public Integer getPage() {
         return page;
@@ -65,4 +53,5 @@ public class PlayingApiMovie {
     public void setTotalResults(Integer totalResults) {
         this.totalResults = totalResults;
     }
+
 }

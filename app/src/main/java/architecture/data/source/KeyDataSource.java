@@ -25,11 +25,11 @@ public class KeyDataSource {
     }
 
     public void saveAccountInfo(String username) {
-        dataStore.saveKey(AppConstant.USERNAME, username);
+        dataStore.saveKeyAsync(AppConstant.USERNAME, username);
     }
 
     public void saveSessionId(String sessionId) {
-        dataStore.saveKey(AppConstant.SESSION_ID, sessionId);
+        dataStore.saveKeyAsync(AppConstant.SESSION_ID, sessionId);
     }
 
     public Single<String> getSessionId() {
@@ -47,7 +47,7 @@ public class KeyDataSource {
                         .subscribeOn(Schedulers.single())
                         .map(result -> {
                             String session = result.get("request_token").getAsString();
-                            dataStore.saveKey(AppConstant.SESSION_ID, session);
+                            dataStore.saveKeyAsync(AppConstant.SESSION_ID, session);
                             return result.get("expires_at").getAsString();
                         }))
                 .onErrorReturn(throwable -> "")
@@ -55,6 +55,6 @@ public class KeyDataSource {
     }
 
     public void clearLoginInfoOnFailure() {
-        dataStore.saveKey(AppConstant.ACCESS_TOKEN, "");
+        dataStore.saveKeyAsync(AppConstant.ACCESS_TOKEN, "");
     }
 }

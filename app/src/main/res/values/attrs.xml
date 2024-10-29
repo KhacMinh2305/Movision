@@ -15,7 +15,7 @@
         <attr name="movieDescription" format="string" />
         <attr name="movieReleaseDate" format="string"/>
         <attr name="movieRating" format="float" />
-        <attr name="genres" format="string" />
+        <attr name="duration" format="integer"/>
     </declare-styleable>
 
     <declare-styleable name="Genre">

@@ -1,42 +1,51 @@
 package architecture.data.local.entity;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "movie_details")
+@Entity(tableName = "movie_details", indices = {@Index(value = "name")})
 public class MovieDetails {
 
     @PrimaryKey
     @ColumnInfo(name = "id")
-    public long id;
-
-    @ColumnInfo(name = "movie_id")
     public int movieId;
+
+    @ColumnInfo(name = "name")
+    public String name;
+
+    @ColumnInfo(name = "genres")
+    public String genres;
+
+    @ColumnInfo(name = "overview")
+    public String overview;
+
+    @ColumnInfo(name = "duration")
+    public int duration;
+
+    @ColumnInfo(name = "year")
+    public int year;
+
+    @ColumnInfo(name = "rating")
+    public double rating;
 
     @ColumnInfo(name = "language")
     public String language;
 
-    @ColumnInfo(name = "run_time")
-    public int runtime;
+    @ColumnInfo(name = "poster_path")
+    public String posterPath;
 
-    @ColumnInfo(name = "added_watch_list")
-    public boolean addedToWatchList;
-
-    @ColumnInfo(name = "favourite")
-    public boolean favourite;
-
-    @ColumnInfo(name = "rated")
-    public double rated;
-
-    public MovieDetails(long id, int movieId, String language,
-                        int runtime, boolean addedToWatchList,
-                        boolean favourite, double rated) {
-        this.id = id;
+    public MovieDetails(int movieId, String name, String genres,
+                        String overview, int duration, int year,
+                        double rating, String language, String posterPath) {
         this.movieId = movieId;
+        this.name = name;
+        this.genres = genres;
+        this.overview = overview;
+        this.duration = duration;
+        this.year = year;
+        this.rating = rating;
         this.language = language;
-        this.runtime = runtime;
-        this.addedToWatchList = addedToWatchList;
-        this.favourite = favourite;
-        this.rated = rated;
+        this.posterPath = posterPath;
     }
 }

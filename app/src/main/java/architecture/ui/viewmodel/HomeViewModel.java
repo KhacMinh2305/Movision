@@ -183,7 +183,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     // ------------------Preview Movies For RecyclerViews------------------
-    @SuppressLint("CheckResult")
+    /*@SuppressLint("CheckResult")
     private void loadUpComingMovie() {
         List<String> imageUrls = new ArrayList<>();
         imageUrls.add("https://media-cdn-v2.laodong.vn/Storage/NewsPortal/2022/11/22/1119442/Daniel-Craig.jpg");
@@ -192,6 +192,19 @@ public class HomeViewModel extends ViewModel {
         imageUrls.add("https://media-cdn-v2.laodong.vn/Storage/NewsPortal/2022/11/22/1119442/Daniel-Craig.jpg");
         imageUrls.add("https://media-cdn-v2.laodong.vn/Storage/NewsPortal/2022/11/22/1119442/Daniel-Craig.jpg");
         listUpcomingMoviePosterUrls.setValue(imageUrls);
+    }*/
+
+    /** @noinspection ResultOfMethodCallIgnored*/
+    @SuppressLint("CheckResult")
+    private void loadUpComingMovie() {
+        movieRepo.getPreviewMoviesByCategory(AppConstant.CATEGORY_UPCOMING_TITLE)
+                .subscribe(movies -> {
+                    List<String> imageUrls = new ArrayList<>();
+                    for(int i = 0; i < 5; i++) {
+                        imageUrls.add(AppConstant.TMDB_IMAGE_HOST + movies.get(i).posterPath);
+                    }
+                    listUpcomingMoviePosterUrls.setValue(imageUrls);
+                }, throwable -> Log.d("ERROR_UPCOMING", throwable.toString()));
     }
 
     /** @noinspection ResultOfMethodCallIgnored*/

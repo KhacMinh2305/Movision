@@ -84,4 +84,10 @@ public class Binding {
             textView.setText(peopleName);
         }
     }
+
+    @SuppressLint("SetTextI18n")
+    @BindingAdapter("duration")
+    public static void binDuration(TextView textView, int duration) {
+        textView.setText(duration + " minutes");
+    }
 }

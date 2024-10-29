@@ -163,7 +163,9 @@ public class HomeFragment extends Fragment {
         rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rv.addItemDecoration(new RecyclerViewItemDecoration(45));
         rv.setAdapter(new MovieAdapter(getContext(), R.layout.preview_movie_item, (id, movieId) -> {
-            Log.d("Debug", "Go to details");
+            Bundle bundle = new Bundle();
+            bundle.putInt("movieId", movieId);
+            navController.navigate(R.id.action_homeFragment_to_movieDetailFragment, bundle);
         }));
     }
 
@@ -201,14 +203,18 @@ public class HomeFragment extends Fragment {
 
     //--------------------------------------------------------BIND DATA--------------------------------------------------------
     private void bindData() {
-        viewModel.getListUpcomingMoviePosterUrls().observe(getViewLifecycleOwner(), urls -> { // demo
-            binding.bannerImageSlider.setListUrls(this, urls);
-        });
+        bindUpBanner();
         bindGenres();
         bindPreviewRecyclerMovie();
         bindPeople();
         bindPersonalMovie();
         observeAvatarChange();
+    }
+
+    private void bindUpBanner() {
+        viewModel.getListUpcomingMoviePosterUrls().observe(getViewLifecycleOwner(), urls -> { // demo
+            binding.bannerImageSlider.setListUrls(this, urls);
+        });
     }
 
     private void bindPreviewRecyclerMovie() {
@@ -311,8 +317,3 @@ public class HomeFragment extends Fragment {
                 navController.navigate(R.id.action_homeFragment_to_profileFragment));
     }
 }
-
-/*
-Bug: There's a bug in PeoplePagingSource. The static list is apply for two different type of tag.
-TODO: So we have to init for each type of tag an unique list to store data
-* */
