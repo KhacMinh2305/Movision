@@ -71,7 +71,7 @@ public class MovieDetailFragment extends Fragment {
     private FragmentMovieDetailBinding binding;
     private MovieDetailViewModel viewModel;
     private NavController navController;
-    private BottomSheetBehavior<ConstraintLayout> sheetBehavior;
+    //private BottomSheetBehavior<ConstraintLayout> sheetBehavior;
     private int movieId;
 
     @Override
@@ -90,7 +90,7 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentMovieDetailBinding.inflate(inflater, container, false);
-        sheetBehavior = BottomSheetBehavior.from(binding.reviewSheet.movieReviewBottomSheet);
+        //sheetBehavior = BottomSheetBehavior.from(binding.reviewSheet.movieReviewBottomSheet);
         WebSettings settings = binding.playerWebView.getSettings();
         settings.setJavaScriptEnabled(true);
         return binding.getRoot();
@@ -122,10 +122,10 @@ public class MovieDetailFragment extends Fragment {
                 Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show());
     }
 
-    private void observeSheetState() {
+    /*private void observeSheetState() {
         viewModel.getReviewSheetState().observe(getViewLifecycleOwner(), state ->
                 sheetBehavior.setState(state ? BottomSheetBehavior.STATE_EXPANDED : BottomSheetBehavior.STATE_COLLAPSED));
-    }
+    }*/
 
     private void observeCastersMovieState() {
         viewModel.getCastersState().observe(getViewLifecycleOwner(), casters -> {
@@ -167,7 +167,7 @@ public class MovieDetailFragment extends Fragment {
 
     private void observeStates() {
         observeMessage();
-        observeSheetState();
+        //observeSheetState();
         observeCastersMovieState();
         observeMovieClipState();
         observeSimilarMoviesState();
@@ -203,8 +203,8 @@ public class MovieDetailFragment extends Fragment {
         });
         addRating();
         obCheckFavoriteCheckBox();
-        changeReviewsSheetState();
-        addReview();
+        /*changeReviewsSheetState();
+        addReview();*/
     }
 
     // TODO: add logic get rating from user instead of using fixed value
@@ -226,7 +226,7 @@ public class MovieDetailFragment extends Fragment {
         });
     }
 
-    private void changeReviewsSheetState() {
+    /*private void changeReviewsSheetState() {
         binding.seeAllReviewsTextView.setOnClickListener(view ->
                 viewModel.setReviewSheetState(true));
         binding.reviewSheet.closeSheetImageButton.setOnClickListener(view ->
@@ -238,5 +238,5 @@ public class MovieDetailFragment extends Fragment {
             String reviewContent = binding.reviewSheet.reviewEditText.getText().toString();
             viewModel.addMovieReview(reviewContent);
         });
-    }
+    }*/
 }
