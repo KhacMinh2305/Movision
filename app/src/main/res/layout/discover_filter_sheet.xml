@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/discoverSheet"
+            style="@style/Widget.Material3.BottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:backgroundTint="@color/scrimColor"
+            app:behavior_peekHeight="0dp"
+            app:behavior_hideable="true"
+            app:behavior_draggable="true"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <TextView
+                android:id="@+id/voteAverageTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/albert_sans_bold"
+                android:text="@string/vote_avarage"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/ratingSlider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:stepSize="1.0"
+                android:valueFrom="0.0"
+                android:valueTo="10.0"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintEnd_toStartOf="@+id/voteAverageEditText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/voteAverageTitle"
+                app:thumbColor="@color/widget"
+                app:trackColorActive="@color/widget"
+                app:trackColorInactive="@color/white"
+                app:thumbHeight="40dp"
+                app:trackHeight="15dp" />
+
+            <EditText
+                android:id="@+id/voteAverageEditText"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/sign_up_edittext_background"
+                android:gravity="center"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:layout_marginTop="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/voteAverageTitle"
+                tools:ignore="LabelFor" />
+
+            <TextView
+                android:id="@+id/albumTitleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/albert_sans_bold"
+                android:text="@string/number_votes"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ratingSlider" />
+
+            <EditText
+                android:id="@+id/leftVoteEditText"
+                android:layout_width="0dp"
+                android:layout_height="65dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/sign_up_edittext_background"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:gravity="center"
+                android:fontFamily="@font/albert_sans_regular"
+                app:layout_constraintEnd_toStartOf="@id/to"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/albumTitleTextView"
+                tools:ignore="LabelFor" />
+
+            <TextView
+                android:id="@+id/to"
+                android:layout_width="100dp"
+                android:layout_height="65dp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/albert_sans_regular"
+                android:gravity="center"
+                android:text="@string/to"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@+id/rightVoteEditText"
+                app:layout_constraintStart_toEndOf="@+id/leftVoteEditText"
+                app:layout_constraintTop_toBottomOf="@+id/albumTitleTextView" />
+
+            <EditText
+                android:id="@+id/rightVoteEditText"
+                android:layout_width="0dp"
+                android:layout_height="65dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/sign_up_edittext_background"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:gravity="center"
+                android:fontFamily="@font/albert_sans_regular"
+                app:layout_constraintStart_toEndOf="@id/to"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/albumTitleTextView"
+                tools:ignore="LabelFor" />
+
+            <TextView
+                android:id="@+id/yearTitle"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/albert_sans_bold"
+                android:text="@string/year"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:layout_marginTop="25dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/leftVoteEditText" />
+
+            <EditText
+                android:id="@+id/yearEditText"
+                android:layout_width="100dp"
+                android:layout_height="65dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/sign_up_edittext_background"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:gravity="center"
+                android:fontFamily="@font/albert_sans_regular"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/yearTitle"
+                tools:ignore="LabelFor" />
+
+            <TextView
+                android:id="@+id/genresTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/albert_sans_bold"
+                android:text="@string/genre"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:layout_marginTop="25dp"
+                android:layout_marginStart="25dp"
+                app:layout_constraintStart_toEndOf="@id/yearTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/leftVoteEditText" />
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/genreSpinner"
+                android:layout_width="0dp"
+                android:layout_height="65dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="25dp"
+                android:background="@drawable/sign_up_edittext_background"
+                android:fontFamily="@font/albert_sans_regular"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/yearEditText"
+                app:layout_constraintTop_toBottomOf="@+id/yearTitle" />
+
+            <Button
+                android:id="@+id/signOutButton"
+                style="@style/Custom.ButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="75dp"
+                android:backgroundTint="@color/widget"
+                android:text="@string/discover"
+                android:textSize="16sp"
+                android:layout_marginTop="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/genreSpinner" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

@@ -3,22 +3,33 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import architecture.data.model.image.ImageResult;
+import architecture.data.network.api.TmdbServices;
 import architecture.other.AppConstant;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 
 @Singleton
 public class MediaDataSource {
 
     private final FirebaseStorage storage;
+    private final TmdbServices apiService;
     private StorageReference storageRef;
 
     @Inject
-    public MediaDataSource(FirebaseStorage storage) {
+    public MediaDataSource(FirebaseStorage storage, TmdbServices apiService) {
         this.storage = storage;
+        this.apiService = apiService;
     }
 
     private String createImageName() {
@@ -52,5 +63,16 @@ public class MediaDataSource {
                     imagePushingResult.onComplete();
                 });
         return imagePushingResult;
+    }
+
+    public Single<List<String>> loadPersonImages(int personId) {
+        return apiService.loadPeopleImages(personId)
+                .subscribeOn(Schedulers.single()).map(apiTmDbImage -> {
+                    List<String> images = new ArrayList<>();
+                    for(ImageResult imageResult : apiTmDbImage.getImageResult()) {
+                        images.add(imageResult.getFilePath());
+                    }
+                    return images;
+                }).observeOn(AndroidSchedulers.mainThread());
     }
 }

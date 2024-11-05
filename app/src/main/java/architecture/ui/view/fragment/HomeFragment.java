@@ -169,24 +169,28 @@ public class HomeFragment extends Fragment {
         }));
     }
 
+    private Bundle createPersonFragmentBundle(int id) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("personId", id);
+        return bundle;
+    }
+
     private void initPeople() {
         binding.popularPeople.seeMoreTextView.setText(R.string.see_more);
         binding.popularPeople.titleTextView.setText(POPULAR_PEOPLE_TITLE);
         binding.popularPeople.recyclerView.
                 setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.popularPeople.recyclerView.addItemDecoration(new RecyclerViewItemDecoration(45));
-        binding.popularPeople.recyclerView.setAdapter(new PeopleAdapter(getContext(), R.layout.home_people_item, id -> {
-            Log.d("Debug", "Item popular people");
-        }));
+        binding.popularPeople.recyclerView.setAdapter(new PeopleAdapter(getContext(), R.layout.home_people_item, id ->
+                navController.navigate(R.id.action_homeFragment_to_peopleFragment, createPersonFragmentBundle(id))));
 
         binding.trendingPeople.seeMoreTextView.setText(R.string.see_more);
         binding.trendingPeople.titleTextView.setText(TRENDING_PEOPLE_TITLE);
         binding.trendingPeople.recyclerView.
                 setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.trendingPeople.recyclerView.addItemDecoration(new RecyclerViewItemDecoration(45));
-        binding.trendingPeople.recyclerView.setAdapter(new PeopleAdapter(getContext(), R.layout.home_people_item, id -> {
-            Log.d("Debug", "Item trending people");
-        }));
+        binding.trendingPeople.recyclerView.setAdapter(new PeopleAdapter(getContext(), R.layout.home_people_item, id ->
+                navController.navigate(R.id.action_homeFragment_to_peopleFragment, createPersonFragmentBundle(id))));
     }
 
     //--------------------------------------------------------LOAD DATA--------------------------------------------------------

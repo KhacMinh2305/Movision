@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelKt;
 import androidx.paging.PagingData;
 import androidx.paging.rxjava3.PagingRx;
-
 import javax.inject.Inject;
 import architecture.data.local.entity.Movie;
 import architecture.data.repo.GenreRepository;

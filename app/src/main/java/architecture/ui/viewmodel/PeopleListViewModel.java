@@ -1,7 +1,5 @@
 package architecture.ui.viewmodel;
 import android.annotation.SuppressLint;
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelKt;
@@ -23,10 +21,10 @@ public class PeopleListViewModel extends ViewModel {
     private final PeopleRepository peopleRepo;
     private final BehaviorSubject<Integer> filterSubject = BehaviorSubject.createDefault(AppConstant.HUMAN_ALL);
     private Flowable<PagingData<People>> peopleFlowable;
-    private MutableLiveData<Flowable<PagingData<People>>> peopleLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Flowable<PagingData<People>>> peopleLiveData = new MutableLiveData<>();
     private final CoroutineScope viewModelScope = ViewModelKt.getViewModelScope(this);
     private String tag;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private boolean initialized = false;
 
     public MutableLiveData<Flowable<PagingData<People>>> getPeopleLiveData() {

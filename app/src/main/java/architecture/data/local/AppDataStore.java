@@ -7,8 +7,6 @@ import androidx.datastore.preferences.rxjava3.RxPreferenceDataStoreBuilder;
 import androidx.datastore.rxjava3.RxDataStore;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import architecture.data.network.api.TmdbServices;
 import architecture.other.AppConstant;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -81,5 +79,3 @@ public class AppDataStore {
         saveKeyAsync(AppConstant.SESSION_ID, "");
     }
 }
-
-// xu ly bang cach luu lai thoi gian expired ma session cua user het han. Sau do

@@ -1,0 +1,144 @@
+<layout>
+
+    <data>
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/app_background"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context="architecture.ui.view.fragment.DiscoverFragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchHistoryRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="120dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/addButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contentTextView" />
+
+        <TextView
+            android:id="@+id/historyTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/history_empty"
+            android:layout_gravity="center"
+            android:fontFamily="@font/albert_sans_bold"
+            android:textSize="16sp"
+            android:alpha="0.3"/>
+
+        <View
+            android:id="@+id/bottomSheetAnchorView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="bottom"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/bottomSheet"
+            layout="@layout/discover_filter_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_anchor="@id/bottomSheetAnchorView"
+            app:layout_anchorGravity="top" />
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/app_background"
+            android:layout_marginTop="15dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/discoverImageButton"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    android:importantForAccessibility="no"
+                    android:text="@string/discover"
+                    android:fontFamily="@font/albert_sans_bold"
+                    android:src="@drawable/ic_discover_filled"
+                    android:background="@drawable/discover_button_drawable"
+                    android:gravity="center"
+                    android:elevation="10dp"
+                    android:layout_marginEnd="18dp"
+                    android:layout_gravity="end|center_vertical"/>
+
+                <com.google.android.material.search.SearchBar
+                    android:id="@+id/search_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    app:buttonGravity="center_vertical"
+                    app:backgroundTint="@color/content_container"
+                    android:hint="@string/searchbar_hint" />
+            </FrameLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.search.SearchView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/searchbar_hint"
+            app:backgroundTint="@color/content_container"
+            app:layout_anchor="@id/search_bar">
+
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:paddingTop="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                app:chipSpacingHorizontal="10dp"
+                app:singleLine="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/movieChip"
+                    android:checkable="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="@string/movie"
+                    android:fontFamily="@font/albert_sans_bold"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    app:chipBackgroundColor="@color/search_chip_color"
+                    app:chipCornerRadius="50dp"
+                    app:chipStrokeWidth="2dp"
+                    app:chipStrokeColor="@color/widget"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/peopleChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="@string/people"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/albert_sans_bold"
+                    android:textColor="@color/white"
+                    app:chipCornerRadius="50dp"
+                    app:chipStrokeWidth="2dp"
+                    app:chipStrokeColor="@color/widget"
+                    app:chipBackgroundColor="@color/search_chip_color"
+                    android:checkable="true"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </com.google.android.material.chip.ChipGroup>
+        </com.google.android.material.search.SearchView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

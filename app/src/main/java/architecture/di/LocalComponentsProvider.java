@@ -1,6 +1,5 @@
 package architecture.di;
 import android.content.Context;
-
 import androidx.credentials.CredentialManager;
 import androidx.room.Room;
 import javax.inject.Singleton;
@@ -9,6 +8,7 @@ import architecture.data.local.dao.ListDao;
 import architecture.data.local.dao.MovieDao;
 import architecture.data.local.dao.PeopleDao;
 import architecture.data.local.dao.RemoteKeyDao;
+import architecture.data.local.dao.SearchHistoryDao;
 import architecture.other.AppConstant;
 import dagger.Module;
 import dagger.Provides;
@@ -55,5 +55,11 @@ public abstract class LocalComponentsProvider {
     @Singleton
     public static RemoteKeyDao provideRemoteKeyDao(LocalDatabase localDatabase) {
         return localDatabase.remoteKeyDao();
+    }
+
+    @Provides
+    @Singleton
+    public static SearchHistoryDao provideSearchHistoryDao(LocalDatabase localDatabase) {
+        return localDatabase.searchHistoryDao();
     }
 }

@@ -7,15 +7,25 @@ import androidx.databinding.BindingAdapter;
 import com.bumptech.glide.Glide;
 import com.example.movision.R;
 import com.google.android.material.imageview.ShapeableImageView;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import architecture.other.AppConstant;
 
 public class Binding {
 
-    /*@SuppressLint("SetTextI18n")
-    @BindingAdapter("time")
-    public static void bindExpiredTime(TextView textView, Integer time) {
-        textView.setText("Retry requesting code after " + time + " seconds");
-    }*/
+    @BindingAdapter("reviewTime")
+    public static void bindReviewTime(TextView textView, String time) {
+        if(time == null || time.isEmpty()) return;
+        long currentTime = Long.parseLong(time);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(currentTime);
+        Date date = calendar.getTime();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String text = simpleDateFormat.format(date);
+        textView.setText(text);
+    }
 
     @BindingAdapter("defaultDrawable")
     public static void bindImage(ImageView view, Drawable drawable) {

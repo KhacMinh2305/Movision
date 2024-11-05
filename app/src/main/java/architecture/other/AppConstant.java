@@ -72,5 +72,6 @@ public class AppConstant {
 
     public static final String UNDEFINED_FIELD = "Undefined";
 
-    public static final String EMAIL_PROVIDER = "password";
+    public static String MOVIE_TAG = "movie";
+    public static String PEOPLE_TAG = "people";
 }

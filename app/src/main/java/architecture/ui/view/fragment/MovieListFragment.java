@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,7 +102,9 @@ public class MovieListFragment extends Fragment {
         binding.movieRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         binding.movieRecyclerView.addItemDecoration(new RecyclerViewItemDecoration(45));
         binding.movieRecyclerView.setAdapter(new MovieListAdapter(getContext(), (id, movieId) -> {
-            Log.d("NAVIGATION", "Navigate to Details fragment with id: " + id + " and movieId: " + movieId);
+            Bundle bundle = new Bundle();
+            bundle.putInt("movieId", movieId);
+            navController.navigate(R.id.action_movieListFragment_to_movieDetailFragment, bundle);
         }, new MovieComparator()));
     }
 
@@ -111,15 +112,13 @@ public class MovieListFragment extends Fragment {
         binding.titleTextView.setText(title);
         viewModel.getMovieFlowable()
                 .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(moviePagingData -> {
-                    ((MovieListAdapter) Objects.requireNonNull(binding.movieRecyclerView.getAdapter()))
-                            .submitData(getLifecycle(), moviePagingData);
-                });
+                .subscribe(moviePagingData ->
+                        ((MovieListAdapter) Objects.requireNonNull(binding.movieRecyclerView.getAdapter()))
+                        .submitData(getLifecycle(), moviePagingData));
     }
 
     private void setUpBehaviors() {
-        binding.backImageButton.setOnClickListener(view -> {
-            navController.navigateUp();
-        });
+        binding.backImageButton.setOnClickListener(view ->
+                navController.navigateUp());
     }
 }

@@ -11,6 +11,7 @@ import architecture.data.model.movie.in_app.ClipUrl;
 import architecture.data.model.movie.in_app.MovieReview;
 import architecture.data.model.movie.in_app.SimilarMovie;
 import architecture.data.source.MovieDataSource;
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 
@@ -78,8 +79,11 @@ public class MovieRepository {
         return dataSource.checkMovieFavorite(userId, movieId);
     }
 
-    public Task<Void> addMovieReviews(int movieId, MovieReview review) {
+    public Completable addMovieReviews(int movieId, MovieReview review) {
         return dataSource.addMovieReviews(movieId, review);
     }
 
+    public Pager<Long, MovieReview> getMovieReviewPager(int movieId) {
+        return dataSource.getMovieReviewPager(movieId);
+    }
 }

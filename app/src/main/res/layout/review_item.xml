@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="review"
+            type="architecture.data.model.movie.in_app.MovieReview" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/review_container_background"
+        android:padding="15dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/authorImageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/user_image"
+            app:userAvatar="@{review.author.avatar_url}"
+            app:defaultAvatar="@{@drawable/default_user}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearance="@style/RoundShapableImageView" />
+
+        <TextView
+            android:id="@+id/authorNameTextView"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:fontFamily="@font/albert_sans_bold"
+            android:gravity="start|center_vertical"
+            android:lines="1"
+            android:textColor="@color/white"
+            android:layout_marginStart="5dp"
+            android:textSize="18sp"
+            android:text="@{review.author.name}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/authorImageView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Doan Khac Minh" />
+
+        <TextView
+            android:id="@+id/createdDayTextView"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            tools:text="23/01/2003"
+            android:alpha="0.4"
+            android:textSize="14sp"
+            android:layout_marginStart="5dp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/albert_sans_bold"
+            app:reviewTime="@{String.valueOf(review.created_time)}"
+            android:gravity="start|center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/authorImageView"
+            app:layout_constraintTop_toBottomOf="@+id/authorNameTextView" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="15dp"
+            android:textSize="16sp"
+            android:text="@{review.content}"
+            android:fontFamily="@font/albert_sans_regular"
+            tools:text="@string/login_note"
+            app:layout_constraintTop_toBottomOf="@+id/createdDayTextView" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

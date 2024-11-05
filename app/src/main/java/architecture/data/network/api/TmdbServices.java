@@ -1,9 +1,8 @@
 package architecture.data.network.api;
 import com.google.gson.JsonObject;
-
 import java.util.Map;
-
 import architecture.data.model.genre.Genres;
+import architecture.data.model.image.ApiTmDbImage;
 import architecture.data.model.movie.category.ApiMovieDetails;
 import architecture.data.model.movie.category.MovieByGenre;
 import architecture.data.model.movie.category.PlayingApiMovie;
@@ -14,11 +13,11 @@ import architecture.data.model.movie.category.TrendingApiMovie;
 import architecture.data.model.movie.category.UpcomingApiMovie;
 import architecture.data.model.movie.other.ApiMovieClip;
 import architecture.data.model.people.ApiPeople;
+import architecture.data.model.people.ApiPeopleDetail;
 import architecture.data.model.people.MoviePeople;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -98,4 +97,10 @@ public interface TmdbServices {
     @Headers("Content-Type: application/json;charset=utf-8")
     @POST("3/movie/{movie_id}/rating")
     Completable addRating(@Path("movie_id") int movieId, @Query("guest_session_id") String session, @Body JsonObject rating);
+
+    @GET("3/person/{person_id}")
+    Single<ApiPeopleDetail> loadPeopleDetail(@Path("person_id") int personId);
+
+    @GET("3/person/{person_id}/images")
+    Single<ApiTmDbImage> loadPeopleImages(@Path("person_id") int personId);
 }

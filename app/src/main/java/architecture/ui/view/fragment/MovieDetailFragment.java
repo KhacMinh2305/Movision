@@ -2,7 +2,6 @@ package architecture.ui.view.fragment;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -10,16 +9,13 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import com.example.movision.R;
 import com.example.movision.databinding.FragmentMovieDetailBinding;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
-
 import architecture.data.model.movie.in_app.ClipUrl;
 import architecture.ui.view.adapter.MovieCasterAdapter;
 import architecture.ui.view.adapter.MovieClipAdapter;
@@ -37,12 +33,9 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class MovieDetailFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -50,15 +43,6 @@ public class MovieDetailFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MovieDetailFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MovieDetailFragment newInstance(String param1, String param2) {
         MovieDetailFragment fragment = new MovieDetailFragment();
         Bundle args = new Bundle();
@@ -71,7 +55,6 @@ public class MovieDetailFragment extends Fragment {
     private FragmentMovieDetailBinding binding;
     private MovieDetailViewModel viewModel;
     private NavController navController;
-    //private BottomSheetBehavior<ConstraintLayout> sheetBehavior;
     private int movieId;
 
     @Override
@@ -110,7 +93,6 @@ public class MovieDetailFragment extends Fragment {
         navController = Navigation.findNavController(binding.getRoot());
         binding.setLifecycleOwner(getViewLifecycleOwner());
         binding.setViewModel(viewModel);
-
     }
 
     private void loadInitially() {
@@ -122,17 +104,15 @@ public class MovieDetailFragment extends Fragment {
                 Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show());
     }
 
-    /*private void observeSheetState() {
-        viewModel.getReviewSheetState().observe(getViewLifecycleOwner(), state ->
-                sheetBehavior.setState(state ? BottomSheetBehavior.STATE_EXPANDED : BottomSheetBehavior.STATE_COLLAPSED));
-    }*/
-
-    private void observeCastersMovieState() {
+    private void observeMovieCastersState() {
         viewModel.getCastersState().observe(getViewLifecycleOwner(), casters -> {
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.HORIZONTAL, false);
             binding.casterRecyclerView.setLayoutManager(layoutManager);
-            MovieCasterAdapter adapter = new MovieCasterAdapter(getContext(), id ->
-                    Log.d("Debug", "Navigate to People Fragment : " + id));
+            MovieCasterAdapter adapter = new MovieCasterAdapter(getContext(), id -> {
+                Bundle bundle = new Bundle();
+                bundle.putInt("personId", id);
+                navController.navigate(R.id.action_movieDetailFragment_to_peopleFragment, bundle);
+            });
             binding.casterRecyclerView.setAdapter(adapter);
             binding.casterRecyclerView.addItemDecoration(new RecyclerViewItemDecoration(45));
             adapter.submit(casters);
@@ -155,10 +135,8 @@ public class MovieDetailFragment extends Fragment {
             binding.recommendationRecyclerView.setLayoutManager(
                     new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
             binding.recommendationRecyclerView.addItemDecoration(new RecyclerViewItemDecoration(45));
-            SimilarMovieAdapter adapter =  new SimilarMovieAdapter(getContext(), movieId -> {
-                Bundle bundle = new Bundle();
-                bundle.putInt("movieId", movieId);
-                navController.navigate(R.id.action_movieDetailFragment_self, bundle);
+            SimilarMovieAdapter adapter =  new SimilarMovieAdapter(getContext(), id -> {
+                navController.navigate(R.id.action_movieDetailFragment_self, createBundle(id));
             });
             binding.recommendationRecyclerView.setAdapter(adapter);
             adapter.submitList(similarMovies);
@@ -167,17 +145,26 @@ public class MovieDetailFragment extends Fragment {
 
     private void observeStates() {
         observeMessage();
-        //observeSheetState();
-        observeCastersMovieState();
+        observeMovieCastersState();
         observeMovieClipState();
         observeSimilarMoviesState();
-        viewModel.getFavoriteState().observe(getViewLifecycleOwner(), binding.favoriteCheckBox::setChecked);
+        viewModel.getFavoriteState().observe(getViewLifecycleOwner(), favorite -> {
+            if(favorite) {
+                binding.favoriteCheckBox.setChecked(true);
+            }
+        });
     }
 
     private void loadNewClip(String url, int currIndex) {
         binding.playerWebView.loadUrl(url);
         binding.clipRecyclerView.smoothScrollToPosition(currIndex);
         binding.clipRecyclerView.syncSnappedIndex(currIndex);
+    }
+
+    private Bundle createBundle(int id) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("movieId", id);
+        return bundle;
     }
 
     private void setupEvent() {
@@ -201,22 +188,24 @@ public class MovieDetailFragment extends Fragment {
             ClipUrl clipUrl = adapter.getListData().get(currIndex);
             loadNewClip(clipUrl.getUrl(), currIndex);
         });
+        binding.reviewImageButton.setOnClickListener(view ->
+                navController.navigate(R.id.action_movieDetailFragment_to_reviewFragment, createBundle(movieId)));
         addRating();
-        obCheckFavoriteCheckBox();
-        /*changeReviewsSheetState();
-        addReview();*/
+        onCheckFavoriteCheckBox();
     }
 
-    // TODO: add logic get rating from user instead of using fixed value
     private void addRating() {
-        binding.rateCheckBox.setOnCheckedChangeListener((compoundButton, checked) -> {
-            if(checked) {
-                viewModel.rateMovie(8.5f);
-            }
-        });
+        binding.rateCheckBox.setOnCheckedChangeListener((compoundButton, checked) ->
+                RatingDialogFragment.newInstance(rating -> {
+                    if (rating < 0) {
+                        return;
+                    }
+                    viewModel.rateMovie((float) rating);
+                })
+                .show(getChildFragmentManager(), RatingDialogFragment.TAG));
     }
 
-    private void obCheckFavoriteCheckBox() {
+    private void onCheckFavoriteCheckBox() {
         binding.favoriteCheckBox.setOnCheckedChangeListener((compoundButton, checked) -> {
             if(checked) {
                 viewModel.addToFavoriteList();
@@ -225,18 +214,4 @@ public class MovieDetailFragment extends Fragment {
             viewModel.removeFromFavoriteList();
         });
     }
-
-    /*private void changeReviewsSheetState() {
-        binding.seeAllReviewsTextView.setOnClickListener(view ->
-                viewModel.setReviewSheetState(true));
-        binding.reviewSheet.closeSheetImageButton.setOnClickListener(view ->
-                viewModel.setReviewSheetState(false));
-    }
-
-    private void addReview() {
-        binding.reviewSheet.sendImageButton.setOnClickListener(view -> {
-            String reviewContent = binding.reviewSheet.reviewEditText.getText().toString();
-            viewModel.addMovieReview(reviewContent);
-        });
-    }*/
 }

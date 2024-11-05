@@ -1,5 +1,4 @@
-package architecture.data.network.other;
-import android.util.Log;
+package architecture.data.source.other;
 import androidx.annotation.NonNull;
 import androidx.annotation.experimental.UseExperimental;
 import androidx.paging.ExperimentalPagingApi;
@@ -84,8 +83,7 @@ public class CategoryMovieRemoteMediator extends RxRemoteMediator<Integer, Movie
                     if(loadType != LoadType.REFRESH && key.nextKey == 1) {
                         return Single.just(new MediatorResult.Success(true));
                     }
-                    Log.d("LOADING", key.nextKey + ""); // test
-                    MovieConversionHelper helper = new MovieConversionHelper(); //  test
+                    MovieConversionHelper helper = new MovieConversionHelper();
                     int nextKey = key.nextKey;
                     if(AppConstant.CATEGORY_TRENDING_TAG.equals(movieTag)) {
                         return apiService.loadTrendingMovies("day", nextKey) //convertApiDataToLocalData(apiMovie.getResults())

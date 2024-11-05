@@ -7,19 +7,13 @@ import java.util.List;
 import java.util.Objects;
 import javax.inject.Inject;
 import architecture.data.model.movie.in_app.ClipUrl;
-import architecture.data.model.movie.in_app.MovieReview;
-import architecture.data.model.movie.in_app.ReviewAuthor;
 import architecture.data.model.movie.in_app.SimilarMovie;
 import architecture.data.model.people.Caster;
 import architecture.data.repo.MovieRepository;
 import architecture.data.repo.PeopleRepository;
 import architecture.data.repo.ProfileRepository;
-import architecture.domain.HashingHelper;
 import architecture.other.AppConstant;
 import dagger.hilt.android.lifecycle.HiltViewModel;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @HiltViewModel
 public class MovieDetailViewModel extends ViewModel {
@@ -44,7 +38,6 @@ public class MovieDetailViewModel extends ViewModel {
     private MutableLiveData<List<Caster>> castersState;
     private MutableLiveData<List<ClipUrl>> movieClipsState;
     private MutableLiveData<List<SimilarMovie>> similarMovieState;
-    private MutableLiveData<Boolean> reviewSheetState;
     private MutableLiveData<String> messageState;
 
     public MutableLiveData<String> getMovieImageUrlState() { return movieImageUrlState; }
@@ -61,10 +54,7 @@ public class MovieDetailViewModel extends ViewModel {
     public MutableLiveData<List<Caster>> getCastersState() { return castersState; }
     public MutableLiveData<List<ClipUrl>> getMovieClipsState() { return movieClipsState; }
     public MutableLiveData<List<SimilarMovie>> getSimilarMovieState() { return similarMovieState; }
-    public MutableLiveData<Boolean> getReviewSheetState() { return reviewSheetState; }
     public MutableLiveData<String> getMessageState() { return messageState; }
-
-    public void setReviewSheetState(boolean state) { reviewSheetState.setValue(state); }
 
     @Inject
     public MovieDetailViewModel(MovieRepository movieRepo, PeopleRepository peopleRepo, ProfileRepository profileRepo) {
@@ -96,7 +86,6 @@ public class MovieDetailViewModel extends ViewModel {
         castersState = new MutableLiveData<>();
         movieClipsState = new MutableLiveData<>();
         similarMovieState = new MutableLiveData<>();
-        reviewSheetState = new MutableLiveData<>();
         messageState = new MutableLiveData<>();
     }
 
@@ -175,6 +164,8 @@ public class MovieDetailViewModel extends ViewModel {
     }
 
     public void addToFavoriteList() {
+        if(Boolean.TRUE.equals(favoriteState.getValue())) return;
+        Log.d("Debug", "Them vao danh sach yeu thich !");
         String movieName = movieNameState.getValue();
         double movieRating = Double.parseDouble(Objects.requireNonNull(movieRatingState.getValue()));
         String posterPath = movieImageUrlState.getValue();
@@ -187,36 +178,5 @@ public class MovieDetailViewModel extends ViewModel {
         movieRepo.removeFromFavoriteList(profileRepo.getUserUid(), movieId)
                 .addOnSuccessListener(unused -> Log.d("Debug", "Success"))
                 .addOnFailureListener(e -> Log.d("Debug", e.toString()));
-    }
-
-    private Single<MovieReview> createReview(String content) {
-        HashingHelper hashingHelper = new HashingHelper();
-        return Single.fromCallable(() -> {
-            long time = System.currentTimeMillis();
-            String authorId = profileRepo.getUserUid();
-            String authorName = profileRepo.getUserData().get("name");
-            authorName = (AppConstant.UNDEFINED_FIELD.equals(authorName)) ? "User#" + authorId : authorName;
-            String avatarUrl = profileRepo.getUserAvatarUrl();
-            avatarUrl = (avatarUrl == null) ? "" : avatarUrl;
-            ReviewAuthor author = new ReviewAuthor(authorId, authorName, avatarUrl, time);
-            String reviewId = hashingHelper.hash(movieId + authorId + time);
-            return new MovieReview(reviewId, content, author);
-        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread());
-    }
-
-    /** @noinspection ResultOfMethodCallIgnored*/
-    @SuppressLint("CheckResult")
-    public void addMovieReview(String content) {
-        if(content == null || content.isEmpty()) {
-            return;
-        }
-        createReview(content).subscribe(review ->
-            movieRepo.addMovieReviews(movieId, review).addOnCompleteListener(task -> {
-                if(task.isSuccessful()) {
-                    Log.d("DEBUG", "add review thanh cong !");
-                    return;
-                }
-                Log.d("DEBUG", "add review that bai : " + Objects.requireNonNull(task.getException()));
-            }), throwable -> Log.d("ADD_ERROR", throwable.toString()));
     }
 }

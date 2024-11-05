@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_nav_graph"
     app:startDestination="@id/homeFragment">
 
@@ -24,17 +25,31 @@
             android:id="@+id/action_homeFragment_to_movieDetailFragment"
             app:destination="@id/movieDetailFragment"
             app:restoreState="true"/>
+        <action
+            android:id="@+id/action_homeFragment_to_peopleFragment"
+            app:destination="@id/peopleFragment"
+            app:restoreState="true"/>
     </fragment>
 
     <fragment
         android:id="@+id/movieListFragment"
         android:name="architecture.ui.view.fragment.MovieListFragment"
-        android:label="MovieListFragment" />
+        android:label="MovieListFragment" >
+        <action
+            android:id="@+id/action_movieListFragment_to_movieDetailFragment"
+            app:destination="@id/movieDetailFragment"
+            app:restoreState="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/peopleListFragment"
         android:name="architecture.ui.view.fragment.PeopleListFragment"
-        android:label="PeopleListFragment" />
+        android:label="PeopleListFragment" >
+        <action
+            android:id="@+id/action_peopleListFragment_to_peopleFragment"
+            app:destination="@id/peopleFragment"
+            app:restoreState="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/profileFragment"
@@ -58,5 +73,22 @@
             android:id="@+id/action_movieDetailFragment_self"
             app:destination="@id/movieDetailFragment"
             app:restoreState="true"/>
+        <action
+            android:id="@+id/action_movieDetailFragment_to_reviewFragment"
+            app:destination="@id/reviewFragment"
+            app:restoreState="true"/>
+        <action
+            android:id="@+id/action_movieDetailFragment_to_peopleFragment"
+            app:destination="@id/peopleFragment"
+            app:restoreState="true"/>
     </fragment>
+    <fragment
+        android:id="@+id/reviewFragment"
+        android:name="architecture.ui.view.fragment.ReviewFragment"
+        android:label="fragment_review"
+        tools:layout="@layout/fragment_review" />
+    <fragment
+        android:id="@+id/peopleFragment"
+        android:name="architecture.ui.view.fragment.PeopleFragment"
+        android:label="PeopleFragment" />
 </navigation>

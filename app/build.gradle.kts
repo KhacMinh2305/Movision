@@ -112,6 +112,7 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
     // Crop Image
     implementation("com.vanniktech:android-image-cropper:4.6.0")
+    implementation("com.github.Dimezis:BlurView:version-2.0.5")
 }
 
 kapt {

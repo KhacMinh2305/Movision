@@ -210,6 +210,19 @@
                 app:layout_constraintStart_toEndOf="@id/ratingContainer"
                 app:layout_constraintTop_toBottomOf="@+id/durationTextView" />
 
+            <ImageButton
+                android:id="@+id/reviewImageButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="5dp"
+                android:importantForAccessibility="no"
+                android:padding="11dp"
+                android:background="@null"
+                android:src="@drawable/ic_comment"
+                app:layout_constraintStart_toEndOf="@id/favoriteCheckBox"
+                app:layout_constraintTop_toBottomOf="@+id/durationTextView"/>
+
             <TextView
                 android:id="@+id/castTitleTextView"
                 android:layout_width="0dp"
@@ -302,44 +315,6 @@
                 app:layout_constraintEnd_toEndOf="parent"/>
 
             <TextView
-                android:id="@+id/reviewTextView"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:fontFamily="@font/albert_sans_bold"
-                android:text="@string/review"
-                android:textSize="20sp"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/towardImageButton"/>
-
-            <TextView
-                android:id="@+id/seeAllReviewsTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:fontFamily="@font/albert_sans_regular"
-                android:text="@string/see_more"
-                android:textSize="16sp"
-                android:textColor="@color/widget"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/towardImageButton"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/reviewsRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/reviewTextView"/>
-
-            <TextView
                 android:id="@+id/recommendationTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -351,7 +326,7 @@
                 android:layout_marginEnd="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/reviewsRecyclerView" />
+                app:layout_constraintTop_toBottomOf="@+id/towardImageButton" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recommendationRecyclerView"
@@ -372,25 +347,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/recommendationRecyclerView"/>
-
-
-            <!--TODO: remove this to another fragment !-->
-            <!--<View
-                android:id="@+id/bottomSheetAnchorView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_gravity="bottom"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <include
-                android:id="@+id/reviewSheet"
-                layout="@layout/review_bottom_sheet"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_anchor="@id/bottomSheetAnchorView"
-                app:layout_anchorGravity="top" />-->
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

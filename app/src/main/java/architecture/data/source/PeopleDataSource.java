@@ -1,8 +1,6 @@
 package architecture.data.source;
 import androidx.paging.Pager;
 import androidx.paging.PagingConfig;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,9 +9,8 @@ import javax.inject.Singleton;
 import architecture.data.local.LocalDatabase;
 import architecture.data.local.dao.PeopleDao;
 import architecture.data.local.entity.People;
-import architecture.data.model.movie.category.SimilarApiMovie;
-import architecture.data.model.movie.in_app.SimilarMovie;
-import architecture.data.model.movie.result.ApiMovieResult;
+import architecture.data.local.entity.PeopleDetails;
+import architecture.data.model.people.ApiPeopleDetail;
 import architecture.data.model.people.Caster;
 import architecture.data.model.people.MoviePeople;
 import architecture.data.network.api.TmdbServices;
@@ -87,4 +84,10 @@ public class PeopleDataSource {
                 .map(MoviePeople::getCast).observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Single<PeopleDetails> loadPeopleDetails(int peopleId) {
+        return apiService.loadPeopleDetail(peopleId)
+                .subscribeOn(Schedulers.single())
+                .map(ApiPeopleDetail::toPeopleDetail)
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 }

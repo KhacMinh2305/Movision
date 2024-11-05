@@ -29,5 +29,10 @@
     <declare-styleable name="Profile">
         <attr name="username" format="string" />
         <attr name="defaultAvatar" format="reference"/>
+        <attr name="avatarUrl" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="Other">
+        <attr name="reviewTime" format="string"/>
     </declare-styleable>
 </resources>

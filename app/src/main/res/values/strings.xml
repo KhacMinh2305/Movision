@@ -56,4 +56,18 @@
     <string name="clip">Clips</string>
     <string name="same_movie">Movies like this</string>
     <string name="review">Reviews</string>
+    <string name="rate_movie_title">How many stars will you rate this movie ?</string>
+    <string name="images">Images</string>
+    <string name="casting_movies">Casting movies</string>
+    <string name="vote_avarage">Vote avarage range</string>
+    <string name="number_votes">Number of Votes</string>
+    <string name="to">to</string>
+    <string name="year">Year</string>
+    <string name="genre">Genre</string>
+    <string name="discover">Discover</string>
+    <string name="searchbar_hint">Search movie with name</string>
+    <string name="search_title">Explore Movies, Actors and more…</string>
+    <string name="history_empty">There has not been any history recently.</string>
+    <string name="movie">Movie</string>
+    <string name="people">People</string>
 </resources>

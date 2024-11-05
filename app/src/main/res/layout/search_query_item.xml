@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="query"
+            type="architecture.data.local.entity.SearchQuery" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_time"
+            android:scaleType="centerCrop"
+            android:padding="15dp"/>
+        
+        <TextView
+            android:id="@+id/queryTextView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            tools:text="Doan Khac Minh"
+            android:layout_marginStart="50dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="50dp"
+            android:gravity="start|center_vertical"
+            android:fontFamily="@font/albert_sans_regular"
+            android:textSize="15sp"/>
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_delete"
+            android:scaleType="centerCrop"
+            android:background="@null"
+            android:padding="15dp"
+            android:layout_gravity="end"/>
+    </FrameLayout>
+</layout>

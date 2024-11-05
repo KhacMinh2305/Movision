@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/discover_nav_graph"
-    app:startDestination="@id/dicoverFragment">
+    app:startDestination="@id/discoverFragment">
 
     <fragment
-        android:id="@+id/dicoverFragment"
-        android:name="architecture.ui.view.fragment.DicoverFragment"
-        android:label="fragment_dicover"
-        tools:layout="@layout/fragment_dicover" />
+        android:id="@+id/discoverFragment"
+        android:name="architecture.ui.view.fragment.DiscoverFragment"
+        android:label="fragment_discover"
+        tools:layout="@layout/fragment_discover" />
 </navigation>

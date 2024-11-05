@@ -26,7 +26,8 @@ import architecture.data.model.movie.result.ApiMovieResult;
 import architecture.data.model.movie.category.ApiMovieDetails;
 import architecture.data.model.movie.result.MovieClipResult;
 import architecture.data.network.api.TmdbServices;
-import architecture.data.network.other.CategoryMovieRemoteMediator;
+import architecture.data.source.other.CategoryMovieRemoteMediator;
+import architecture.data.source.other.MovieReviewSource;
 import architecture.domain.MovieConversionHelper;
 import architecture.other.AppConstant;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -44,6 +45,7 @@ public class MovieDataSource {
     private final MovieDao movieDao;
     private final RemoteKeyDao keyDao;
     private final MovieGenreSource genreSource;
+    private MovieReviewSource.AddingCallback reviewAddingCallback;
 
     @Inject
     public MovieDataSource(LocalDatabase db, FirebaseFirestore cloud,
@@ -293,33 +295,23 @@ public class MovieDataSource {
                 });
     }
 
-    public PublishSubject<List<MovieReview>> getMovieReviews(int movieId, long timeCursor, int limit) {
-        PublishSubject<List<MovieReview>> resultSource = PublishSubject.create();
-        cloud.collection("movie_review").document(String.valueOf(movieId))
-                .collection("records").whereGreaterThan("created_time", timeCursor).limit(limit)
-                .get().onSuccessTask(documentSnapshots -> {
-                    List<MovieReview> results = new ArrayList<>();
-                    documentSnapshots.forEach(docSnapshot ->
-                            results.add(docSnapshot.toObject(MovieReview.class)));
-                    return Tasks.forResult(results);
-                }).addOnSuccessListener(movieReviews -> {
-                    resultSource.onNext(movieReviews);
-                    if(movieReviews.isEmpty()) {
-                        resultSource.onComplete();
-                    }
-                }).addOnFailureListener(e -> {
-                    resultSource.onError(e);
-                    resultSource.onComplete();
-                });
-        return resultSource;
-    }
-
-    public Task<Void> addMovieReviews(int movieId, MovieReview review) {
-        return cloud.collection("movie_review").document(String.valueOf(movieId))
+    public Completable addMovieReviews(int movieId, MovieReview review) {
+        Task<Void> insertionTask = cloud.collection("movie_review").document(String.valueOf(movieId))
                 .collection("records").document(review.getId())
                 .set(review, SetOptions.merge());
+        return Completable.fromAction(() -> {
+                    Tasks.await(insertionTask);
+                    reviewAddingCallback.onReceivedNewReview(review);
+                }).subscribeOn(Schedulers.single()).observeOn(AndroidSchedulers.mainThread());
     }
-}
 
-// User can phai truy van 1 list cac movie ma ho da danh dau yeu thich
-// Movie can danh dau
+    public Pager<Long, MovieReview> getMovieReviewPager(int movieId) {
+        MovieReviewSource reviewSource = new MovieReviewSource(cloud, movieId, 10);
+        reviewAddingCallback = reviewSource.getAddingCallback();
+        Pager<Long, MovieReview> pager = new Pager<>(new PagingConfig(10),
+                () -> new MovieReviewSource(cloud, movieId, 10));
+        return pager;
+    }
+
+
+}
