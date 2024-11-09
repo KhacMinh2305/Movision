@@ -4,6 +4,7 @@ import java.util.Map;
 import architecture.data.model.genre.Genres;
 import architecture.data.model.image.ApiTmDbImage;
 import architecture.data.model.movie.category.ApiMovieDetails;
+import architecture.data.model.movie.category.ApiSearchMovie;
 import architecture.data.model.movie.category.MovieByGenre;
 import architecture.data.model.movie.category.PlayingApiMovie;
 import architecture.data.model.movie.category.PopularApiMovie;
@@ -103,4 +104,10 @@ public interface TmdbServices {
 
     @GET("3/person/{person_id}/images")
     Single<ApiTmDbImage> loadPeopleImages(@Path("person_id") int personId);
+
+    @GET("3/search/movie")
+    Single<ApiSearchMovie> loadMovieWithQuery(@Query("query") String query, @Query("page") int page);
+
+    @GET("3/search/person")
+    Single<ApiPeople> loadPeopleWithQuery(@Query("query") String query, @Query("page") int page);
 }

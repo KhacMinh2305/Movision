@@ -8,6 +8,7 @@ import javax.inject.Singleton;
 import architecture.data.local.entity.Movie;
 import architecture.data.local.entity.MovieDetails;
 import architecture.data.model.movie.in_app.ClipUrl;
+import architecture.data.model.movie.in_app.MovieItem;
 import architecture.data.model.movie.in_app.MovieReview;
 import architecture.data.model.movie.in_app.SimilarMovie;
 import architecture.data.source.MovieDataSource;
@@ -65,7 +66,6 @@ public class MovieRepository {
         return dataSource.getRatingOfMovie(userId, movieId);
     }
 
-
     public Task<Void> addToFavoriteList(String userId, int movieId, String movieName,
                                                      double movieRating, String posterPath) {
         return dataSource.addToFavoriteList(userId, movieId, movieName, movieRating, posterPath);
@@ -85,5 +85,9 @@ public class MovieRepository {
 
     public Pager<Long, MovieReview> getMovieReviewPager(int movieId) {
         return dataSource.getMovieReviewPager(movieId);
+    }
+
+    public Pager<Integer, MovieItem> getMovieSearchPager(String query) {
+        return dataSource.getMovieSearchPager(query);
     }
 }

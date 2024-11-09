@@ -16,13 +16,9 @@ public class SearchQuery {
     @ColumnInfo(name = "query")
     public String query;
 
-    @ColumnInfo(name = "tag")
-    public String tag;
-
-    public SearchQuery(long id, String userId, String query, String tag) {
+    public SearchQuery(long id, String userId, String query) {
         this.id = id;
         this.userId = userId;
         this.query = query;
-        this.tag = tag;
     }
 }

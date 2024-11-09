@@ -1,5 +1,4 @@
 package architecture.data.source.other;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.paging.PagingState;
@@ -16,7 +15,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MovieReviewSource extends RxPagingSource<Long, MovieReview> {
 
-    public static interface AddingCallback {
+    public interface AddingCallback {
         void onReceivedNewReview(MovieReview review);
     }
 
@@ -24,21 +23,14 @@ public class MovieReviewSource extends RxPagingSource<Long, MovieReview> {
     private final int movieId;
     private final int pageSize;
     private final List<MovieReview> addedList;
-    private final AddingCallback callback;
+    //private final AddingCallback callback;
 
     public MovieReviewSource(FirebaseFirestore cloud, int movieId, int pageSize) {
         this.cloud = cloud;
         this.movieId = movieId;
         this.pageSize = pageSize;
         this.addedList = new ArrayList<>();
-        callback = review -> {
-            Log.d("Debug", "add thanh cong " + review.getId());
-            addedList.add(review);
-        };
-    }
-
-    public AddingCallback getAddingCallback () {
-        return callback;
+       // callback = addedList::add;
     }
 
     private Single<List<MovieReview>> loadItems(Long timeCursor) {
@@ -106,4 +98,5 @@ public class MovieReviewSource extends RxPagingSource<Long, MovieReview> {
     }
 }
 
-//TODO: Sau nay sua lai , bien no thanh dang cache nhu ben People
+// Call back used for adding new review to recycler view to optimization (don't have to load all reviews again)
+// Keep it and optimize later

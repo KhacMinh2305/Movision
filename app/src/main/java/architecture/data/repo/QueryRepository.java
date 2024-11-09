@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import architecture.data.local.entity.SearchQuery;
 import architecture.data.source.QueryDataSource;
+import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
 
 @Singleton
@@ -20,12 +21,12 @@ public class QueryRepository {
         return querySource.getSearchQueriesHistory();
     }
 
-    public void addSearchQuery(String userId, String query, String tag) {
-        querySource.addSearchQuery(userId, query, tag);
+    public Single<SearchQuery> addSearchQuery(String query) {
+        return querySource.addSearchQuery(query);
     }
 
-    public void deleteSearchQuery(long id) {
-        querySource.deleteSearchQuery(id);
+    public Completable deleteSearchQuery(long id) {
+        return querySource.deleteSearchQuery(id);
     }
 
     public void deleteAllSearchQueries() {

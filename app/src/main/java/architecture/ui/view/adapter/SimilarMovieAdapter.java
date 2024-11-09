@@ -12,15 +12,15 @@ import com.example.movision.R;
 import com.example.movision.databinding.SimilarMovieItemBinding;
 import java.util.List;
 import architecture.data.model.movie.in_app.SimilarMovie;
-import architecture.ui.view.other.SimilarMovieOnClickCallback;
+import architecture.ui.view.other.OnClickCallback;
 
 public class SimilarMovieAdapter extends RecyclerView.Adapter<SimilarMovieAdapter.SimilarMovieViewHolder> {
 
     private Context context;
     private final AsyncListDiffer<SimilarMovie> mAsyncListDiffer;
-    private final SimilarMovieOnClickCallback callback;
+    private final OnClickCallback callback;
 
-    public SimilarMovieAdapter(Context context, SimilarMovieOnClickCallback callback) {
+    public SimilarMovieAdapter(Context context, OnClickCallback callback) {
         this.context = context;
         this.callback = callback;
         DiffUtil.ItemCallback<SimilarMovie> diffUtilCallback = new DiffUtil.ItemCallback<>() {

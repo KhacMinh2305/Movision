@@ -24,12 +24,6 @@ import architecture.ui.view.other.RecyclerViewItemDecoration;
 import architecture.ui.viewmodel.MovieDetailViewModel;
 import dagger.hilt.android.AndroidEntryPoint;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MovieDetailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-
 @AndroidEntryPoint
 public class MovieDetailFragment extends Fragment {
 
@@ -40,7 +34,7 @@ public class MovieDetailFragment extends Fragment {
     private String mParam2;
 
     public MovieDetailFragment() {
-        // Required empty public constructor
+
     }
 
     public static MovieDetailFragment newInstance(String param1, String param2) {
@@ -73,7 +67,6 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentMovieDetailBinding.inflate(inflater, container, false);
-        //sheetBehavior = BottomSheetBehavior.from(binding.reviewSheet.movieReviewBottomSheet);
         WebSettings settings = binding.playerWebView.getSettings();
         settings.setJavaScriptEnabled(true);
         return binding.getRoot();

@@ -10,11 +10,15 @@ import architecture.data.local.LocalDatabase;
 import architecture.data.local.dao.PeopleDao;
 import architecture.data.local.entity.People;
 import architecture.data.local.entity.PeopleDetails;
+import architecture.data.model.movie.in_app.MovieItem;
 import architecture.data.model.people.ApiPeopleDetail;
 import architecture.data.model.people.Caster;
 import architecture.data.model.people.MoviePeople;
+import architecture.data.model.people.PeopleItem;
 import architecture.data.network.api.TmdbServices;
+import architecture.data.source.other.CachingSource;
 import architecture.data.source.other.PeoplePagingSource;
+import architecture.data.source.other.SearchPeopleSource;
 import architecture.domain.PeopleConversionHelper;
 import architecture.other.AppConstant;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -24,13 +28,15 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 @Singleton
 public class PeopleDataSource {
     private final LocalDatabase db;
+    private final CachingSource cachingSource;
     private final TmdbServices apiService;
     private final PeopleDao peopleDao;
     private Map<String, PeoplePagingSource.DataContainer> pagingSourceMap;
 
     @Inject
-    public PeopleDataSource(LocalDatabase db, TmdbServices apiService, PeopleDao peopleDao) {
+    public PeopleDataSource(LocalDatabase db, CachingSource cachingSource, TmdbServices apiService, PeopleDao peopleDao) {
         this.db = db;
+        this.cachingSource = cachingSource;
         this.apiService = apiService;
         this.peopleDao = peopleDao;
         init();
@@ -89,5 +95,13 @@ public class PeopleDataSource {
                 .subscribeOn(Schedulers.single())
                 .map(ApiPeopleDetail::toPeopleDetail)
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Pager<Integer, PeopleItem> getPeopleSearchPager(String query) {
+        SearchPeopleSource source = new SearchPeopleSource(apiService, cachingSource, query);
+        source.init();
+        Pager<Integer, PeopleItem> pager = new Pager<>(new PagingConfig(20),
+                () -> source);
+        return pager;
     }
 }

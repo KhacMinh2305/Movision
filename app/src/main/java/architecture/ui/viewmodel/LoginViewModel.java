@@ -2,14 +2,11 @@ package architecture.ui.viewmodel;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
-
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
-import com.google.android.gms.tasks.Tasks;
 import java.util.Objects;
 import javax.inject.Inject;
 import architecture.data.repo.AuthenticationRepository;
@@ -54,7 +51,8 @@ public class LoginViewModel extends ViewModel {
 
     /*********************************************************************CONSTRUCTOR*********************************************************************/
     @Inject
-    public LoginViewModel(SavedStateHandle stateHandle, GenreRepository genreRepo, AuthenticationRepository authRepo, ConnectionMonitor connMonitor) {
+    public LoginViewModel(SavedStateHandle stateHandle, GenreRepository genreRepo,
+                          AuthenticationRepository authRepo, ConnectionMonitor connMonitor) {
         this.stateHandle = stateHandle;
         this.genreRepo = genreRepo;
         this.authRepo = authRepo;
@@ -62,9 +60,7 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void init() {
-        if(initialization) {
-           return;
-        }
+        if(initialization) return;
         sheetUiState = new VerificationCodeUiState();
         compositeDisposable = new CompositeDisposable();
         initialization = true;

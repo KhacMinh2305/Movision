@@ -72,6 +72,6 @@ public class AppConstant {
 
     public static final String UNDEFINED_FIELD = "Undefined";
 
-    public static String MOVIE_TAG = "movie";
-    public static String PEOPLE_TAG = "people";
+    public static String SEARCH_MOVIE_TAG = "movie";
+    public static String SEARCH_PEOPLE_TAG = "people";
 }

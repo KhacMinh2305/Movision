@@ -16,9 +16,12 @@ public interface SearchHistoryDao {
     @Query("DELETE FROM search_history WHERE id = :id")
     void deleteQuery(long id);
 
-    @Query("DELETE FROM search_history")
-    void deleteAllHistory();
+    @Query("DELETE FROM search_history WHERE user_id = :userId")
+    void deleteAllHistory(String userId);
 
-    @Query("SELECT * FROM search_history")
-    Single<List<SearchQuery>> getAllHistory();
+    @Query("SELECT * FROM search_history WHERE user_id = :userId")
+    Single<List<SearchQuery>> getAllHistory(String userId);
+
+    @Query("SELECT COUNT(*) FROM search_history")
+    int getTotalRecord();
 }

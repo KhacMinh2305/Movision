@@ -1,7 +1,10 @@
 <layout>
 
     <data>
-
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="architecture.ui.viewmodel.DiscoverViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -13,11 +16,23 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context="architecture.ui.view.fragment.DiscoverFragment">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="@string/searching_history"
+            android:fontFamily="@font/albert_sans_bold"
+            android:textSize="20sp"
+            android:gravity="start|center_vertical"
+            android:layout_marginTop="110dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"/>
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searchHistoryRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="120dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="145dp"
             android:layout_marginBottom="20dp"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
@@ -33,6 +48,7 @@
             android:layout_height="wrap_content"
             android:text="@string/history_empty"
             android:layout_gravity="center"
+            android:visibility="@{viewModel.historyEmptyTextState ? View.VISIBLE : View.GONE}"
             android:fontFamily="@font/albert_sans_bold"
             android:textSize="16sp"
             android:alpha="0.3"/>
@@ -80,7 +96,7 @@
                     android:layout_gravity="end|center_vertical"/>
 
                 <com.google.android.material.search.SearchBar
-                    android:id="@+id/search_bar"
+                    android:id="@+id/searchBar"
                     android:layout_width="match_parent"
                     android:layout_height="65dp"
                     app:buttonGravity="center_vertical"
@@ -90,55 +106,102 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.google.android.material.search.SearchView
+            android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/searchbar_hint"
-            app:backgroundTint="@color/content_container"
-            app:layout_anchor="@id/search_bar">
+            app:backgroundTint="@color/app_background"
+            app:layout_anchor="@id/searchBar">
 
-            <com.google.android.material.chip.ChipGroup
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:paddingTop="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                app:chipSpacingHorizontal="10dp"
-                app:singleLine="true"
-                app:singleSelection="true">
+                android:layout_height="match_parent">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/movieChip"
-                    android:checkable="true"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:text="@string/movie"
-                    android:fontFamily="@font/albert_sans_bold"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    app:chipBackgroundColor="@color/search_chip_color"
-                    app:chipCornerRadius="50dp"
-                    app:chipStrokeWidth="2dp"
-                    app:chipStrokeColor="@color/widget"/>
+                <ProgressBar
+                    android:id="@+id/loadingProgressBar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:visibility="@{viewModel.loadingState ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/peopleChip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:text="@string/people"
-                    android:textSize="18sp"
-                    android:fontFamily="@font/albert_sans_bold"
-                    android:textColor="@color/white"
-                    app:chipCornerRadius="50dp"
-                    app:chipStrokeWidth="2dp"
-                    app:chipStrokeColor="@color/widget"
-                    app:chipBackgroundColor="@color/search_chip_color"
-                    android:checkable="true"
-                    android:clickable="true"
-                    android:focusable="true"/>
-            </com.google.android.material.chip.ChipGroup>
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/filterChipGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:paddingTop="5dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    app:chipSpacingHorizontal="10dp"
+                    app:singleLine="true"
+                    android:visibility="@{viewModel.searchResultAvailableState ? View.VISIBLE : View.GONE}"
+                    app:singleSelection="true"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <architecture.ui.view.custom.NonTouchableChip
+                        android:id="@+id/movieChip"
+                        android:checkable="true"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:text="@string/movie"
+                        android:checked="true"
+                        android:fontFamily="@font/albert_sans_bold"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        app:chipBackgroundColor="@color/search_chip_color"
+                        app:chipCornerRadius="50dp"
+                        app:chipStrokeWidth="2dp"
+                        app:chipStrokeColor="@color/widget"/>
+
+                    <architecture.ui.view.custom.NonTouchableChip
+                        android:id="@+id/peopleChip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:text="@string/people"
+                        android:textSize="18sp"
+                        android:fontFamily="@font/albert_sans_bold"
+                        android:textColor="@color/white"
+                        app:chipCornerRadius="50dp"
+                        app:chipStrokeWidth="2dp"
+                        app:chipStrokeColor="@color/widget"
+                        app:chipBackgroundColor="@color/search_chip_color"
+                        android:checkable="true"
+                        android:clickable="true"
+                        android:focusable="true"/>
+                </com.google.android.material.chip.ChipGroup>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/movieRecyclerView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:visibility="@{viewModel.searchResultViewsState ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintTop_toBottomOf="@+id/filterChipGroup"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/peopleRecyclerView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:visibility="@{viewModel.searchResultViewsState ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintTop_toBottomOf="@+id/filterChipGroup"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.search.SearchView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

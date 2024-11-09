@@ -1,16 +1,10 @@
 package architecture.ui.viewmodel;
 import android.annotation.SuppressLint;
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelKt;
 import androidx.paging.PagingData;
 import androidx.paging.rxjava3.PagingRx;
-
-import java.util.List;
-import java.util.concurrent.Flow;
-
 import javax.inject.Inject;
 import architecture.data.model.movie.in_app.MovieReview;
 import architecture.data.model.movie.in_app.ReviewAuthor;
@@ -23,7 +17,6 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import io.reactivex.rxjava3.subjects.PublishSubject;
 
 @HiltViewModel
 public class ReviewViewModel extends ViewModel {
@@ -34,12 +27,10 @@ public class ReviewViewModel extends ViewModel {
     private Flowable<PagingData<MovieReview>> reviewFlowable;
     private boolean initialized = false;
 
-    //private PublishSubject<PagingData<MovieReview>> reviewSubject;
     private MutableLiveData<Boolean> addReviewState;
 
     public Flowable<PagingData<MovieReview>> getReviewFlowable() { return reviewFlowable; }
     public MutableLiveData<Boolean> getAddReviewState() { return addReviewState; }
-    //public PublishSubject<PagingData<MovieReview>> getReviewSubject() { return reviewSubject; }
 
     @Inject
     public ReviewViewModel(MovieRepository movieRepo, ProfileRepository profileRepo) {

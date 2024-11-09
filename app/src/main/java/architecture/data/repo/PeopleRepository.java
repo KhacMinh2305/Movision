@@ -6,6 +6,7 @@ import javax.inject.Singleton;
 import architecture.data.local.entity.People;
 import architecture.data.local.entity.PeopleDetails;
 import architecture.data.model.people.Caster;
+import architecture.data.model.people.PeopleItem;
 import architecture.data.source.PeopleDataSource;
 import io.reactivex.rxjava3.core.Single;
 
@@ -37,5 +38,9 @@ public class PeopleRepository {
 
     public Single<PeopleDetails> loadPeopleDetails(int peopleId) {
         return dataSource.loadPeopleDetails(peopleId);
+    }
+
+    public Pager<Integer, PeopleItem> getPeopleSearchPager(String query) {
+        return dataSource.getPeopleSearchPager(query);
     }
 }

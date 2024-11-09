@@ -33,17 +33,30 @@
             android:id="@+id/bottomNavbar"
             android:layout_width="match_parent"
             android:layout_height="65dp"
-            android:visibility="@{viewmodel.shouldHideBottomNavBar ? View.GONE : View.VISIBLE}"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
-            android:layout_marginBottom="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:labelVisibilityMode="unlabeled"
-            app:shapeAppearance="@style/bottom_nav_background"
+            android:visibility="@{viewmodel.shouldHideBottomNavBar ? View.GONE : View.VISIBLE}"
             app:backgroundTint="@color/widget"
             app:itemIconTint="@color/bottom_nav_item_color"
-            app:menu="@menu/bottom_nav_menu"/>
+            app:labelVisibilityMode="unlabeled"
+            app:layout_constraintBottom_toTopOf="@+id/connectionTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/bottom_nav_menu"
+            app:shapeAppearance="@style/bottom_nav_background" />
+
+        <TextView
+            android:id="@+id/connectionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lost_connection"
+            android:fontFamily="@font/albert_sans_regular"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:background="@color/content_container"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,5 +1,5 @@
 package architecture.ui.view.other;
 
-public interface SimilarMovieOnClickCallback {
+public interface OnClickCallback {
     void onClick(int movieId);
 }

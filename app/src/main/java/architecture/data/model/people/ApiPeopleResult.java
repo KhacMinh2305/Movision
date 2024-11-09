@@ -1,10 +1,7 @@
 package architecture.data.model.people;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
-
 import architecture.data.local.entity.People;
 
 public class ApiPeopleResult {
@@ -75,5 +72,12 @@ public class ApiPeopleResult {
 
     public People toPeople() {
         return new People(this.id, this.name, this.gender, this.knownForDepartment, this.profilePath);
+    }
+
+    public PeopleItem toPeopleItem() {
+        String gender = "Undefined";
+        gender = this.gender == 1 ? "Female" : gender;
+        gender = this.gender == 2 ? "Male" : gender;
+        return new PeopleItem(this.id, this.name, gender, this.profilePath);
     }
 }

@@ -98,7 +98,7 @@ public class ReviewFragment extends Fragment {
                     MovieReviewAdapter adapter = (MovieReviewAdapter) binding.reviewRecyclerView.getAdapter();
                     assert adapter != null;
                     adapter.submitData(getLifecycle(), movieReviewPagingData);
-                }, throwable -> Log.d("ERROR", throwable.toString()));
+                }, throwable -> Log.d("ERROR", "Loi : " +  throwable.toString()));
 
         viewModel.getAddReviewState().observe(getViewLifecycleOwner(), success ->
                 ((MovieReviewAdapter) Objects.requireNonNull(binding.reviewRecyclerView.getAdapter())).refresh());

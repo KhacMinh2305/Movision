@@ -20,14 +20,17 @@ import architecture.data.local.entity.Movie;
 import architecture.data.local.entity.MovieDetails;
 import architecture.data.local.entity.RemoteKey;
 import architecture.data.model.movie.in_app.ClipUrl;
+import architecture.data.model.movie.in_app.MovieItem;
 import architecture.data.model.movie.in_app.MovieReview;
 import architecture.data.model.movie.in_app.SimilarMovie;
 import architecture.data.model.movie.result.ApiMovieResult;
 import architecture.data.model.movie.category.ApiMovieDetails;
 import architecture.data.model.movie.result.MovieClipResult;
 import architecture.data.network.api.TmdbServices;
+import architecture.data.source.other.CachingSource;
 import architecture.data.source.other.CategoryMovieRemoteMediator;
 import architecture.data.source.other.MovieReviewSource;
+import architecture.data.source.other.SearchMovieSource;
 import architecture.domain.MovieConversionHelper;
 import architecture.other.AppConstant;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -46,12 +49,13 @@ public class MovieDataSource {
     private final RemoteKeyDao keyDao;
     private final MovieGenreSource genreSource;
     private MovieReviewSource.AddingCallback reviewAddingCallback;
+    private final CachingSource cachingSource;
 
     @Inject
     public MovieDataSource(LocalDatabase db, FirebaseFirestore cloud,
                            AppDataStore dataStore, TmdbServices movieService,
                            MovieDao movieDao, RemoteKeyDao keyDao,
-                           MovieGenreSource genreSource) {
+                           MovieGenreSource genreSource, CachingSource cachingSource) {
         this.movieService = movieService;
         this.dataStore = dataStore;
         this.db = db;
@@ -59,6 +63,7 @@ public class MovieDataSource {
         this.movieDao = movieDao;
         this.keyDao = keyDao;
         this.genreSource = genreSource;
+        this.cachingSource = cachingSource;
     }
 
     // --------------------------------------load data for preview recycler views in home fragments--------------------------------------
@@ -299,19 +304,21 @@ public class MovieDataSource {
         Task<Void> insertionTask = cloud.collection("movie_review").document(String.valueOf(movieId))
                 .collection("records").document(review.getId())
                 .set(review, SetOptions.merge());
-        return Completable.fromAction(() -> {
-                    Tasks.await(insertionTask);
-                    reviewAddingCallback.onReceivedNewReview(review);
-                }).subscribeOn(Schedulers.single()).observeOn(AndroidSchedulers.mainThread());
+        return Completable.fromAction(() ->
+                Tasks.await(insertionTask)).subscribeOn(Schedulers.single()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public Pager<Long, MovieReview> getMovieReviewPager(int movieId) {
-        MovieReviewSource reviewSource = new MovieReviewSource(cloud, movieId, 10);
-        reviewAddingCallback = reviewSource.getAddingCallback();
         Pager<Long, MovieReview> pager = new Pager<>(new PagingConfig(10),
                 () -> new MovieReviewSource(cloud, movieId, 10));
         return pager;
     }
 
-
+    public Pager<Integer, MovieItem> getMovieSearchPager(String query) {
+        SearchMovieSource source = new SearchMovieSource(movieService, cachingSource, query);
+        source.init();
+        Pager<Integer, MovieItem> pager = new Pager<>(new PagingConfig(20),
+                () -> source);
+        return pager;
+    }
 }

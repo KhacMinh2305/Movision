@@ -70,4 +70,6 @@
     <string name="history_empty">There has not been any history recently.</string>
     <string name="movie">Movie</string>
     <string name="people">People</string>
+    <string name="lost_connection">Your connection is unavailable</string>
+    <string name="searching_history">Searching history</string>
 </resources>

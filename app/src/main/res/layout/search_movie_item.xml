@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        <variable
+            name="item"
+            type="architecture.data.model.movie.in_app.MovieItem" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/movieShapeableImageView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/user_image"
+            app:imageUrl="@{item.posterPath}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearance="@style/CorneredImage" />
+
+        <TextView
+            android:id="@+id/movieNameTextView"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:fontFamily="@font/albert_sans_bold"
+            android:textSize="18sp"
+            android:lines="1"
+            android:ellipsize="end"
+            android:text="@{item.name}"
+            android:gravity="start|center_vertical"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/movieShapeableImageView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Doan Khac Minh va nhung nguoi ban" />
+
+        <TextView
+            android:id="@+id/ratingTextView"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/albert_sans_regular"
+            android:gravity="start|center_vertical"
+            android:lines="1"
+            android:textSize="18sp"
+            android:text="@{String.valueOf(item.voteAverage)}"
+            android:drawablePadding="10dp"
+            app:drawableStartCompat="@drawable/ic_small_star"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/movieShapeableImageView"
+            app:layout_constraintTop_toBottomOf="@+id/movieNameTextView"
+            tools:text="8.8" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            app:layout_constraintTop_toBottomOf="@id/movieShapeableImageView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="5dp"
+            android:background="@color/back_button_color"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

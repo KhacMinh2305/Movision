@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private SharedViewModel viewModel;
     private NavController navController;
-    private boolean disableSplash = false; // TODO: call this when either login fragment or home fragment is display.
+    private boolean keepSplashOn = true; // TODO: call this when either login fragment or home fragment is display.
 
     @Inject
     public ConnectionMonitor connMonitor;
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        splashScreen.setKeepOnScreenCondition(() -> !disableSplash);
+        splashScreen.setKeepOnScreenCondition(() -> keepSplashOn);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void observeStates() {
-        viewModel.geSplashState().observe(this, completed -> disableSplash = true);
+        viewModel.geSplashState().observe(this, completed -> keepSplashOn = false);
         viewModel.getLoginNavigationState().observe(this, navigate -> navController.navigate(R.id.login));
         viewModel.getGenreNavigationState().observe(this, navigate -> navController.navigate(R.id.peek_genres));
     }

@@ -16,7 +16,7 @@ import architecture.data.local.entity.SearchQuery;
 
 @Database(entities = {Movie.class, MovieDetails.class,
         MovieList.class, People.class, PeopleDetails.class, RemoteKey.class, SearchQuery.class},
-        version = 2, exportSchema = false)
+        version = 1, exportSchema = false)
 public abstract class LocalDatabase extends RoomDatabase {
     public abstract MovieDao movieDao();
     public abstract ListDao listDao();
