@@ -125,9 +125,10 @@ public class DiscoverFragment extends Fragment {
     }
 
     private void observeStates() {
-        viewModel.getHistoryQueryState().observe(getViewLifecycleOwner(), searchQueries ->
-                ((HistorySearchAdapter) Objects.requireNonNull(binding.searchHistoryRecyclerView.getAdapter()))
-                .submit(searchQueries));
+        viewModel.getHistoryQueryState().observe(getViewLifecycleOwner(), searchQueries -> {
+            ((HistorySearchAdapter) Objects.requireNonNull(binding.searchHistoryRecyclerView.getAdapter()))
+                    .submit(searchQueries);
+        });
 
         viewModel.getMovieStreamState().observe(getViewLifecycleOwner(), pagingDataFlowable ->
                 pagingDataFlowable.to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))

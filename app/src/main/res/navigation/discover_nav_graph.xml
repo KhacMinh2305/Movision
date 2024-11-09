@@ -28,6 +28,10 @@
             android:id="@+id/action_movieDetailFragment_self"
             app:destination="@id/movieDetailFragment"
             app:restoreState="true"/>
+        <action
+            android:id="@+id/action_movieDetailFragment_to_peopleFragment"
+            app:destination="@id/peopleFragment"
+            app:restoreState="true"/>
     </fragment>
 
     <fragment

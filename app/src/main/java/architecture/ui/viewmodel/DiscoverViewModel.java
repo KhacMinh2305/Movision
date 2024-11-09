@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModelKt;
 import androidx.paging.Pager;
 import androidx.paging.PagingData;
 import androidx.paging.rxjava3.PagingRx;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -121,7 +123,7 @@ public class DiscoverViewModel extends ViewModel {
                 historyEmptyTextState.setValue(true);
                 return;
             }
-            historyQueryState.setValue(searchQueries);
+            historyQueryState.setValue(new ArrayList<>(searchQueries));
         }, throwable -> Log.d("Debug", throwable.toString()));
     }
 

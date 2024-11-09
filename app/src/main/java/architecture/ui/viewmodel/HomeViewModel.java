@@ -65,9 +65,7 @@ public class HomeViewModel extends ViewModel {
     public MutableLiveData<String> getUserAvatarState() { return userAvatarState; }
 
     // Genres
-    public MutableLiveData<List<Genre>> getListUserGenres() {
-        return listUserGenres;
-    }
+    public MutableLiveData<List<Genre>> getListUserGenres() { return listUserGenres; }
     public MutableLiveData<List<Genre>> getListGenresToPeek() {
         return listGenresToPeek;
     }

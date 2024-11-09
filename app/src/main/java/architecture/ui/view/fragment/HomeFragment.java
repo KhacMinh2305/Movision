@@ -124,6 +124,7 @@ public class HomeFragment extends Fragment {
         binding.userGenresRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.userGenresRecyclerView.setAdapter(new HomeGenreAdapter(getContext(), R.layout.user_genre_item, genre -> {
+            // TODO: Move to Discover fragment !
             Log.d("Debug", "Move to Discover fragment !");
         }));
         binding.genresBottomSheet.peekGenresRecyclerView.setLayoutManager(
@@ -216,9 +217,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void bindUpBanner() {
-        viewModel.getListUpcomingMoviePosterUrls().observe(getViewLifecycleOwner(), urls -> { // demo
-            binding.bannerImageSlider.setListUrls(this, urls);
-        });
+        viewModel.getListUpcomingMoviePosterUrls().observe(getViewLifecycleOwner(), urls ->
+                binding.bannerImageSlider.setListUrls(this, urls));
     }
 
     private void bindPreviewRecyclerMovie() {
