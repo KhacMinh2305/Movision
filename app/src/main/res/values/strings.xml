@@ -72,4 +72,5 @@
     <string name="people">People</string>
     <string name="lost_connection">Your connection is unavailable</string>
     <string name="searching_history">Searching history</string>
+    <string name="clearHistory">Clear</string>
 </resources>

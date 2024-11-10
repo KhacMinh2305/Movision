@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import architecture.data.local.LocalDatabase;
 import architecture.data.local.dao.SearchHistoryDao;
 import architecture.data.local.entity.SearchQuery;
@@ -70,11 +69,10 @@ public class QueryDataSource {
         })).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
-    public void deleteAllSearchQueries() {
-        Completable.fromAction(() -> db.runInTransaction(() -> {
-                    historyDao.deleteAllHistory(profileSource.getUserUid());
-                    memCachedList.clear();
-                }))
-                .subscribeOn(Schedulers.io()).subscribe();
+    public Completable clearSearchHistory() {
+        return Completable.fromAction(() -> db.runInTransaction(() -> {
+            historyDao.deleteAllHistory(profileSource.getUserUid());
+            memCachedList.clear();
+        })).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 }

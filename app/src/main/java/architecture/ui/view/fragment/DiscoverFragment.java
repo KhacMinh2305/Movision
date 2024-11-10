@@ -148,6 +148,12 @@ public class DiscoverFragment extends Fragment {
         addQueryChangedListener();
         saveQueryOnChanged();
         setOnQueryFilterChanged();
+        setOnHistoryCleared();
+    }
+
+    private void setOnHistoryCleared() {
+        binding.clearHistoryTextView.setOnClickListener(view ->
+                viewModel.clearSearchHistory());
     }
 
     private void setDiscoverSheetCallback() {

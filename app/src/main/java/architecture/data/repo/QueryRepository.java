@@ -29,7 +29,7 @@ public class QueryRepository {
         return querySource.deleteSearchQuery(id);
     }
 
-    public void deleteAllSearchQueries() {
-        querySource.deleteAllSearchQueries();
+    public Completable clearSearchHistory() {
+        return querySource.clearSearchHistory();
     }
 }

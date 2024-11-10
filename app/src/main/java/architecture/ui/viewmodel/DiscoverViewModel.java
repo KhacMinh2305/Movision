@@ -145,4 +145,11 @@ public class DiscoverViewModel extends ViewModel {
         super.onCleared();
         compositeDisposable.dispose();
     }
+
+    /** @noinspection ResultOfMethodCallIgnored*/
+    @SuppressLint("CheckResult")
+    public void clearSearchHistory() {
+        queryRepo.clearSearchHistory().subscribe(() ->
+                historyQueryState.setValue(new ArrayList<>()));
+    }
 }
