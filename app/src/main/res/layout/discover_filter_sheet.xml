@@ -58,6 +58,7 @@
                 android:background="@drawable/sign_up_edittext_background"
                 android:gravity="center"
                 android:importantForAutofill="no"
+                android:fontFamily="@font/albert_sans_regular"
                 android:inputType="number"
                 android:layout_marginTop="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -180,7 +181,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/yearTitle" />
 
             <Button
-                android:id="@+id/signOutButton"
+                android:id="@+id/discoverButton"
                 style="@style/Custom.ButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="75dp"

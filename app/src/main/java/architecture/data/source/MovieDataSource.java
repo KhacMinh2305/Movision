@@ -20,6 +20,7 @@ import architecture.data.local.entity.Movie;
 import architecture.data.local.entity.MovieDetails;
 import architecture.data.local.entity.RemoteKey;
 import architecture.data.model.movie.in_app.ClipUrl;
+import architecture.data.model.movie.in_app.DiscoverMovieItem;
 import architecture.data.model.movie.in_app.MovieItem;
 import architecture.data.model.movie.in_app.MovieReview;
 import architecture.data.model.movie.in_app.SimilarMovie;
@@ -29,6 +30,7 @@ import architecture.data.model.movie.result.MovieClipResult;
 import architecture.data.network.api.TmdbServices;
 import architecture.data.source.other.CachingSource;
 import architecture.data.source.other.CategoryMovieRemoteMediator;
+import architecture.data.source.other.DiscoverMovieSource;
 import architecture.data.source.other.MovieReviewSource;
 import architecture.data.source.other.SearchMovieSource;
 import architecture.domain.MovieConversionHelper;
@@ -48,7 +50,6 @@ public class MovieDataSource {
     private final MovieDao movieDao;
     private final RemoteKeyDao keyDao;
     private final MovieGenreSource genreSource;
-    private MovieReviewSource.AddingCallback reviewAddingCallback;
     private final CachingSource cachingSource;
 
     @Inject
@@ -320,5 +321,12 @@ public class MovieDataSource {
         Pager<Integer, MovieItem> pager = new Pager<>(new PagingConfig(20),
                 () -> source);
         return pager;
+    }
+
+    public Pager<Integer, DiscoverMovieItem> getDiscoverMoviePager(Float minRate, Float maxRate,
+                                                                   Integer minVoteCount, Integer maxVoteCount, String genresId,
+                                                                   Integer year) {
+        return new Pager<>(new PagingConfig(20),
+                () -> new DiscoverMovieSource(movieService, minRate, maxRate, minVoteCount, maxVoteCount, genresId, year));
     }
 }

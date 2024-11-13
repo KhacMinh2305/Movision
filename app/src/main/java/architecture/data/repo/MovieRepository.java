@@ -8,6 +8,7 @@ import javax.inject.Singleton;
 import architecture.data.local.entity.Movie;
 import architecture.data.local.entity.MovieDetails;
 import architecture.data.model.movie.in_app.ClipUrl;
+import architecture.data.model.movie.in_app.DiscoverMovieItem;
 import architecture.data.model.movie.in_app.MovieItem;
 import architecture.data.model.movie.in_app.MovieReview;
 import architecture.data.model.movie.in_app.SimilarMovie;
@@ -89,5 +90,11 @@ public class MovieRepository {
 
     public Pager<Integer, MovieItem> getMovieSearchPager(String query) {
         return dataSource.getMovieSearchPager(query);
+    }
+
+    public Pager<Integer, DiscoverMovieItem> getDiscoverMoviePager(Float minRate, Float maxRate,
+                                                                   Integer minVoteCount, Integer maxVoteCount, String genresId,
+                                                                   Integer year) {
+        return dataSource.getDiscoverMoviePager(minRate, maxRate, minVoteCount, maxVoteCount, genresId, year);
     }
 }

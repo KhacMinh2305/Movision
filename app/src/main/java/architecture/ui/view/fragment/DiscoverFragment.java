@@ -8,15 +8,22 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import com.example.movision.R;
 import com.example.movision.databinding.FragmentDiscoverBinding;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import architecture.other.AppConstant;
 import architecture.ui.view.adapter.HistorySearchAdapter;
@@ -89,25 +96,12 @@ public class DiscoverFragment extends Fragment {
     }
 
     private void initViews() {
-        initSearchRecyclerView();
-        binding.movieRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
-                LinearLayoutManager.VERTICAL, false));
-        binding.movieRecyclerView.setAdapter(new SearchingMovieAdapter(new SearchingIItemMovieComparator(), movieId -> {
-            Bundle bundle = new Bundle();
-            bundle.putInt("movieId", movieId);
-            navController.navigate(R.id.action_discoverFragment_to_movieDetailFragment, bundle);
-        }));
-
-        binding.peopleRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
-                LinearLayoutManager.VERTICAL, false));
-        binding.peopleRecyclerView.setAdapter(new SearchingPeopleAdapter(new SearchingItemPeopleComparator(), peopleId -> {
-            Bundle bundle = new Bundle();
-            bundle.putInt("personId", peopleId);
-            navController.navigate(R.id.action_discoverFragment_to_peopleFragment, bundle);
-        }));
+        initHistoryRecyclerView();
+        initSearchMovieRecyclerView();
+        initSearchPeopleRecyclerView();
     }
 
-    private void initSearchRecyclerView() {
+    private void initHistoryRecyclerView() {
         binding.searchHistoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
         binding.searchHistoryRecyclerView.setAdapter(new HistorySearchAdapter(new HistorySearchAdapter.SearchQueryItemListener() {
@@ -124,23 +118,61 @@ public class DiscoverFragment extends Fragment {
         }));
     }
 
+    private void initSearchMovieRecyclerView() {
+        binding.movieRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL, false));
+        binding.movieRecyclerView.setAdapter(new SearchingMovieAdapter(new SearchingIItemMovieComparator(), movieId -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("movieId", movieId);
+            navController.navigate(R.id.action_discoverFragment_to_movieDetailFragment, bundle);
+        }));
+    }
+
+    private void initSearchPeopleRecyclerView() {
+        binding.peopleRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL, false));
+        binding.peopleRecyclerView.setAdapter(new SearchingPeopleAdapter(new SearchingItemPeopleComparator(), peopleId -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("personId", peopleId);
+            navController.navigate(R.id.action_discoverFragment_to_peopleFragment, bundle);
+        }));
+    }
+
     private void observeStates() {
+        observeHistoryQueryState();
+        observeGenresSpinnerState();
+        observeSearchMovieState();
+        observeSearchPeopleState();
+    }
+
+    private void observeHistoryQueryState() {
         viewModel.getHistoryQueryState().observe(getViewLifecycleOwner(), searchQueries -> {
             ((HistorySearchAdapter) Objects.requireNonNull(binding.searchHistoryRecyclerView.getAdapter()))
                     .submit(searchQueries);
         });
+    }
 
+    private void observeGenresSpinnerState() {
+        viewModel.getSpinnerInputState().observe(getViewLifecycleOwner(), genres -> {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, genres);
+            binding.bottomSheet.genreSpinner.setAdapter(adapter);
+        });
+    }
+
+    private void observeSearchMovieState() {
         viewModel.getMovieStreamState().observe(getViewLifecycleOwner(), pagingDataFlowable ->
                 pagingDataFlowable.to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(movieItemPagingData ->
-                        ((SearchingMovieAdapter) Objects.requireNonNull(binding.movieRecyclerView.getAdapter()))
-                        .submitData(getLifecycle(), movieItemPagingData)));
+                        .subscribe(movieItemPagingData ->
+                                ((SearchingMovieAdapter) Objects.requireNonNull(binding.movieRecyclerView.getAdapter()))
+                                        .submitData(getLifecycle(), movieItemPagingData)));
+    }
 
+    private void observeSearchPeopleState() {
         viewModel.getPeopleStreamState().observe(getViewLifecycleOwner(), pagingDataFlowable ->
                 pagingDataFlowable.to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
-                .subscribe(peopleItemPagingData ->
-                        ((SearchingPeopleAdapter) Objects.requireNonNull(binding.peopleRecyclerView.getAdapter()))
-                        .submitData(getLifecycle(), peopleItemPagingData)));
+                        .subscribe(peopleItemPagingData ->
+                                ((SearchingPeopleAdapter) Objects.requireNonNull(binding.peopleRecyclerView.getAdapter()))
+                                        .submitData(getLifecycle(), peopleItemPagingData)));
     }
 
     private void setupEventListeners() {
@@ -149,6 +181,8 @@ public class DiscoverFragment extends Fragment {
         saveQueryOnChanged();
         setOnQueryFilterChanged();
         setOnHistoryCleared();
+        setOnChooseRatingListener();
+        discoverMovie();
     }
 
     private void setOnHistoryCleared() {
@@ -212,6 +246,72 @@ public class DiscoverFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) { }
+        });
+    }
+
+    private void setOnChooseRatingListener() {
+        binding.bottomSheet.ratingSlider.addOnChangeListener((slider, value, fromUser) ->
+                binding.bottomSheet.voteAverageEditText.setText(String.valueOf((int) value)));
+
+        binding.bottomSheet.voteAverageEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String value = editable.toString();
+                if(value.isEmpty()) {
+                    binding.bottomSheet.ratingSlider.setValue(0f);
+                    return;
+                }
+                try {
+                    int max = Integer.parseInt(value);
+                    max = Math.min(max, 10);
+                    binding.bottomSheet.ratingSlider.setValue(1f * max);
+                } catch(NumberFormatException e) {
+                    binding.bottomSheet.ratingSlider.setValue(0f);
+                }
+            }
+        });
+    }
+
+    private Bundle putOtherArgs() {
+        Bundle args = new Bundle();
+        String leastVoteAve = binding.bottomSheet.voteAverageEditText.getText().toString();
+        Float voteAve = leastVoteAve.isEmpty() ? null : Float.parseFloat(leastVoteAve);
+        String minVoteCount = binding.bottomSheet.leftVoteEditText.getText().toString();
+        Integer minVote = minVoteCount.isEmpty() ? null : Integer.parseInt(minVoteCount);
+        String maxVoteCount = binding.bottomSheet.rightVoteEditText.getText().toString();
+        Integer maxVote = maxVoteCount.isEmpty() ? null : Integer.parseInt(maxVoteCount);
+        String chosenYear = binding.bottomSheet.yearEditText.getText().toString();
+        Integer year = (chosenYear.isEmpty()) ? null : Integer.parseInt(chosenYear);
+        if(voteAve != null) args.putFloat("minRate", voteAve);
+        args.putFloat("maxRate", 10f);
+        if(minVote != null) args.putInt("minVoteCount", minVote);
+        if(maxVote != null) args.putInt("maxVoteCount", maxVote);
+        if(year != null) args.putInt("year", year);
+        return args;
+    }
+
+    private void discoverMovie() {
+        binding.bottomSheet.discoverButton.setOnClickListener(view -> {
+            String genreName = (String) binding.bottomSheet.genreSpinner.getSelectedItem();
+            if(!genreName.isEmpty()) {
+                viewModel.getGenreByName(genreName).to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+                        .subscribe(genre -> {
+                            Bundle args = putOtherArgs();
+                            if(genre.getId() != null) {
+                                args.putString("genreId", String.valueOf(genre.getId()));
+                            }
+                            new Handler(Looper.getMainLooper()).post(() ->
+                                    navController.navigate(R.id.action_discoverFragment_to_discoverResultFragment, args));
+                        });
+            }
+
+
         });
     }
 }

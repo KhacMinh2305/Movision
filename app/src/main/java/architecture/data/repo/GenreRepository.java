@@ -17,6 +17,10 @@ public class GenreRepository {
         this.dataSource = dataSource;
     }
 
+    public Single<Genre> getGenreByName(String genreName) {
+        return dataSource.getGenreByName(genreName);
+    }
+
     public Task<List<Genre>> requestUserGenres(String userId) {
         return dataSource.requestUserGenres(userId);
     }

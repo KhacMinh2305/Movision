@@ -3,6 +3,7 @@ import com.google.gson.JsonObject;
 import java.util.Map;
 import architecture.data.model.genre.Genres;
 import architecture.data.model.image.ApiTmDbImage;
+import architecture.data.model.movie.category.ApiDiscoverMovie;
 import architecture.data.model.movie.category.ApiMovieDetails;
 import architecture.data.model.movie.category.ApiSearchMovie;
 import architecture.data.model.movie.category.MovieByGenre;
@@ -110,4 +111,12 @@ public interface TmdbServices {
 
     @GET("3/search/person")
     Single<ApiPeople> loadPeopleWithQuery(@Query("query") String query, @Query("page") int page);
+
+    @GET("3/discover/movie")
+    Single<ApiDiscoverMovie> loadDiscoverMovie(@Query("vote_average.gte") Float minVoteAve,
+                                               @Query("vote_average.lte") Float maxVoteAve,
+                                               @Query("vote_count.gte") Integer minVoteCount,
+                                               @Query("vote_count.lte") Integer maxVoteCount,
+                                               @Query("with_genres") String genresId,
+                                               @Query("year") Integer year, @Query("page") int page);
 }

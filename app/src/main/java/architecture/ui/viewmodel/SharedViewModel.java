@@ -23,6 +23,7 @@ public class SharedViewModel extends ViewModel {
     private final MutableLiveData<Boolean> genreNavigationState = new MutableLiveData<>();
     private final MutableLiveData<Boolean> splashState = new MutableLiveData<>();
     private final MutableLiveData<Bitmap> newAvatarDataState = new MutableLiveData<>();
+    private final MutableLiveData<String> quickSearchGenre = new MutableLiveData<>();
     private boolean loaded = false;
 
     // getters
@@ -32,10 +33,12 @@ public class SharedViewModel extends ViewModel {
     public MutableLiveData<Boolean> getGenreNavigationState() { return genreNavigationState; }
     public MutableLiveData<Boolean> geSplashState() { return splashState; }
     public MutableLiveData<Bitmap> getImageDataState() { return newAvatarDataState; }
+    public MutableLiveData<String> getQuickSearchGenre() { return quickSearchGenre; }
 
     // setters
     public void setBottomNavBarVisibility(boolean visibility) { shouldHideBottomNavBar.setValue(!visibility); }
     public void setLoadingHomeDataState(boolean state) { loadingHomeScreenDataState.setValue(state); }
+    public void setQuickSearchGenre(String genreId) { quickSearchGenre.setValue(genreId); }
 
     /** @noinspection ResultOfMethodCallIgnored*/
     @SuppressLint("CheckResult")

@@ -14,7 +14,7 @@ public class VerificationCodeUiState {
     private final MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
     public boolean isCountingDown = false;
     public int countDownRemain = COUNT_DOWN_TIME;
-    private Handler handler;
+    private final Handler handler;
 
     public MutableLiveData<Boolean> getSheetState() { return sheetState; }
     public MutableLiveData<Integer> getWaitingTimeState() { return waitingTimeState; }

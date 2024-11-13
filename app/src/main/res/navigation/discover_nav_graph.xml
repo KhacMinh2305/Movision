@@ -18,6 +18,10 @@
             android:id="@+id/action_discoverFragment_to_peopleFragment"
             app:destination="@id/peopleFragment"
             app:restoreState="true"/>
+        <action
+            android:id="@+id/action_discoverFragment_to_discoverResultFragment"
+            app:destination="@id/discoverResultFragment"
+            app:restoreState="true"/>
     </fragment>
 
     <fragment
@@ -38,4 +42,16 @@
         android:id="@+id/peopleFragment"
         android:name="architecture.ui.view.fragment.PeopleFragment"
         android:label="PeopleFragment" />
+    <fragment
+        android:id="@+id/discoverResultFragment"
+        android:name="architecture.ui.view.fragment.DiscoverResultFragment"
+        android:label="DiscoverResultFragment">
+        <action
+            android:id="@+id/action_discoverResultFragment_to_movieDetailFragment"
+            app:destination="@id/movieDetailFragment"
+            app:restoreState="true" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="movision://discover/quickgenresearch?genre={genre}" />
+    </fragment>
 </navigation>

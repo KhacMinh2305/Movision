@@ -44,6 +44,17 @@ public class MovieGenreSource {
         this.tmdbService = tmdbService;
     }
 
+    public Single<Genre> getGenreByName(String genreName) {
+        return Single.fromCallable(() -> {
+            for(Genre genre : appGenres) {
+                if(genre.getName().equals(genreName)) {
+                    return genre;
+                }
+            }
+            return new Genre(null, null);
+        }).subscribeOn(Schedulers.computation());
+    }
+
     public Task<List<Genre>> requestUserGenres(String userId) {
         return cloud.collection("user_genres").document(userId)
                 .get().onSuccessTask(documentSnapshot -> {

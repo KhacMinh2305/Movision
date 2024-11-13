@@ -13,24 +13,29 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import architecture.data.local.entity.SearchQuery;
+import architecture.data.model.genre.Genre;
 import architecture.data.model.movie.in_app.MovieItem;
 import architecture.data.model.people.PeopleItem;
+import architecture.data.repo.GenreRepository;
 import architecture.data.repo.MovieRepository;
 import architecture.data.repo.PeopleRepository;
 import architecture.data.repo.ProfileRepository;
 import architecture.data.repo.QueryRepository;
 import architecture.other.AppConstant;
 import dagger.hilt.android.lifecycle.HiltViewModel;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 import kotlinx.coroutines.CoroutineScope;
 
 @HiltViewModel
 public class DiscoverViewModel extends ViewModel {
-    private final ProfileRepository profileRepo;
     private final MovieRepository movieRepo;
     private final PeopleRepository peopleRepo;
+    private final GenreRepository genreRepo;
     private final QueryRepository queryRepo;
     private boolean initialized = false;
     private CompositeDisposable compositeDisposable;
@@ -43,6 +48,7 @@ public class DiscoverViewModel extends ViewModel {
     private MutableLiveData<Boolean> searchResultViewsState;
     private PublishSubject<String> movieQueryEmitter;
     private PublishSubject<String> peopleQueryEmitter;
+    private MutableLiveData<List<String>> spinnerInputState;
     private Flowable<PagingData<MovieItem>> movieStream;
     private Flowable<PagingData<PeopleItem>> peopleStream;
     private MutableLiveData<Flowable<PagingData<MovieItem>>> movieStreamState;
@@ -50,6 +56,7 @@ public class DiscoverViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> getHistoryEmptyTextState() { return historyEmptyTextState; }
     public MutableLiveData<List<SearchQuery>> getHistoryQueryState() { return historyQueryState; }
+    public MutableLiveData<List<String>> getSpinnerInputState() { return spinnerInputState; }
     public MutableLiveData<Boolean> getSearchResultViewsState() { return searchResultViewsState; }
     public MutableLiveData<Boolean> getSearchResultAvailableState() { return searchResultAvailableState; }
     public MutableLiveData<Boolean> getLoadingState() { return loadingState; }
@@ -57,11 +64,11 @@ public class DiscoverViewModel extends ViewModel {
     public MutableLiveData<Flowable<PagingData<PeopleItem>>> getPeopleStreamState() { return peopleStreamState; }
 
     @Inject
-    public DiscoverViewModel(ProfileRepository profileRepo, MovieRepository movieRepo,
-                             PeopleRepository peopleRepo, QueryRepository queryRepo) {
-        this.profileRepo = profileRepo;
+    public DiscoverViewModel(MovieRepository movieRepo, PeopleRepository peopleRepo,
+                             GenreRepository genreRepo, QueryRepository queryRepo) {
         this.movieRepo = movieRepo;
         this.peopleRepo = peopleRepo;
+        this.genreRepo = genreRepo;
         this.queryRepo = queryRepo;
     }
 
@@ -74,12 +81,31 @@ public class DiscoverViewModel extends ViewModel {
         loadingState = new MutableLiveData<>();
         movieQueryEmitter = PublishSubject.create();
         peopleQueryEmitter = PublishSubject.create();
+        spinnerInputState = new MutableLiveData<>();
         movieStreamState = new MutableLiveData<>();
         peopleStreamState = new MutableLiveData<>();
         compositeDisposable = new CompositeDisposable();
+        loadSheetGenresSpinner();
         observeQueryChanged();
         loadHistoryQueries();
         initialized = true;
+    }
+
+    public Single<Genre> getGenreByName(String name) {
+        return genreRepo.getGenreByName(name);
+    }
+
+    /** @noinspection ResultOfMethodCallIgnored*/
+    @SuppressLint("CheckResult")
+    private void loadSheetGenresSpinner() {
+        Single.fromCallable(() -> {
+            ArrayList<String> spinnerInput = new ArrayList<>();
+            for(Genre genre : genreRepo.getAppGenres()) {
+                spinnerInput.add(genre.getName());
+            }
+            return spinnerInput;
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(spinnerInputState::setValue, throwable -> Log.d("ERROR", throwable.toString()));
     }
 
     public void onQueryChanged(String query, String tag) {
@@ -130,8 +156,10 @@ public class DiscoverViewModel extends ViewModel {
     /** @noinspection ResultOfMethodCallIgnored*/
     @SuppressLint("CheckResult")
     public void addSearchQuery(String query) {
-        queryRepo.addSearchQuery(query).subscribe(searchQuery ->
-                loadHistoryQueries(), throwable -> Log.d("Debug", throwable.toString()));
+        queryRepo.addSearchQuery(query).subscribe(searchQuery -> {
+            loadHistoryQueries();
+            historyEmptyTextState.setValue(false);
+        }, throwable -> Log.d("Debug", throwable.toString()));
     }
 
     /** @noinspection ResultOfMethodCallIgnored*/
